@@ -35,6 +35,6 @@ continue with command line
 or you can run with only one command line
 ##### `npm run electron-dev`
 
-## Learn More
+## Reference
 
-You can learn more information [Ninja Constant](https://constant.money/).
+Constant chain (https://github.com/constant-money/constant-chain).
