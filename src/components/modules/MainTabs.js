@@ -140,9 +140,9 @@ import {
                     >
                     <Tab classes={classesTab} 
                     label="PRIVACY KEY" />
-                    <Tab
+                      {/*<Tab
                     classes={classesTab} 
-                     label="HISTORY" />
+                     label="HISTORY" />*/}
                     <Tab
                     classes={classesTab} 
                      label="TOKENS" />  
