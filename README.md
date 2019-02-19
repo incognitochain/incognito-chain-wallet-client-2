@@ -34,7 +34,3 @@ continue with command line
 ##### `npm run electron-only`
 or you can run with only one command line
 ##### `npm run electron-dev`
-
-## Reference
-
-Constant chain (https://github.com/ninjaorg/constant).
