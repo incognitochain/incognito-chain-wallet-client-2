@@ -1,21 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import AccountDetail from '../layout/Account/Detail';
+import AccountDetail from "../layout/Account/Detail";
 
 class Home extends React.Component {
   static propTypes = {
     account: PropTypes.array.isRequired
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-    }
-    
-  }
-  componentWillReceiveProps(nextProps) {
-  }
 
   render() {
     const { account } = this.props;
@@ -27,7 +18,6 @@ class Home extends React.Component {
   }
 }
 
-Home.propTypes = {
-};
+Home.propTypes = {};
 
 export default Home;

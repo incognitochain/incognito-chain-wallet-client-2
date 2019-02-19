@@ -1,11 +1,8 @@
-import local from './localStore';
-import {APP} from './constant';
+import local from "./localStore";
+import { APP } from "./constant";
 
 export default class Server {
-
-
   static get() {
-  
     const result = local.get(APP.SERVERS);
     if (result) {
       return result;
@@ -14,11 +11,10 @@ export default class Server {
   }
 
   static getDefault() {
-  
     const result = local.get(APP.SERVERS);
     if (result && result.length) {
-      for(let s of result){
-        if(s.default){
+      for (let s of result) {
+        if (s.default) {
           return s;
         }
       }
@@ -28,12 +24,18 @@ export default class Server {
   }
 
   static setDefault() {
-    local.save(APP.SERVERS, [{default: true, address: "http://192.168.0.67:9334", username: "", password: "", name: "Local"}]);
+    local.save(APP.SERVERS, [
+      {
+        default: true,
+        address: "http://localhost:9334",
+        username: "",
+        password: "",
+        name: "Local"
+      }
+    ]);
   }
 
   static set(data) {
-  
     local.save(APP.SERVERS, data);
   }
-
 }
