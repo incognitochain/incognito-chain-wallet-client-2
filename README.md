@@ -37,4 +37,4 @@ or you can run with only one command line
 
 ## Reference
 
-Constant chain (https://github.com/constant-money/constant-chain).
+Constant chain (https://github.com/ninjaorg/constant).
