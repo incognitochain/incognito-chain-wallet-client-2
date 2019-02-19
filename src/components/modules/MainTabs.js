@@ -95,14 +95,14 @@ import {
         );
     }
     renderHistory = (value) => {
-        if (value !== 1) return null;
+        if (value !== 2) return null;
         return (
             <div></div>
         );
     }
 
     renderTokenTabs = (value) => {
-      if (value !== 2) return null;
+      if (value !== 1) return null;
 
       const { paymentAddress } = this.props;
       const { privateKey } = this.state;
