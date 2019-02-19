@@ -1,0 +1,30 @@
+.wrapperPrivacyKeyContainer {
+    padding: 20px;
+}
+.wrapperKeys {
+    background-color: #FAFAFA;
+    border-radius: 3px;
+    margin-top: 10px;
+    padding: (20px);
+
+    .keyNamePrivacy {
+        color: #E34D4D;
+
+    }
+    .keyNameReadonly {
+        color: #2C4CF5;
+
+    }
+    .keyDes {
+        word-wrap: break-word;
+        color: #4D5473;
+        margin-top: 10px;
+    }
+    .titleKeys {
+        display: flex;
+        justify-content: space-between;
+    }
+    .clickCopy {
+        color: #2C3B8F;
+    }
+}
