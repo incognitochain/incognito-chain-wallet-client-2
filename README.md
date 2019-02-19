@@ -1,7 +1,7 @@
 # Wallet Extension - Constant Money
 
 ![Constant is digital money you can actually use.
-](https://constant.money/static/images/block5.webp)
+](https://avatars2.githubusercontent.com/u/45321944?s=200&v=4)
 
 ### Run as web app or Chrome extension
 #### Prepare
