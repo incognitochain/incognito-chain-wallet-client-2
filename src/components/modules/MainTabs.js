@@ -53,12 +53,12 @@ class MainTabs extends React.Component {
     };
   }
   async componentDidMount() {
-    await this.getPrivateKey();
+    await this.getPrivateKey(this.props.paymentAddress);
   }
 
-  componentDidUpdate(nextProps) {
-    if (nextProps.paymentAddress !== this.props.paymentAddress) {
-      this.getPrivateKey();
+  componentDidUpdate(prevProps) {
+    if (prevProps.paymentAddress !== this.props.paymentAddress) {
+      this.getPrivateKey(this.props.paymentAddress);
     }
   }
 
@@ -66,8 +66,7 @@ class MainTabs extends React.Component {
     this.setState({ value });
   };
 
-  getPrivateKey = async () => {
-    let { paymentAddress } = this.props;
+  getPrivateKey = async paymentAddress => {
     const result = await Account.getPrivateKey(paymentAddress);
     if (result && result.PrivateKey) {
       this.setState({ privateKey: result.PrivateKey });

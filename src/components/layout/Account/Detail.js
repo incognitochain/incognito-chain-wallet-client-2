@@ -74,9 +74,9 @@ class AccountDetail extends React.Component {
     this.getData(account);
   }
 
-  componentDidUpdate(nextProps) {
-    if (this.props.account !== nextProps.account) {
-      this.getData(nextProps.account);
+  componentDidUpdate(prevProps) {
+    if (this.props.account !== prevProps.account) {
+      this.getData(this.props.account);
     }
   }
 
