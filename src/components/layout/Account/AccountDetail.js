@@ -1,30 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import {
-  Divider,
-  List,
-  ListItem,
-  Snackbar,
-  Input,
-  InputAdornment
-} from "@material-ui/core";
+import { Divider, List, ListItem, Snackbar } from "@material-ui/core";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import QRCode from "qrcode.react";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Dialog from "../../core/Dialog";
 import Account from "../../../services/Account";
-import TokenTabs from "../../modules/TokenTabs";
 import AccountSend from "./Send";
 import CreateToken from "../../layout/Token/CreateToken";
 import MainTabs from "../../modules/MainTabs";
 import {
-  Security as IconSecurity,
-  VpnKey as IconSealer,
   Error as IconError,
   CheckCircle as IconSuccess,
-  Warning as IconWarning,
-  Remove as IconRemove
+  Warning as IconWarning
 } from "@material-ui/icons";
 import CopyPasteSVG from "../../../assets/images/copy-paste.svg";
 
@@ -188,62 +177,8 @@ class AccountDetail extends React.Component {
     }
   };
 
-  get showSealerKey() {
-    const sealerKey = this.state.sealerKey;
-    const classes = this.props.classes;
-
-    if (!sealerKey) {
-      return "";
-    } else {
-      return (
-        <div className="list-group sealerKey">
-          <CopyToClipboard
-            text={sealerKey.ProducerKeySet}
-            onCopy={() => this.copyToClipBoard()}
-          >
-            <a
-              href="#"
-              className={
-                "list-group-item list-group-item-action flex-column align-items-start " +
-                classes.key
-              }
-            >
-              <div className="d-flex w-100 justify-content-between">
-                <h5 className="mb-1">Sealer Key Set</h5>
-                <small className="text-muted">click to Copy</small>
-              </div>
-              <div className="mb-1 word-wrap-break">
-                {sealerKey.ProducerKeySet}
-              </div>
-            </a>
-          </CopyToClipboard>
-          <CopyToClipboard
-            text={sealerKey.ProducerPublicKey}
-            onCopy={() => this.copyToClipBoard()}
-          >
-            <a
-              href="#"
-              className={
-                "list-group-item list-group-item-action flex-column align-items-start " +
-                classes.key
-              }
-            >
-              <div className="d-flex w-100 justify-content-between">
-                <h5 className="mb-1">Sealer Public Key</h5>
-                <small className="text-muted">click to Copy</small>
-              </div>
-              <div className="mb-1 word-wrap-break">
-                {sealerKey.ProducerPublicKey}
-              </div>
-            </a>
-          </CopyToClipboard>
-        </div>
-      );
-    }
-  }
-
   handleSendToken = (item, tab) => {
-    const { paymentAddress, balance, privateKey } = this.state;
+    const { paymentAddress, privateKey } = this.state;
     const props = {
       paymentAddress,
       privateKey,

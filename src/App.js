@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import "./App.css";
 import Header from "./components/layout/Header";
@@ -8,7 +8,6 @@ import Settings from "./components/pages/Settings";
 import ImportAccount from "./components/pages/Account/Import";
 import Snackbar from "@material-ui/core/Snackbar";
 import Server from "./services/Server";
-import ConfirmDialog from "./components/core/ConfirmDialog";
 
 import Account from "./services/Account";
 
@@ -46,36 +45,72 @@ const theme = createMuiTheme({
   }
 });
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      screen: "",
-      headerTitle: "Wallet home",
-      showAlert: "",
-      isAlert: false,
-      message: "",
-      selectedAccount: {},
-      accounts: []
-    };
-  }
+const initialState = {
+  screen: "",
+  headerTitle: "Wallet home",
+  showAlert: "",
+  isAlert: false,
+  selectedAccount: {},
+  accounts: []
+};
 
-  componentDidMount() {
+function appReducer(state = initialState, action) {
+  switch (action.type) {
+    case "LOAD_ACCOUNTS":
+      return {
+        ...state,
+        loading: true,
+        accounts: []
+      };
+    case "LOAD_ACCOUNTS_SUCCESS":
+      return {
+        ...state,
+        walletName: action.walletName,
+        loading: false,
+        selectedAccount: action.selectedAccount,
+        accounts: action.accounts
+      };
+    case "SHOW_ALERT":
+      return {
+        ...state,
+        isAlert: true,
+        showAlert: action.showAlert
+      };
+    case "CLOSE_ALERT":
+      return {
+        ...state,
+        showAlert: "",
+        isAlert: false
+      };
+    case "SET_SCREEN":
+      return {
+        ...state,
+        screen: action.screen,
+        headerTitle: action.headerTitle
+      };
+    case "SET_SELECTED_ACCOUNT":
+      return {
+        ...state,
+        selectedAccount: action.selectedAccount
+      };
+    default:
+      return state;
+  }
+}
+
+const App = () => {
+  const [state, dispatch] = React.useReducer(appReducer, initialState);
+
+  React.useEffect(() => {
     const server = Server.getDefault();
     if (!server) {
       Server.setDefault();
-      //this.modalServerRef.open();
     }
-    this.getAccountList();
-  }
+    getAccountList();
+  }, []);
 
-  // addServerDefault = () => {
-  //   Server.setDefault();
-  //   this.selectAccount("");
-  // }
-
-  async getAccountList() {
-    this.setState({ loading: true, accountList: [] });
+  const getAccountList = async () => {
+    dispatch({ type: "LOAD_ACCOUNTS" });
     const result = await Account.getAccountList([]);
     if (result) {
       const accounts = result.Accounts,
@@ -96,36 +131,38 @@ class App extends Component {
         selectedAccount = accountList[selectedAccountIndex];
       }
 
-      this.setState({
+      dispatch({
+        type: "LOAD_ACCOUNTS_SUCCESS",
         walletName,
-        loading: false,
         selectedAccount,
         accounts: accountList
       });
-      this.selectAccount("");
+
+      dispatch({
+        type: "SET_SCREEN",
+        screen: <Home account={selectedAccount} />,
+        headerTitle
+      });
     } else {
       alert("Error on get account list. Please restart app!");
     }
-  }
+  };
 
-  handleClose = (event, reason) => {
+  const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
-
-    this.setState({ showAlert: "", isAlert: false });
+    dispatch({ type: "CLOSE_ALERT" });
   };
 
-  selectAccount = action => {
-    const { selectedAccount } = this.state;
-
+  const selectAccount = action => {
     let screen = "",
       headerTitle = "Home";
     if (action === "CREATE_ACCOUNT") {
       screen = (
         <CreateAccount
           onFinish={data => {
-            this.backHome(data);
+            backHome(data);
           }}
         />
       );
@@ -134,7 +171,7 @@ class App extends Component {
       screen = (
         <ImportAccount
           onFinish={data => {
-            this.backHome(data);
+            backHome(data);
           }}
         />
       );
@@ -143,113 +180,88 @@ class App extends Component {
       screen = (
         <Settings
           onFinish={data => {
-            this.backHome(data);
+            backHome(data);
           }}
         />
       );
       headerTitle = "Settings";
-    } else {
-      //Get Account default
-      screen = <Home account={selectedAccount} />;
     }
 
-    this.setState({ screen, headerTitle });
+    dispatch({ type: "SET_SCREEN", screen, headerTitle });
   };
 
-  showAlert = (
+  const showAlert = (
     msg,
     { flag = "warning", html = false, duration = 2000, hideIcon = false }
   ) => {
-    let showAlert = "",
-      isAlert = true,
-      icon = "";
+    let icon = "";
 
     if (flag === "success") icon = <IconSuccess />;
     else if (flag === "danger") icon = <IconError />;
     else if (flag === "warning") icon = <IconWarning />;
 
-    this.setState({ isAlert }, () => {
-      showAlert = (
+    dispatch({
+      type: "SHOW_ALERT",
+      showAlert: (
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",
             horizontal: "center"
           }}
-          open={isAlert}
+          open
           autoHideDuration={duration}
-          onClose={this.handleClose}
+          onClose={handleClose}
         >
           <div className={"alert alert-" + flag} role="alert">
             {!hideIcon && icon} {msg}
           </div>
         </Snackbar>
-      );
-
-      this.setState({ showAlert });
+      )
     });
   };
 
-  showSuccess = msg => {
-    this.showAlert(msg, { flag: "success", duration: 3000, hideIcon: true });
+  const showSuccess = msg => {
+    showAlert(msg, { flag: "success", duration: 3000, hideIcon: true });
   };
 
-  showWarning = msg => {
-    this.showAlert(msg, { flag: "warning" });
-  };
-
-  showError = msg => {
-    this.showAlert(msg, { flag: "danger" });
-  };
-
-  backHome = data => {
-    this.setState({ screen: <Home />, headerTitle: "Home" });
+  const backHome = data => {
+    dispatch({ type: "SET_SCREEN", screen: <Home />, headerTitle: "Home" });
 
     if (data && data.message) {
-      this.showSuccess(data.message);
+      showSuccess(data.message);
     }
   };
-  handleChangeAccount = account => {
+  const handleChangeAccount = account => {
     window.localStorage.setItem(
       "accountIndex",
-      this.state.accounts.indexOf(account)
+      state.accounts.indexOf(account)
     );
-    this.setState({ selectedAccount: account }, () => {
-      this.selectAccount("");
+    dispatch({ type: "SET_SELECTED_ACCOUNT", selectedAccount: account });
+    dispatch({
+      type: "SET_SCREEN",
+      screen: <Home account={account} />,
+      headerTitle
     });
   };
 
-  render() {
-    const {
-      screen,
-      headerTitle,
-      showAlert,
-      message,
-      accounts,
-      selectedAccount
-    } = this.state;
-
-    return (
-      <div className="App">
-        {/* <ConfirmDialog title="PRC Server" onRef={modal => this.modalServerRef = modal} onOK={()=> this.addServerDefault()} className={{margin: 0}}>
-          <div>You haven't setup default RPC server. Please do it first!</div>
-        </ConfirmDialog> */}
-
-        {showAlert}
-        <MuiThemeProvider theme={theme}>
-          <Header
-            callbackSelected={action => {
-              this.selectAccount(action);
-            }}
-            title={headerTitle}
-            accounts={accounts}
-            selectedAccount={selectedAccount}
-            onChangeAccount={this.handleChangeAccount}
-          />
-          <div className="appContainer">{screen}</div>
-        </MuiThemeProvider>
-      </div>
-    );
-  }
-}
+  const { screen, headerTitle, accounts, selectedAccount } = state;
+  return (
+    <div className="App">
+      {state.showAlert}
+      <MuiThemeProvider theme={theme}>
+        <Header
+          callbackSelected={action => {
+            selectAccount(action);
+          }}
+          title={headerTitle}
+          accounts={accounts}
+          selectedAccount={selectedAccount}
+          onChangeAccount={handleChangeAccount}
+        />
+        <div className="appContainer">{screen}</div>
+      </MuiThemeProvider>
+    </div>
+  );
+};
 
 export default App;

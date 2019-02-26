@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import AccountDetail from "../layout/Account/Detail";
+import AccountDetail from "../layout/Account/AccountDetail";
 
 class Home extends React.Component {
   static propTypes = {

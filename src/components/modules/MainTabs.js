@@ -2,15 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Tabs, Tab } from "@material-ui/core";
 
-import {
-  Security as IconSecurity,
-  VpnKey as IconSealer,
-  Error as IconError,
-  CheckCircle as IconSuccess,
-  Warning as IconWarning,
-  Remove as IconRemove
-} from "@material-ui/icons";
-
 import { withStyles } from "@material-ui/core/styles";
 
 import PrivacyKeys from "./PrivacyKeys";
