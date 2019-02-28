@@ -7,7 +7,7 @@ import QRCode from "qrcode.react";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Dialog from "../../core/Dialog";
 import Account from "../../../services/Account";
-import AccountSend from "./Send";
+import AccountSend from "./AccountSend";
 import CreateToken from "../../layout/Token/CreateToken";
 import MainTabs from "../../modules/MainTabs";
 import {
@@ -70,6 +70,7 @@ class AccountDetail extends React.Component {
   }
 
   async getData(account) {
+    // TODO - use AccountContext instead
     const key = await Account.getPaymentAddress(account.name);
     if (key) {
       const result = await Account.getPrivateKey(key.PaymentAddress);
@@ -311,7 +312,12 @@ class AccountDetail extends React.Component {
           <div className="balance">
             {balance ? Math.round(balance).toLocaleString() : 0} CONSTANT
           </div>
-          <div onClick={() => this.openAccountSend(account)}>Send</div>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => this.openAccountSend(account)}
+          >
+            Send
+          </div>
         </div>
       </ListItem>
     );

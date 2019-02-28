@@ -10,7 +10,7 @@ import {
   Tooltip,
   CircularProgress
 } from "@material-ui/core";
-import AccountSend from "./Send";
+import AccountSend from "./AccountSend";
 import AccountCandidate from "./Candidate";
 
 import { Send as IconSend } from "@material-ui/icons";

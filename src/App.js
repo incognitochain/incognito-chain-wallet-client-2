@@ -10,17 +10,13 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Server from "./services/Server";
 
 import Account from "./services/Account";
-
+import { AccountContext } from "./common/context/AccountContext";
 import {
   Error as IconError,
   CheckCircle as IconSuccess,
   Warning as IconWarning
 } from "@material-ui/icons";
-
-import axiosRetry from "axios-retry";
-import axios from "axios";
-
-axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+import "toastr/build/toastr.css";
 
 const theme = createMuiTheme({
   palette: {
@@ -93,13 +89,30 @@ function appReducer(state = initialState, action) {
         ...state,
         selectedAccount: action.selectedAccount
       };
+    case "ADD_ACCOUNT_DATA":
+      return {
+        ...state,
+        selectedAccount: {
+          ...state.selectedAccount,
+          ...action.key,
+          PrivateKey: action.PrivateKey
+        }
+      };
     default:
       return state;
   }
 }
 
+// const loggerMiddleware = dispatch => action => {
+//   dispatch(action);
+//   process.env.NODE_ENV === "development" && console.log("dispatched:", action);
+// };
+
 const App = () => {
-  const [state, dispatch] = React.useReducer(appReducer, initialState);
+  let [state, dispatch] = React.useReducer(appReducer, initialState);
+
+  // dispatch = loggerMiddleware(dispatch);
+  // console.log("\tstate", state);
 
   React.useEffect(() => {
     const server = Server.getDefault();
@@ -141,8 +154,9 @@ const App = () => {
       dispatch({
         type: "SET_SCREEN",
         screen: <Home account={selectedAccount} />,
-        headerTitle
+        headerTitle: "Home"
       });
+      getAccountData(selectedAccount);
     } else {
       alert("Error on get account list. Please restart app!");
     }
@@ -240,25 +254,46 @@ const App = () => {
     dispatch({
       type: "SET_SCREEN",
       screen: <Home account={account} />,
-      headerTitle
+      headerTitle: "Home"
     });
+
+    getAccountData(account);
   };
 
-  const { screen, headerTitle, accounts, selectedAccount } = state;
+  async function getAccountData(account) {
+    try {
+      const { PrivateKey, ...key } = await Account.getPaymentAddress(
+        account.name
+      );
+
+      const result = await Account.getPrivateKey(key.PaymentAddress);
+
+      dispatch({
+        type: "ADD_ACCOUNT_DATA",
+        key,
+        PrivateKey: result.PrivateKey
+      });
+    } catch (e) {
+      alert("Error on get account data!");
+    }
+  }
+
   return (
     <div className="App">
       {state.showAlert}
       <MuiThemeProvider theme={theme}>
-        <Header
-          callbackSelected={action => {
-            selectAccount(action);
-          }}
-          title={headerTitle}
-          accounts={accounts}
-          selectedAccount={selectedAccount}
-          onChangeAccount={handleChangeAccount}
-        />
-        <div className="appContainer">{screen}</div>
+        <AccountContext.Provider value={state.selectedAccount}>
+          <Header
+            callbackSelected={action => {
+              selectAccount(action);
+            }}
+            title={state.headerTitle}
+            accounts={state.accounts}
+            selectedAccount={state.selectedAccount}
+            onChangeAccount={handleChangeAccount}
+          />
+          <div className="appContainer">{state.screen}</div>
+        </AccountContext.Provider>
       </MuiThemeProvider>
     </div>
   );

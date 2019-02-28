@@ -38,6 +38,15 @@ export default class Account {
     return false;
   }
 
+  static async getEstimateFee(param) {
+    try {
+      return await axios(Account.getOption("estimatefee", param));
+    } catch (e) {
+      console.error(e);
+      return e.response;
+    }
+  }
+
   static async getBalance(param) {
     try {
       const response = await axios(Account.getOption("getbalance", param));
@@ -128,6 +137,7 @@ export default class Account {
         if (response.data && response.data.Result) return response.data.Result;
       }
     } catch (e) {
+      console.error(e);
       return false;
     }
     return false;
