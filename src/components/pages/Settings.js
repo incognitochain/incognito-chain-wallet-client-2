@@ -4,7 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import Dialog from "../core/Dialog";
 import ServerList from "../layout/Setting/ServerList";
-import ServerAdd from "../layout/Setting/ServerAdd";
+import ServerAddOrEdit from "../layout/Setting/ServerAddOrEdit";
 import Server from "../../services/Server";
 
 import {
@@ -155,7 +155,7 @@ class Settings extends React.Component {
     this.modalServerListRef.close();
     this.setState({
       modalServerList: "",
-      modalServerAdd: <ServerAdd onFinish={() => this.closeServerAdd()} />
+      modalServerAdd: <ServerAddOrEdit onFinish={() => this.closeServerAdd()} />
     });
     this.modalServerAddRef.open();
   };

@@ -28,15 +28,17 @@ const addressFocus = input => {
   input && input.focus();
 };
 
-class ServerAdd extends React.Component {
+class ServerAddOrEdit extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       servers: false,
-      name: "",
-      address: "",
-      username: "",
-      password: "",
+      name: props.name || "",
+      originAddress: props.address,
+      address: props.address || "",
+      username: props.username || "",
+      password: props.password || "",
       showAlert: "",
       isDefault: false,
       isAlert: false
@@ -115,16 +117,41 @@ class ServerAdd extends React.Component {
       servers = [];
       isDefault = true;
     } else {
-      for (let s of servers) {
-        if (s.address === address) {
-          this.showWarning("Address is exist!");
-          return;
+      if (this.props.isEdit) {
+        for (let s of servers.filter(
+          ({ address }) => address !== this.props.originAddress
+        )) {
+          if (s.address === address) {
+            this.showWarning("Address is exist!");
+            return;
+          }
+        }
+      } else {
+        for (let s of servers) {
+          if (s.address === address) {
+            this.showWarning("Address is exist!");
+            return;
+          }
         }
       }
     }
 
-    servers.push({ address, username, password, name, default: isDefault });
-    Server.set(servers);
+    if (this.props.isEdit) {
+      const editedIndex = servers.findIndex(
+        s => s.address === this.props.originAddress
+      );
+      Server.set([
+        ...servers.slice(0, editedIndex),
+        { address, username, password, name, default: isDefault },
+        ...servers.slice(editedIndex + 1)
+      ]);
+    } else {
+      Server.set([
+        ...servers,
+        { address, username, password, name, default: isDefault }
+      ]);
+    }
+
     this.onFinish({ message: "Add server success!" });
   };
 
@@ -216,8 +243,9 @@ class ServerAdd extends React.Component {
   }
 }
 
-ServerAdd.propTypes = {
-  classes: PropTypes.object.isRequired
+ServerAddOrEdit.propTypes = {
+  classes: PropTypes.object.isRequired,
+  isEdit: PropTypes.bool
 };
 
-export default withStyles(styles)(ServerAdd);
+export default withStyles(styles)(ServerAddOrEdit);

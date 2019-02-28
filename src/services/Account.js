@@ -17,11 +17,16 @@ export default class Account {
       const auth =
         "Basic " +
         new Buffer(server.username + ":" + server.password).toString("base64");
+      console.log("\tauth", auth);
       const options = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json;charset=UTF-8",
-          Authorization: auth
+          "Content-Type": "application/json"
+          // Authorization: auth
+        },
+        auth: {
+          username: server.username,
+          password: server.password
         },
         url: server.address,
         data: {
@@ -31,7 +36,7 @@ export default class Account {
           id: 1
         }
       };
-
+      console.log("\toptions", options);
       return options;
     } else {
       return false;

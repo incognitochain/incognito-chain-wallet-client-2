@@ -1,20 +1,27 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import { Dialog, IconButton, Toolbar, AppBar, Slide, Typography } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import React from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import {
+  Dialog,
+  IconButton,
+  Toolbar,
+  AppBar,
+  Slide,
+  Typography
+} from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
-const Transition = (props) => {
+const Transition = props => {
   return <Slide direction="up" {...props} />;
-}
+};
 
 const styles = {
   appBar: {
-    position: 'relative',
+    position: "relative"
   },
   flex: {
-    flex: 1,
-  },
+    flex: 1
+  }
 };
 
 class Modal extends React.Component {
@@ -22,41 +29,40 @@ class Modal extends React.Component {
     super(props);
     this.state = {
       isOpen: false
-    }
+    };
     this.open = this.open.bind(this);
-    this.close = this.close.bind(this);    
+    this.close = this.close.bind(this);
+    console.error("Depricated Warning: Use /common/components/modal instead");
   }
 
   componentDidMount() {
-    this.props.hasOwnProperty('onRef') && this.props.onRef(this);
+    this.props.hasOwnProperty("onRef") && this.props.onRef(this);
   }
 
   componentWillUnmount() {
-    this.props.hasOwnProperty('onRef') && this.props.onRef(undefined);
+    this.props.hasOwnProperty("onRef") && this.props.onRef(undefined);
   }
-  
-  open(){
-    if(this.modalRef){
-      this.setState({isOpen: true});
+
+  open() {
+    if (this.modalRef) {
+      this.setState({ isOpen: true });
     }
   }
 
-  close(){
+  close() {
     const { onClose } = this.props;
-    if(this.modalRef){
-      this.setState({isOpen: false});
+    if (this.modalRef) {
+      this.setState({ isOpen: false });
     }
 
-    if(onClose)
-      onClose();
+    if (onClose) onClose();
   }
 
   render() {
     const { title, children, buttonAction, classes } = this.props;
-    
-    return (
 
-      <div className="modal" ref={modal => this.modalRef = modal}>
+    return (
+      <div className="modal" ref={modal => (this.modalRef = modal)}>
         <Dialog
           fullScreen
           open={this.state.isOpen}
@@ -64,21 +70,22 @@ class Modal extends React.Component {
           TransitionComponent={Transition}
         >
           <AppBar className={classes.appBar}>
-            <Toolbar style={{padding: '0 10px'}}>
-              <IconButton color="inherit" onClick={() => this.close()} aria-label="Close">
+            <Toolbar style={{ padding: "0 10px" }}>
+              <IconButton
+                color="inherit"
+                onClick={() => this.close()}
+                aria-label="Close"
+              >
                 <CloseIcon />
               </IconButton>
               <Typography variant="h6" color="inherit" className={classes.flex}>
                 {title}
               </Typography>
-              { buttonAction }
+              {buttonAction}
             </Toolbar>
           </AppBar>
-          <div>
-            {children}
-          </div>
+          <div>{children}</div>
         </Dialog>
-
       </div>
     );
   }
@@ -95,4 +102,3 @@ Modal.propTypes = {
 };
 
 export default withStyles(styles)(Modal);
-

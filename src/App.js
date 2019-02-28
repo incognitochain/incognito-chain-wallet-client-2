@@ -17,6 +17,9 @@ import {
   Warning as IconWarning
 } from "@material-ui/icons";
 import "toastr/build/toastr.css";
+import toastr from "toastr";
+
+toastr.options.positionClass = "toast-bottom-center";
 
 const theme = createMuiTheme({
   palette: {
