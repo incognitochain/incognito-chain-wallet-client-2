@@ -125,6 +125,7 @@ const App = () => {
   const getAccountList = async () => {
     dispatch({ type: "LOAD_ACCOUNTS" });
     const result = await Account.getAccountList([]);
+    console.log("result", result);
     if (result) {
       const accounts = result.Accounts,
         walletName = result.WalletName;

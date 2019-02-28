@@ -28,8 +28,8 @@ export default class Server {
       {
         default: true,
         address: "http://localhost:9334",
-        username: "",
-        password: "",
+        username: "rudy",
+        password: "rudy",
         name: "Local"
       }
     ]);
