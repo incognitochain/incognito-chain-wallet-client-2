@@ -1,6 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ListItemText, ListItem, Avatar, Snackbar } from "@material-ui/core";
+import {
+  ListItemText,
+  ListItem,
+  Avatar,
+  Snackbar,
+  Button
+} from "@material-ui/core";
 
 import {
   Error as IconError,
@@ -10,8 +16,9 @@ import {
 } from "@material-ui/icons";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
-
+import { Modal } from "common/components/modal";
 import "./PrivacyKeys.scss";
+import styled from "styled-components";
 
 class PrivacyKeys extends React.Component {
   static propTypes = {
@@ -128,11 +135,33 @@ class PrivacyKeys extends React.Component {
     return (
       <div className="wrapperPrivacyKeyContainer">
         {showAlert}
-        {this.renderReadonlyKey()}
-        {this.renderPrivacyKey()}
+        <ButtonWrapper>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => this.setState({ showKeyModal: true })}
+          >
+            Show Privacy Key
+          </Button>
+        </ButtonWrapper>
+
+        <Modal
+          isOpen={this.state.showKeyModal}
+          onClose={() => this.setState({ showKeyModal: false })}
+        >
+          <>
+            {this.renderReadonlyKey()}
+            {this.renderPrivacyKey()}
+          </>
+        </Modal>
+
         {this.renderRemoveAccount()}
       </div>
     );
   }
 }
 export default PrivacyKeys;
+
+const ButtonWrapper = styled.div`
+  text-align: center;
+`;
