@@ -79,3 +79,7 @@ h3 {
 .confirmDialog {
   min-width: 320px;
 }
+
+button:focus {
+  outline: none;
+}

@@ -7,128 +7,156 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+
 import Token from "../../../services/Token";
+
+import { fromEvent, combineLatest } from "rxjs";
+import {
+  map,
+  debounceTime,
+  switchMap,
+  distinctUntilChanged,
+  filter,
+  startWith
+} from "rxjs/operators";
+import Account from "services/Account";
+import { connectAccountContext } from "common/context/AccountContext";
+import toastr from "toastr";
+import _ from "lodash";
 import styled from "styled-components";
-import { useGetEstimateFee } from "common/hook/useGetEstimateFee";
 
-const renderIf = cond => comp => (cond ? comp : null);
-
-CreateToken.propTypes = {
-  paymentAddress: PropTypes.string.isRequired,
-  privateKey: PropTypes.string.isRequired,
-  balance: PropTypes.number,
-  toAddress: PropTypes.string,
-  tokenName: PropTypes.string,
-  tokenId: PropTypes.string,
-  tokenSymbol: PropTypes.string.isRequired,
-  type: PropTypes.number.isRequired,
-  isCreate: PropTypes.bool.isRequired,
-  onClose: PropTypes.func
-};
-CreateToken.defaultProps = {
-  tokenId: "",
-  tokenName: "",
-  tokenSymbol: "",
-  balance: 0,
-  toAddress: ""
-};
-
-const refs = { modalConfirmationRef: null }; // TODO - remove this
-
-function getRequestTokenObject(state, props) {
-  const amount = Number(state.amount);
-  return {
-    TokenID: props.tokenId || "",
-    TokenName: state.tokenName,
-    TokenSymbol: state.tokenSymbol,
-    TokenTxType: props.isCreate ? 0 : 1,
-    TokenAmount: amount,
-    TokenReceivers: {
-      [state.toAddress]: state.amount
-    }
-  };
+function feePerTx(fee, EstimateTxSizeInKb) {
+  const result = Number(fee) / EstimateTxSizeInKb;
+  return result || -1;
 }
 
-function reducer(state, action) {
-  switch (action.type) {
-    case "SET_INPUT":
-      return {
-        ...state,
-        [action.name]: action.value
-      };
-    case "SET_ERROR":
-      return {
-        ...state,
-        error: action.error
-      };
-    case "SET_OPEN_ALERT":
-      return {
-        ...state,
-        alertOpen: state.alertOpen
-      };
-    case "SET_ESTIMATE_FEE":
-      return { ...state, ...action.payload };
-    default:
-      return state;
-  }
-}
-
-function CreateToken(props) {
-  const [state, dispatch] = React.useReducer(reducer, {
-    toAddress: props.toAddress || "",
-    tokenName: props.tokenName,
-    tokenSymbol: props.tokenSymbol,
-    amount: "",
-    fee: "",
-
-    alertOpen: false,
-    isAlert: false,
-    error: null
-  });
-  const amountRef = React.useRef();
-  const toAddressRef = React.useRef();
-
-  React.useEffect(() => {
-    toAddressRef.current.focus();
-  }, []);
-
-  const onChangeInput = name => event => {
-    dispatch({
-      type: "SET_INPUT",
-      name,
-      value: event.target.value
-    });
+class CreateToken extends React.Component {
+  static propTypes = {
+    paymentAddress: PropTypes.string.isRequired,
+    privateKey: PropTypes.string.isRequired,
+    balance: PropTypes.number,
+    toAddress: PropTypes.string,
+    tokenName: PropTypes.string,
+    tokenId: PropTypes.string,
+    tokenSymbol: PropTypes.string.isRequired,
+    type: PropTypes.number.isRequired,
+    isCreate: PropTypes.bool.isRequired,
+    onClose: PropTypes.func
+  };
+  static defaultProps = {
+    tokenId: "",
+    tokenName: "",
+    tokenSymbol: "",
+    balance: 0,
+    toAddress: ""
   };
 
-  useGetEstimateFee({
-    toAddressInput: toAddressRef.current,
-    amountInput: amountRef.current,
-    toAddress: state.toAddress,
-    fee: state.fee,
-    // getRequestTokenObject,
-    EstimateTxSizeInKb: state.EstimateTxSizeInKb,
-    GOVFeePerKbTx: state.GOVFeePerKbTx,
-    onGotEstimateFee: onGotEstimateFee
-  });
+  constructor(props) {
+    super(props);
+    this.state = {
+      toAddress: props.toAddress || "",
+      tokenName: props.tokenName || "",
+      tokenSymbol: props.tokenSymbol || "",
+      amount: "",
+      fee: "",
 
-  function onGotEstimateFee({
-    estimateFee,
-    EstimateTxSizeInKb,
-    GOVFeePerKbTx
-  }) {
-    dispatch({
-      type: "SET_ESTIMATE_FEE",
-      payload: {
-        fee: estimateFee,
-        EstimateTxSizeInKb,
-        GOVFeePerKbTx
-      }
-    });
+      submitParams: [],
+      alertOpen: false,
+      isAlert: false,
+      error: null
+    };
   }
 
-  const validate = () => {
-    const { toAddress, amount, tokenName, tokenSymbol } = state;
-    const { balance, isCreate } = props;
+  onChangeInput = name => e => {
+    this.setState({ [name]: e.target.value });
+  };
+
+  toAddressRef = React.createRef();
+  amountRef = React.createRef();
+
+  componentDidMount() {
+    this.autoFocus();
+    this.getEstimateFee();
+  }
+
+  autoFocus = () => {
+    this.toAddressRef.current.focus();
+  };
+
+  getEstimateFee = () => {
+    const toAddressObservable = fromEvent(
+      this.toAddressRef.current,
+      "keyup"
+    ).pipe(
+      map(e => e.target.value),
+      filter(Boolean),
+      map(x => {
+        console.log("\tto Address", x);
+        return x;
+      }),
+      debounceTime(750),
+      distinctUntilChanged(),
+      startWith("")
+    );
+
+    const amountObservable = fromEvent(this.amountRef.current, "keyup").pipe(
+      map(e => Number(e.target.value)),
+      filter(Boolean),
+      map(x => {
+        console.log("\tamount", x);
+        return x;
+      }),
+      debounceTime(750),
+      distinctUntilChanged(),
+      startWith(0)
+    );
+
+    this.subscription = combineLatest(toAddressObservable, amountObservable)
+      .pipe(
+        filter(([toAddress, amount]) => toAddress && amount),
+        map(x => {
+          console.log("x", x);
+          return x;
+        }),
+        switchMap(([toAddress, amount]) => {
+          return Account.getEstimateFee([
+            this.props.account.PrivateKey,
+            {
+              [toAddress]: parseFloat(amount) * 1000
+            },
+            feePerTx(
+              this.state.fee, // TODO - fee to state
+              this.state.EstimateTxSizeInKb
+            ),
+            1,
+            this.getRequestTokenObject()
+          ]);
+        })
+      )
+      .subscribe((response = {}) => {
+        if (response.status === 200 && !_.get(response, "data.Error")) {
+          const { EstimateFeeCoinPerKb, EstimateTxSizeInKb, GOVFeePerKbTx } =
+            _.get(response, "data.Result", {}) || {};
+
+          this.setState({
+            fee: EstimateFeeCoinPerKb * EstimateTxSizeInKb,
+            EstimateTxSizeInKb,
+            GOVFeePerKbTx
+          });
+        } else {
+          toastr.error(
+            _.get(response, "data.Error.Message", "Error on load estimate fee")
+          );
+        }
+      }, console.error);
+  };
+
+  componentWillUnmount() {
+    this.current && this.current.unsubscribe();
+  }
+
+  validate = ({ toAddress, amount, tokenName, tokenSymbol }) => {
+    const { balance, isCreate } = this.props;
     if (!isCreate && amount > balance) return false;
     if (
       toAddress.length > 0 &&
@@ -140,54 +168,69 @@ function CreateToken(props) {
     return false;
   };
 
-  function getSubmitParams() {
-    return [props.privateKey, 0, -1, getRequestTokenObject(state, props)];
-  }
-
-  const handleSubmit = event => {
+  getRequestTokenObject = () => {
+    const amount = Number(this.state.amount);
+    return {
+      Privacy: this.props.tokenType === "privacy",
+      TokenID: this.props.tokenId || "",
+      TokenName: this.state.tokenName,
+      TokenSymbol: this.state.tokenSymbol,
+      TokenTxType: this.props.isCreate ? 0 : 1,
+      TokenAmount: amount,
+      TokenReceivers: {
+        [this.state.toAddress]: amount
+      }
+    };
+  };
+  handleSubmit = event => {
     event.preventDefault();
+    const { privateKey, isCreate, balance } = this.props;
+    const toAddress = event.target.toAddress.value || "";
+    const amount = Number(event.target.amount.value);
+    const tokenName = event.target.tokenName.value || "";
+    const tokenSymbol = event.target.tokenSymbol.value || "";
 
-    const { isCreate, balance } = props;
+    const objectSend = this.getRequestTokenObject();
+    const params = [privateKey, 0, -1, objectSend];
+    this.setState({
+      submitParams: params,
+      amount
+    });
 
-    if (validate()) {
-      refs.modalConfirmationRef.open();
+    if (this.validate({ toAddress, amount, tokenName, tokenSymbol })) {
+      this.modalConfirmationRef.open();
     } else {
-      dispatch({
-        type: "SET_ERROR",
+      this.setState({
         error: isCreate
           ? `Please fill all fields.`
           : `Please fill all fields and amount limit in ${balance} token.`
       });
     }
   };
-
-  const closePage = () => {
-    showSuccess();
+  closePage = () => {
+    this.showSuccess();
+  };
+  handleAlertOpen = () => {
+    this.setState({ alertOpen: true });
   };
 
-  const handleAlertOpen = () => {
-    dispatch({ type: "SET_OPEN_ALERT", alertOpen: true });
+  handleAlertClose = () => {
+    this.setState({ alertOpen: false });
+    this.props.onClose();
   };
-
-  const handleAlertClose = () => {
-    dispatch({ type: "SET_OPEN_ALERT", alertOpen: false });
-    props.onClose();
-  };
-
-  const renderError = () => {
-    const { error } = state;
+  renderError() {
+    const { error } = this.state;
     if (!error) return null;
     return <div className="errorField">*{error}</div>;
-  };
-
-  const renderAlert = () => {
-    const { isCreate } = props;
+  }
+  renderAlert() {
+    const { isCreate } = this.props;
     const title = isCreate ? "Created Token" : "Sent Token";
     const message = isCreate ? "The new token is created" : "The token is sent";
     return (
       <Dialog
-        open={state.alertOpen}
-        onClose={handleAlertClose}
+        open={this.state.alertOpen}
+        onClose={this.handleAlertClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -198,68 +241,97 @@ function CreateToken(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleAlertClose} color="primary">
+          <Button onClick={this.handleAlertClose} color="primary">
             OK
           </Button>
         </DialogActions>
       </Dialog>
     );
+  }
+  showSuccess = () => {
+    this.handleAlertOpen();
   };
-
-  const showSuccess = () => {
-    handleAlertOpen();
-  };
-
-  const createSendCustomTokenTransaction = async () => {
-    const results = await Token.createSendCustomTokenBalance(getSubmitParams());
-
+  createSendCustomTokenTransaction = async params => {
+    const results = await Token.createSendCustomTokenBalance(params);
+    console.log("Result:", results);
     const { Error: error } = results;
     if (error) {
-      dispatch({
-        type: "SET_ERROR",
+      console.log("Error", error);
+      this.setState({
         error: error
       });
     } else {
-      closePage();
+      this.closePage();
     }
   };
-
-  const createSendPrivacyTokenTransaction = async () => {
-    const results = await Token.createSendPrivacyCustomTokenTransaction(
-      getSubmitParams()
-    );
+  createSendPrivacyTokenTransaction = async params => {
+    const results = await Token.createSendPrivacyCustomTokenTransaction(params);
+    console.log("Result:", results);
     const { Error: error } = results;
-
     if (error) {
-      dispatch({
-        type: "SET_ERROR",
+      console.log("Error", error);
+      this.setState({
         error: error
       });
     } else {
-      closePage();
+      this.closePage();
     }
   };
-
-  const createOrSendToken = () => {
-    const { type } = props;
-
+  createOrSendToken = () => {
+    const { type } = this.props;
+    const { submitParams } = this.state;
     if (type === 0) {
-      createSendCustomTokenTransaction();
+      this.createSendCustomTokenTransaction(submitParams);
     } else {
-      createSendPrivacyTokenTransaction();
+      this.createSendPrivacyTokenTransaction(submitParams);
     }
   };
-
-  const renderForm = () => {
+  renderTokenName() {
+    const { isCreate, tokenName, tokenSymbol } = this.props;
     return (
-      <form onSubmit={handleSubmit} noValidate>
-        {renderIf(!props.isCreate)(
-          <div className="text-right">
-            Balance:{" "}
-            {props.balance ? Math.round(props.balance).toLocaleString() : 0}{" "}
-            TOKEN
-          </div>
-        )}
+      <div className="wrapperTokenName">
+        <TextField
+          required
+          id="tokenName"
+          name="tokenName"
+          label="Name"
+          className="textField"
+          margin="normal"
+          variant="outlined"
+          defaultValue={tokenName || ""}
+          onChange={this.onChangeInput("tokenName")}
+          disabled={isCreate ? false : true}
+        />
+        <TextField
+          required
+          id="tokenSymbol"
+          name="tokenSymbol"
+          label="Symbol"
+          className="textField"
+          margin="normal"
+          variant="outlined"
+          value={tokenSymbol || ""}
+          onChange={this.onChangeInput("tokenSymbol")}
+          disabled={isCreate ? false : true}
+        />
+      </div>
+    );
+  }
+  renderBalance() {
+    const { isCreate, balance } = this.props;
+    if (isCreate) return null;
+    return (
+      <div className="text-right">
+        Balance: {balance ? Math.round(balance).toLocaleString() : 0} TOKEN
+      </div>
+    );
+  }
+  renderForm() {
+    const { paymentAddress } = this.props;
+
+    return (
+      <form onSubmit={this.handleSubmit}>
+        {this.renderBalance()}
         <TextField
           required
           disabled
@@ -269,7 +341,7 @@ function CreateToken(props) {
           className="textField"
           margin="normal"
           variant="outlined"
-          value={props.paymentAddress}
+          value={paymentAddress}
         />
 
         <TextField
@@ -278,43 +350,17 @@ function CreateToken(props) {
           name="toAddress"
           label="To"
           className="textField"
+          inputRef={this.toAddressRef}
           margin="normal"
           variant="outlined"
-          value={state.toAddress}
-          onChange={onChangeInput("toAddress")}
-          inputProps={{ ref: toAddressRef }}
+          value={this.state.toAddress}
+          onChange={this.onChangeInput("toAddress")}
         />
 
-        <div className="wrapperTokenName">
-          <TextField
-            required
-            id="tokenName"
-            name="tokenName"
-            label="Name"
-            className="textField"
-            margin="normal"
-            variant="outlined"
-            value={state.tokenName}
-            onChange={onChangeInput("tokenName")}
-            disabled={!props.isCreate}
-          />
-          <TextField
-            required
-            id="tokenSymbol"
-            name="tokenSymbol"
-            label="Symbol"
-            className="textField"
-            margin="normal"
-            variant="outlined"
-            value={state.tokenSymbol}
-            onChange={onChangeInput("tokenSymbol")}
-            disabled={!props.isCreate}
-          />
-        </div>
-
+        {this.renderTokenName()}
         <TextField
-          inputProps={{ ref: amountRef }}
           required
+          inputRef={this.amountRef}
           id="amount"
           name="amount"
           label="Amount"
@@ -322,9 +368,10 @@ function CreateToken(props) {
           margin="normal"
           variant="outlined"
           type="number"
-          value={state.amount}
-          onChange={onChangeInput("amount")}
+          value={this.state.amount}
+          onChange={this.onChangeInput("amount")}
         />
+
         <TextField
           required
           id="fee"
@@ -334,8 +381,8 @@ function CreateToken(props) {
           margin="normal"
           variant="outlined"
           type="number"
-          value={state.fee}
-          onChange={onChangeInput("fee")}
+          value={this.state.fee}
+          onChange={this.onChangeInput("fee")}
         />
 
         <Button
@@ -350,34 +397,40 @@ function CreateToken(props) {
         </Button>
       </form>
     );
-  };
-
-  return (
-    <Wrapper>
-      {renderForm()}
-      {renderError()}
-
+  }
+  renderConfirmDialog() {
+    const { amount } = this.state;
+    return (
       <ConfirmDialog
         title="Confirmation"
-        onRef={modal => (refs.modalConfirmationRef = modal)}
-        onOK={() => createOrSendToken()}
+        onRef={modal => (this.modalConfirmationRef = modal)}
+        onOK={() => this.createOrSendToken()}
         className={{ margin: 0 }}
       >
-        <div>Are you sure to transfer out {state.amount} TOKEN?</div>
+        <div>Are you sure to transfer out {amount} TOKEN?</div>
       </ConfirmDialog>
-
-      {renderAlert()}
-    </Wrapper>
-  );
+    );
+  }
+  render() {
+    return (
+      <Wrapper>
+        {this.renderForm()}
+        {this.renderError()}
+        {this.renderConfirmDialog()}
+        {this.renderAlert()}
+      </Wrapper>
+    );
+  }
 }
-export default CreateToken;
+export default connectAccountContext(CreateToken);
 
 const Wrapper = styled.div`
   padding: 20px 20px;
 
   .textField {
     width: 100%;
-  }
+    );
+   }
 
   .errorField {
     color: red;

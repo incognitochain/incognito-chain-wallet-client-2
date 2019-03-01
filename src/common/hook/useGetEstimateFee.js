@@ -40,6 +40,7 @@ export function useGetEstimateFee({
       map(e => e.target.value),
       filter(Boolean),
       debounceTime(750),
+      distinctUntilChanged(),
       startWith("")
     );
 
@@ -47,6 +48,7 @@ export function useGetEstimateFee({
       map(e => Number(e.target.value)),
       filter(Boolean),
       debounceTime(750),
+      distinctUntilChanged(),
       startWith(0)
     );
 

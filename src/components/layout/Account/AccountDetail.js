@@ -37,6 +37,11 @@ const styles = theme => ({
   }
 });
 
+const mapTabIndexToType = {
+  0: "privacy",
+  1: "custom"
+};
+
 class AccountDetail extends React.Component {
   static propTypes = {
     account: PropTypes.object.isRequired
@@ -187,7 +192,8 @@ class AccountDetail extends React.Component {
       tokenName: item.Name,
       tokenId: item.TokenID,
       tokenSymbol: item.Symbol,
-      type: tab,
+      type: tab, //@depricated
+      tokenType: mapTabIndexToType[tab],
       isCreate: false,
       onClose: this.handleCloseCreateToken
     };
