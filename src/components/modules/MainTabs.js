@@ -65,7 +65,7 @@ class MainTabs extends React.Component {
   };
 
   renderPrivacyKey = value => {
-    if (value !== 0) return null;
+    if (value !== 1) return null;
     const { privateKey } = this.state;
     const props = {
       privateKey,
@@ -79,7 +79,7 @@ class MainTabs extends React.Component {
   };
 
   renderTokenTabs = value => {
-    if (value !== 1) return null;
+    if (value !== 0) return null;
 
     const { paymentAddress } = this.props;
     const { privateKey } = this.state;
@@ -120,11 +120,11 @@ class MainTabs extends React.Component {
           onChange={this.handleChange}
           className="tokenTabs"
         >
-          <Tab classes={classesTab} label="PRIVACY KEY" />
           {/*<Tab
                     classes={classesTab} 
                      label="HISTORY" />*/}
           <Tab classes={classesTab} label="TOKENS" />
+          <Tab classes={classesTab} label="PRIVACY KEY" />
         </Tabs>
         {this.renderPrivacyKey(value)}
         {this.renderHistory(value)}

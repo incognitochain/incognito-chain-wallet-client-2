@@ -224,7 +224,7 @@ class AccountDetail extends React.Component {
     const { modalCreateToken } = this.state;
     return (
       <Dialog
-        title="Send Token"
+        title="Create Token"
         onRef={modal => (this.modalTokenCreateRef = modal)}
         className={{ margin: 0 }}
       >

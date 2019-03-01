@@ -22,29 +22,6 @@ import styled from "styled-components";
 
 toastr.options.positionClass = "toast-bottom-center";
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: "#6396ef",
-      main: "#2469bc",
-      dark: "#003f8b",
-      contrastText: "#fff"
-    },
-    secondary: {
-      light: "#ffe46e",
-      main: "#fdb23c",
-      dark: "#c58300",
-      contrastText: "#000"
-    },
-    third: {
-      light: "#ff6333",
-      main: "#ff3d00",
-      dark: "#b22a00",
-      contrastText: "#000"
-    }
-  }
-});
-
 const initialState = {
   screen: "",
   headerTitle: "Wallet home",
@@ -286,20 +263,19 @@ const App = () => {
   return (
     <Wrapper>
       {state.showAlert}
-      <MuiThemeProvider theme={theme}>
-        <AccountContext.Provider value={state.selectedAccount}>
-          <Header
-            callbackSelected={action => {
-              selectAccount(action);
-            }}
-            title={state.headerTitle}
-            accounts={state.accounts}
-            selectedAccount={state.selectedAccount}
-            onChangeAccount={handleChangeAccount}
-          />
-          <AppContainer className="AppContainer">{state.screen}</AppContainer>
-        </AccountContext.Provider>
-      </MuiThemeProvider>
+
+      <AccountContext.Provider value={state.selectedAccount}>
+        <Header
+          callbackSelected={action => {
+            selectAccount(action);
+          }}
+          title={state.headerTitle}
+          accounts={state.accounts}
+          selectedAccount={state.selectedAccount}
+          onChangeAccount={handleChangeAccount}
+        />
+        <AppContainer>{state.screen}</AppContainer>
+      </AccountContext.Provider>
     </Wrapper>
   );
 };

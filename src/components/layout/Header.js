@@ -290,11 +290,12 @@ class Header extends React.Component {
         <AppBar classes={classes.appBar} position="static">
           <Toolbar>
             <IconButton
+              onClick={this.toggleDrawer("left", true)}
               className={classes.menuButton}
               color="inherit"
               aria-label="Menu"
             >
-              <MenuIcon onClick={this.toggleDrawer("left", true)} />
+              <MenuIcon />
             </IconButton>
             <Typography variant="h6" color="inherit" className={classes.grow}>
               {title}

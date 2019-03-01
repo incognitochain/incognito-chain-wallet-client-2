@@ -11,6 +11,8 @@ import Token from "../../../services/Token";
 import styled from "styled-components";
 import { useGetEstimateFee } from "common/hook/useGetEstimateFee";
 
+const renderIf = cond => comp => (cond ? comp : null);
+
 CreateToken.propTypes = {
   paymentAddress: PropTypes.string.isRequired,
   privateKey: PropTypes.string.isRequired,
@@ -33,18 +35,26 @@ CreateToken.defaultProps = {
 
 const refs = { modalConfirmationRef: null }; // TODO - remove this
 
+function getRequestTokenObject(state, props) {
+  const amount = Number(state.amount);
+  return {
+    TokenID: props.tokenId || "",
+    TokenName: state.tokenName,
+    TokenSymbol: state.tokenSymbol,
+    TokenTxType: props.isCreate ? 0 : 1,
+    TokenAmount: amount,
+    TokenReceivers: {
+      [state.toAddress]: state.amount
+    }
+  };
+}
+
 function reducer(state, action) {
   switch (action.type) {
     case "SET_INPUT":
       return {
         ...state,
         [action.name]: action.value
-      };
-    case "SUBMIT":
-      return {
-        ...state,
-        submitParams: action.submitParams,
-        amount: action.amount
       };
     case "SET_ERROR":
       return {
@@ -65,17 +75,15 @@ function reducer(state, action) {
 
 function CreateToken(props) {
   const [state, dispatch] = React.useReducer(reducer, {
-    submitParams: [], // TODO - remove this
-
-    alertOpen: false,
-    isAlert: false,
-    error: null,
-
     toAddress: props.toAddress || "",
     tokenName: props.tokenName,
     tokenSymbol: props.tokenSymbol,
     amount: "",
-    fee: ""
+    fee: "",
+
+    alertOpen: false,
+    isAlert: false,
+    error: null
   });
   const amountRef = React.useRef();
   const toAddressRef = React.useRef();
@@ -97,6 +105,7 @@ function CreateToken(props) {
     amountInput: amountRef.current,
     toAddress: state.toAddress,
     fee: state.fee,
+    // getRequestTokenObject,
     EstimateTxSizeInKb: state.EstimateTxSizeInKb,
     GOVFeePerKbTx: state.GOVFeePerKbTx,
     onGotEstimateFee: onGotEstimateFee
@@ -131,30 +140,14 @@ function CreateToken(props) {
     return false;
   };
 
+  function getSubmitParams() {
+    return [props.privateKey, 0, -1, getRequestTokenObject(state, props)];
+  }
+
   const handleSubmit = event => {
     event.preventDefault();
 
-    const { privateKey, isCreate, tokenId, balance } = props;
-    const toAddress = event.target.toAddress.value || "";
-    const amount = Number(event.target.amount.value);
-    const tokenName = event.target.tokenName.value || "";
-    const tokenSymbol = event.target.tokenSymbol.value || "";
-    const tokenReceiver = {};
-    tokenReceiver[toAddress] = amount;
-    const objectSend = {
-      TokenID: tokenId || "",
-      TokenName: tokenName,
-      TokenSymbol: tokenSymbol,
-      TokenTxType: isCreate ? 0 : 1,
-      TokenAmount: amount,
-      TokenReceivers: tokenReceiver
-    };
-    const params = [privateKey, 0, -1, objectSend];
-    dispatch({
-      type: "SUBMIT",
-      submitParams: params,
-      amount
-    });
+    const { isCreate, balance } = props;
 
     if (validate()) {
       refs.modalConfirmationRef.open();
@@ -217,8 +210,8 @@ function CreateToken(props) {
     handleAlertOpen();
   };
 
-  const createSendCustomTokenTransaction = async params => {
-    const results = await Token.createSendCustomTokenBalance(params);
+  const createSendCustomTokenTransaction = async () => {
+    const results = await Token.createSendCustomTokenBalance(getSubmitParams());
 
     const { Error: error } = results;
     if (error) {
@@ -231,8 +224,10 @@ function CreateToken(props) {
     }
   };
 
-  const createSendPrivacyTokenTransaction = async params => {
-    const results = await Token.createSendPrivacyCustomTokenTransaction(params);
+  const createSendPrivacyTokenTransaction = async () => {
+    const results = await Token.createSendPrivacyCustomTokenTransaction(
+      getSubmitParams()
+    );
     const { Error: error } = results;
 
     if (error) {
@@ -247,28 +242,24 @@ function CreateToken(props) {
 
   const createOrSendToken = () => {
     const { type } = props;
-    const { submitParams } = state;
-    if (type === 0) {
-      createSendCustomTokenTransaction(submitParams);
-    } else {
-      createSendPrivacyTokenTransaction(submitParams);
-    }
-  };
 
-  const renderBalance = () => {
-    const { isCreate, balance } = props;
-    if (isCreate) return null;
-    return (
-      <div className="text-right">
-        Balance: {balance ? Math.round(balance).toLocaleString() : 0} TOKEN
-      </div>
-    );
+    if (type === 0) {
+      createSendCustomTokenTransaction();
+    } else {
+      createSendPrivacyTokenTransaction();
+    }
   };
 
   const renderForm = () => {
     return (
       <form onSubmit={handleSubmit} noValidate>
-        {renderBalance()}
+        {renderIf(!props.isCreate)(
+          <div className="text-right">
+            Balance:{" "}
+            {props.balance ? Math.round(props.balance).toLocaleString() : 0}{" "}
+            TOKEN
+          </div>
+        )}
         <TextField
           required
           disabled
@@ -332,6 +323,7 @@ function CreateToken(props) {
           variant="outlined"
           type="number"
           value={state.amount}
+          onChange={onChangeInput("amount")}
         />
         <TextField
           required
@@ -360,25 +352,20 @@ function CreateToken(props) {
     );
   };
 
-  const renderConfirmDialog = () => {
-    const { amount } = state;
-    return (
+  return (
+    <Wrapper>
+      {renderForm()}
+      {renderError()}
+
       <ConfirmDialog
         title="Confirmation"
         onRef={modal => (refs.modalConfirmationRef = modal)}
         onOK={() => createOrSendToken()}
         className={{ margin: 0 }}
       >
-        <div>Are you sure to transfer out {amount} TOKEN?</div>
+        <div>Are you sure to transfer out {state.amount} TOKEN?</div>
       </ConfirmDialog>
-    );
-  };
 
-  return (
-    <Wrapper>
-      {renderForm()}
-      {renderError()}
-      {renderConfirmDialog()}
       {renderAlert()}
     </Wrapper>
   );

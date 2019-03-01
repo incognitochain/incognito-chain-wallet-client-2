@@ -133,7 +133,7 @@ export default class Account {
   static async getAccountList(param) {
     try {
       const response = await axios(Account.getOption("listaccounts", param));
-      console.log("response", response);
+
       if (response.status === 200) {
         if (response.data && response.data.Result) return response.data.Result;
       }

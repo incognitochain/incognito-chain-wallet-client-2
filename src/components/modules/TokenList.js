@@ -32,6 +32,4 @@ class TokenList extends React.Component {
 }
 export default TokenList;
 
-const Wrapper = styled.div`
-  overflow: auto;
-`;
+const Wrapper = styled.div``;

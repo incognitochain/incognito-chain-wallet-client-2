@@ -24,7 +24,7 @@ export function useGetEstimateFee({
   fee,
   EstimateTxSizeInKb,
   GOVFeePerKbTx,
-  token,
+  // getRequestTokenObject,
   onGotEstimateFee
 }) {
   const account = useAccountContext();
@@ -32,6 +32,7 @@ export function useGetEstimateFee({
   const privateKey = account.PrivateKey;
 
   React.useEffect(() => {
+    console.log("useGetEstmiateFee", toAddressInput, amountInput);
     if (!toAddressInput || !amountInput) {
       return;
     }
@@ -39,7 +40,6 @@ export function useGetEstimateFee({
       map(e => e.target.value),
       filter(Boolean),
       debounceTime(750),
-      distinctUntilChanged(),
       startWith("")
     );
 
@@ -47,7 +47,6 @@ export function useGetEstimateFee({
       map(e => Number(e.target.value)),
       filter(Boolean),
       debounceTime(750),
-      distinctUntilChanged(),
       startWith(0)
     );
 
@@ -55,14 +54,15 @@ export function useGetEstimateFee({
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
+          console.log("switchmap", toAddress, amount);
           return Account.getEstimateFee([
             privateKey,
             {
               [toAddress]: parseFloat(amount) * 1000
             },
             feePerTx(fee, EstimateTxSizeInKb),
-            1,
-            ...(token ? [token] : [])
+            1
+            // ...(getRequestTokenObject ? [getRequestTokenObject()] : [])
           ]);
         })
       )
@@ -84,13 +84,14 @@ export function useGetEstimateFee({
 
     return () => {
       subscription.unsubscribe();
+      console.log("\t unsubscribed");
     };
   }, [
     fee,
     EstimateTxSizeInKb,
     GOVFeePerKbTx,
-    token,
     toAddressInput,
     amountInput
+    // getRequestTokenObject
   ]);
 }

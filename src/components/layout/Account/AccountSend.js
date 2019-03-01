@@ -8,7 +8,6 @@ import { useAccountContext } from "../../../common/context/AccountContext";
 import { useGetBalance } from "./hook/useGetBalance";
 import toastr from "toastr";
 import { useDebugReducer } from "common/hook/useDebugReducer";
-import _ from "lodash";
 
 const styles = theme => ({
   textField: {

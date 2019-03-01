@@ -31,7 +31,7 @@ const Modal = props => {
     <div className="modal">
       <Dialog
         fullScreen
-        open={props.isOpen}
+        open={Boolean(props.isOpen)}
         onClose={props.onClose}
         TransitionComponent={Transition}
       >
