@@ -111,7 +111,7 @@ class TokenTabs extends React.Component {
       listPrivacyTokenBalance
     } = this.state;
     const props = {
-      list: value === 0 ? listCustomTokenBalance : listPrivacyTokenBalance,
+      list: value === 0 ? listPrivacyTokenBalance : listCustomTokenBalance,
       tab: value,
       ...this.props
     };
@@ -132,8 +132,8 @@ class TokenTabs extends React.Component {
           onChange={this.handleChange}
           className="tokenTabs"
         >
-          <Tab classes={classesTab} label="Custom" />
           <Tab classes={classesTab} label="Privacy" />
+          <Tab classes={classesTab} label="Custom" />
         </Tabs>
         <TokenList {...props} />
       </div>
