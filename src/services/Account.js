@@ -5,24 +5,11 @@ export default class Account {
   static getOption(method, params) {
     const server = Server.getDefault();
 
-    console.log(
-      "server",
-      method,
-      server.username,
-      server.password,
-      "Basic " +
-        new Buffer(server.username + ":" + server.password).toString("base64")
-    );
     if (server) {
-      const auth =
-        "Basic " +
-        new Buffer(server.username + ":" + server.password).toString("base64");
-      console.log("\tauth", auth);
       const options = {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
-          // Authorization: auth
         },
         auth: {
           username: server.username,
@@ -36,7 +23,7 @@ export default class Account {
           id: 1
         }
       };
-      console.log("\toptions", options);
+
       return options;
     } else {
       return false;

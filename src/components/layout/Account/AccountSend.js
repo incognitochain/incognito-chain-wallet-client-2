@@ -3,11 +3,12 @@ import { withStyles } from "@material-ui/core/styles";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Account from "../../../services/Account";
 import { Button, TextField } from "@material-ui/core";
-import { useGetFeeOnChangeAmount } from "./hook/useGetFeeOnChangeAmount";
+import { useGetEstimateFee } from "common/hook/useGetEstimateFee";
 import { useAccountContext } from "../../../common/context/AccountContext";
 import { useGetBalance } from "./hook/useGetBalance";
 import toastr from "toastr";
 import { useDebugReducer } from "common/hook/useDebugReducer";
+import _ from "lodash";
 
 const styles = theme => ({
   textField: {
@@ -22,10 +23,6 @@ const styles = theme => ({
     height: "3rem"
   }
 });
-
-const toAddressFocus = input => {
-  input && input.focus();
-};
 
 function reducer(state, action) {
   switch (action.type) {
@@ -46,6 +43,8 @@ const refs = { modalConfirmationRef: null }; //TODO - remove this
 
 function AccountSend(props) {
   const amountRef = React.useRef();
+  const toAddressRef = React.useRef();
+
   const account = useAccountContext();
 
   let [state, dispatch] = useDebugReducer(reducer, account, account => ({
@@ -58,12 +57,30 @@ function AccountSend(props) {
     isAlert: false
   }));
 
-  useGetFeeOnChangeAmount(
-    amountRef.current,
-    account.PrivateKey,
-    state,
-    dispatch
-  );
+  useGetEstimateFee({
+    toAddressInput: toAddressRef.current,
+    amountInput: amountRef.current,
+    toAddress: state.toAddress,
+    fee: state.fee,
+    EstimateTxSizeInKb: state.EstimateTxSizeInKb,
+    GOVFeePerKbTx: state.GOVFeePerKbTx,
+    onGotEstimateFee: onGotEstimateFee
+  });
+
+  function onGotEstimateFee({
+    estimateFee,
+    EstimateTxSizeInKb,
+    GOVFeePerKbTx
+  }) {
+    dispatch({
+      type: "SET_ESTIMATE_FEE",
+      payload: {
+        fee: estimateFee,
+        EstimateTxSizeInKb,
+        GOVFeePerKbTx
+      }
+    });
+  }
 
   useGetBalance({ dispatch, accountName: account.name });
 
@@ -164,11 +181,11 @@ function AccountSend(props) {
         id="toAddress"
         label="To"
         className={props.classes.textField}
-        inputRef={toAddressFocus}
         margin="normal"
         variant="outlined"
         value={state.toAddress}
         onChange={onChangeInput("toAddress")}
+        inputProps={{ ref: toAddressRef }}
       />
 
       <TextField
