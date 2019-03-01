@@ -32,8 +32,7 @@ import {
 
 const styles = theme => ({
   root: {
-    width: "100%",
-    maxWidth: 360,
+    flex: 1,
     backgroundColor: theme.palette.background.paper
   },
   nested: {

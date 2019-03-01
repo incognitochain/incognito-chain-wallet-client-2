@@ -118,13 +118,13 @@ class ServerAddOrEdit extends React.Component {
       isDefault = true;
     } else {
       if (this.props.isEdit) {
-        for (let s of servers.filter(
-          ({ address }) => address !== this.props.originAddress
-        )) {
-          if (s.address === address) {
-            this.showWarning("Address is exist!");
-            return;
-          }
+        const isExistedAddress = servers
+          .filter(s => s.address !== this.state.originAddress)
+          .find(s => s.address === address);
+
+        if (isExistedAddress) {
+          this.showWarning("Address is exist!");
+          return;
         }
       } else {
         for (let s of servers) {
@@ -138,11 +138,17 @@ class ServerAddOrEdit extends React.Component {
 
     if (this.props.isEdit) {
       const editedIndex = servers.findIndex(
-        s => s.address === this.props.originAddress
+        s => s.address === this.state.originAddress
       );
       Server.set([
         ...servers.slice(0, editedIndex),
-        { address, username, password, name, default: isDefault },
+        {
+          ...servers[editedIndex],
+          address,
+          username,
+          password,
+          name
+        },
         ...servers.slice(editedIndex + 1)
       ]);
     } else {

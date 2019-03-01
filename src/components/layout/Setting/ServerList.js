@@ -27,6 +27,7 @@ import {
 
 import Server from "../../../services/Server";
 import ServerEditModal from "./ServerEditModal";
+import toastr from "toastr";
 
 const styles = theme => ({
   button: {
@@ -163,6 +164,12 @@ class ServerList extends React.Component {
     this.setState({ isOpenServerEditModal: true, editServer });
   };
 
+  onFinishSaveEdit = () => {
+    toastr.success("Saved!");
+    this.setState({ isOpenServerEditModal: false, editServer: {} });
+    this.getSettingServers();
+  };
+
   render() {
     const { classes } = this.props;
     const { loading, servers, showAlert } = this.state;
@@ -171,9 +178,9 @@ class ServerList extends React.Component {
       <div>
         {showAlert}
         {servers.length &&
-          servers.map(s => {
+          servers.map((s, index) => {
             return (
-              <List component="nav" key={Math.random()}>
+              <List component="nav" key={index}>
                 <ListItem button>
                   <Tooltip title="Set default server">
                     <ListItemIcon onClick={() => this.defaultServerDetail(s)}>
@@ -197,11 +204,7 @@ class ServerList extends React.Component {
                   )}
                 </ListItem>
                 <Collapse in={s.open} timeout="auto" unmountOnExit>
-                  <List
-                    component="div"
-                    disablePadding
-                    style={{ border: "1px dashed blue" }}
-                  >
+                  <List component="div" disablePadding>
                     <ListItem button className={classes.nested}>
                       <ListItemText
                         inset
@@ -220,6 +223,7 @@ class ServerList extends React.Component {
                           Remove
                         </Button>
                       )}
+                      <div style={{ display: "inline-block", width: 10 }} />
                       <Button
                         variant="contained"
                         size="small"
@@ -245,11 +249,14 @@ class ServerList extends React.Component {
           <CircularProgress className={classes.progress} color="secondary" />
         )}
 
-        <ServerEditModal
-          isOpen={this.state.isOpenServerEditModal}
-          server={this.state.editServer}
-          onClose={() => this.setState({ isOpenServerEditModal: false })}
-        />
+        {this.state.isOpenServerEditModal && (
+          <ServerEditModal
+            isOpen={this.state.isOpenServerEditModal}
+            server={this.state.editServer}
+            onClose={() => this.setState({ isOpenServerEditModal: false })}
+            onFinishSave={this.onFinishSaveEdit}
+          />
+        )}
       </div>
     );
   }

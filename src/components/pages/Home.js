@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import AccountDetail from "../layout/Account/AccountDetail";
+import styled from "styled-components";
 
 class Home extends React.Component {
   static propTypes = {
@@ -11,9 +12,9 @@ class Home extends React.Component {
   render() {
     const { account } = this.props;
     return (
-      <div className="">
+      <Wrapper>
         {<AccountDetail account={account} onFinish={() => this.reload()} />}
-      </div>
+      </Wrapper>
     );
   }
 }
@@ -21,3 +22,8 @@ class Home extends React.Component {
 Home.propTypes = {};
 
 export default Home;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex: 1;
+`;

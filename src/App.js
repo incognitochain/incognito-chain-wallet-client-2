@@ -18,6 +18,7 @@ import {
 } from "@material-ui/icons";
 import "toastr/build/toastr.css";
 import toastr from "toastr";
+import styled from "styled-components";
 
 toastr.options.positionClass = "toast-bottom-center";
 
@@ -283,7 +284,7 @@ const App = () => {
   }
 
   return (
-    <div className="App">
+    <Wrapper>
       {state.showAlert}
       <MuiThemeProvider theme={theme}>
         <AccountContext.Provider value={state.selectedAccount}>
@@ -296,11 +297,27 @@ const App = () => {
             selectedAccount={state.selectedAccount}
             onChangeAccount={handleChangeAccount}
           />
-          <div className="appContainer">{state.screen}</div>
+          <AppContainer className="AppContainer">{state.screen}</AppContainer>
         </AccountContext.Provider>
       </MuiThemeProvider>
-    </div>
+    </Wrapper>
   );
 };
 
 export default App;
+
+const Wrapper = styled.div`
+  background: url(assets/images/bg.png) no-repeat center center;
+  margin: 0 auto;
+  height: 100vh;
+  width: 414px;
+  overflow: auto;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+`;
+
+const AppContainer = styled.div`
+  flex: 1;
+  display: flex;
+`;
