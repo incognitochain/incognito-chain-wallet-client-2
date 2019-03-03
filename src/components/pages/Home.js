@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import AccountDetail from "../layout/Account/AccountDetail";
-import styled from "styled-components";
 
+// TODO - remove this page or move AccountDetail into this
 class Home extends React.Component {
   static propTypes = {
     account: PropTypes.array.isRequired
@@ -11,19 +11,10 @@ class Home extends React.Component {
 
   render() {
     const { account } = this.props;
-    return (
-      <Wrapper>
-        {<AccountDetail account={account} onFinish={() => this.reload()} />}
-      </Wrapper>
-    );
+    return <AccountDetail account={account} onFinish={() => this.reload()} />;
   }
 }
 
 Home.propTypes = {};
 
 export default Home;
-
-const Wrapper = styled.div`
-  display: flex;
-  flex: 1;
-`;

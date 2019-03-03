@@ -21,7 +21,7 @@ class TokenList extends React.Component {
   render() {
     const { list } = this.props;
     return (
-      <Wrapper className="wrapperTokenList">
+      <Wrapper className="wrapperTokenList TokenList">
         {this.renderEmpty(list)}
         {list.map((item, index) => (
           <TokenItem key={index} item={item} {...this.props} />
@@ -32,4 +32,8 @@ class TokenList extends React.Component {
 }
 export default TokenList;
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  flex: 1;
+  overflow: scroll;
+  padding-right: 2px;
+`;

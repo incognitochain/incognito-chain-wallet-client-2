@@ -8,12 +8,9 @@ import { Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
 import "./TokenTabs.scss";
+import styled from "styled-components";
 
 const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper
-  },
   tabRoot: {},
   selected: {
     fontWeight: "bold"
@@ -92,14 +89,16 @@ class TokenTabs extends React.Component {
 
   renderNewTokenButton() {
     return (
-      <Button
-        variant="contained"
-        size="medium"
-        className="newTokenButton"
-        onClick={this.handleCreateToken}
-      >
-        Create New Token
-      </Button>
+      <ButtonWrapper>
+        <Button
+          variant="contained"
+          size="medium"
+          className="newTokenButton"
+          onClick={this.handleCreateToken}
+        >
+          Create New Token
+        </Button>
+      </ButtonWrapper>
     );
   }
 
@@ -121,7 +120,7 @@ class TokenTabs extends React.Component {
       selected: classes.selected
     };
     return (
-      <div className={styles.root} style={{ width: "88%" }}>
+      <>
         <Tabs
           classes={{
             root: classes.root
@@ -136,16 +135,27 @@ class TokenTabs extends React.Component {
           <Tab classes={classesTab} label="Custom" />
         </Tabs>
         <TokenList {...props} />
-      </div>
+      </>
     );
   }
   render() {
     return (
-      <div className="wrapperTabs">
+      <Wrapper className="TokenTabs">
         {this.renderTabs()}
         {this.renderNewTokenButton()}
-      </div>
+      </Wrapper>
     );
   }
 }
 export default withStyles(styles)(TokenTabs);
+
+const Wrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+`;
+
+const ButtonWrapper = styled.div`
+  text-align: center;
+`;

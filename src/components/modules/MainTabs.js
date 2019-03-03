@@ -7,11 +7,9 @@ import { withStyles } from "@material-ui/core/styles";
 import PrivacyKeys from "./PrivacyKeys";
 import TokenTabs from "./TokenTabs";
 import Account from "../../services/Account";
+import styled from "styled-components";
 
 const styles = theme => ({
-  root: {
-    flexGrow: 1
-  },
   indicator: {
     backgroundColor: "#EBEFFA"
   },
@@ -73,10 +71,6 @@ class MainTabs extends React.Component {
     };
     return <PrivacyKeys {...props} />;
   };
-  renderHistory = value => {
-    if (value !== 2) return null;
-    return <div />;
-  };
 
   renderTokenTabs = value => {
     if (value !== 0) return null;
@@ -98,8 +92,8 @@ class MainTabs extends React.Component {
     );
   };
 
-  renderTabs() {
-    const { value } = this.state;
+  render() {
+    const { value } = this.state; // TODO - use tabname for value instead of index number.
     const { classes } = this.props;
     const classesTab = {
       label: classes.label,
@@ -107,7 +101,7 @@ class MainTabs extends React.Component {
       labelContainer: classes.labelContainer
     };
     return (
-      <div className={styles.root} style={{ width: "100%" }}>
+      <Wrapper>
         <Tabs
           classes={{
             root: classes.tabs,
@@ -120,21 +114,19 @@ class MainTabs extends React.Component {
           onChange={this.handleChange}
           className="tokenTabs"
         >
-          {/*<Tab
-                    classes={classesTab} 
-                     label="HISTORY" />*/}
           <Tab classes={classesTab} label="TOKENS" />
           <Tab classes={classesTab} label="PRIVACY KEY" />
         </Tabs>
         {this.renderPrivacyKey(value)}
-        {this.renderHistory(value)}
         {this.renderTokenTabs(value)}
-      </div>
+      </Wrapper>
     );
-  }
-
-  render() {
-    return <div className="wrapperMainTabs">{this.renderTabs()}</div>;
   }
 }
 export default withStyles(styles)(MainTabs);
+
+const Wrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`;

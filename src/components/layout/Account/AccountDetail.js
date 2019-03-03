@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { Divider, List, ListItem, Snackbar } from "@material-ui/core";
+import { Divider, Snackbar, Button } from "@material-ui/core";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import QRCode from "qrcode.react";
 import ConfirmDialog from "../../core/ConfirmDialog";
@@ -15,17 +15,11 @@ import {
   CheckCircle as IconSuccess,
   Warning as IconWarning
 } from "@material-ui/icons";
-import CopyPasteSVG from "../../../assets/images/copy-paste.svg";
-
-import Icon from "../../core/Icon";
-
-import "./Detail.scss";
+import { ReactComponent as CopyPasteSVG } from "assets/images/copy-paste.svg";
+import toastr from "toastr";
+import styled from "styled-components";
 
 const styles = theme => ({
-  root: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper
-  },
   key: {
     backgroundColor: "#fff2df",
     border: "none",
@@ -114,7 +108,7 @@ class AccountDetail extends React.Component {
   };
 
   copyToClipBoard = () => {
-    this.showAlert("Copied!", "info");
+    toastr.success("Copied!");
   };
 
   showAlert = (msg, flag = "warning") => {
@@ -145,10 +139,6 @@ class AccountDetail extends React.Component {
 
       this.setState({ showAlert });
     });
-  };
-
-  showSuccess = msg => {
-    this.showAlert(msg, "success");
   };
 
   showError = msg => {
@@ -279,53 +269,48 @@ class AccountDetail extends React.Component {
     const { account } = this.props;
 
     return (
-      <ListItem
-        style={{
-          textAlign: "center",
-          display: "inline-block",
-          backgroundColor: "#2D4CF5"
-        }}
-      >
-        <div className="wrapperAccountInfo">
-          <div className="wrapperQRCode">
-            {paymentAddress && (
-              <QRCode
-                className="qrCode"
-                value={paymentAddress}
-                size={164}
-                renderAs="svg"
-                fgColor="black"
-              />
-            )}
-          </div>
-          <div>
-            <CopyToClipboard
-              text={paymentAddress}
-              onCopy={() => this.copyToClipBoard()}
-            >
-              <div className="paymentInput">
-                <input
-                  className="form-control"
-                  id="paymentAddress"
-                  defaultValue={paymentAddress}
-                />
-                <div className="wrapperIconPaste">
-                  <Icon path={CopyPasteSVG} className="CopyPasteSVG" />
-                </div>
-              </div>
-            </CopyToClipboard>
-          </div>
-          <div className="balance">
-            {balance ? Math.round(balance).toLocaleString() : 0} CONSTANT
-          </div>
-          <div
-            style={{ cursor: "pointer" }}
-            onClick={() => this.openAccountSend(account)}
+      <AccountInfoWrapper>
+        <QrCodeWrapper>
+          {paymentAddress && (
+            <QRCode
+              className="qrCode"
+              value={paymentAddress}
+              size={164}
+              renderAs="svg"
+              fgColor="black"
+            />
+          )}
+        </QrCodeWrapper>
+        <CopyToClipboardWrapper>
+          <CopyToClipboard
+            text={paymentAddress}
+            onCopy={() => this.copyToClipBoard()}
           >
-            Send
-          </div>
-        </div>
-      </ListItem>
+            <PaymentInput>
+              <input
+                className="form-control"
+                id="paymentAddress"
+                defaultValue={paymentAddress}
+              />
+              <IconPasteWrapper>
+                <CopyPasteSVG />
+              </IconPasteWrapper>
+            </PaymentInput>
+          </CopyToClipboard>
+        </CopyToClipboardWrapper>
+        <Balance>
+          {balance ? Math.round(balance).toLocaleString() : 0}{" "}
+          <span className="constant">Constant</span>
+        </Balance>
+
+        <SendButton
+          className="SendButton"
+          variant="contained"
+          onClick={() => this.openAccountSend(account)}
+        >
+          Send
+        </SendButton>
+      </AccountInfoWrapper>
     );
   };
 
@@ -342,21 +327,18 @@ class AccountDetail extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
     const { showAlert } = this.state;
 
     return (
-      <div className={classes.root}>
+      <Wrapper>
         {showAlert}
-        <List style={{ paddingTop: "0px" }}>
-          {this.renderAccountInfo()}
-          <Divider />
-          {this.renderTabs()}
-        </List>
+        {this.renderAccountInfo()}
+        {this.renderTabs()}
+        <Divider />
         {this.renderConfirmRemove()}
         {this.renderTokenCreate()}
         {this.renderSendConstant()}
-      </div>
+      </Wrapper>
     );
   }
 }
@@ -366,3 +348,79 @@ AccountDetail.propTypes = {
 };
 
 export default withStyles(styles)(AccountDetail);
+
+const Wrapper = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+`;
+
+const AccountInfoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #2d4cf5;
+  padding-bottom: 42px;
+`;
+
+const CopyToClipboardWrapper = styled.div`
+  align-self: stretch;
+  padding-left: 38px;
+  padding-right: 38px;
+`;
+
+const SendButton = styled(Button)`
+  width: 90px;
+
+  &.SendButton {
+    background-color: white;
+  }
+`;
+
+const Balance = styled.div`
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  .constant {
+    font-size: 20px;
+    font-weight: normal;
+  }
+`;
+
+const QrCodeWrapper = styled.div`
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 118px;
+  height: 121px;
+  margin-bottom: 22px;
+
+  .qrCode {
+    flex: 1;
+  }
+`;
+
+const PaymentInput = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+`;
+
+const IconPasteWrapper = styled.div`
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background-color: #e6e9ff;
+  height: 37px;
+  width: 49px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+`;

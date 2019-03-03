@@ -24,6 +24,7 @@ const styles = {
   }
 };
 
+// @depricated - Please use /common/components/modal instead"
 class Modal extends React.Component {
   constructor(props) {
     super(props);

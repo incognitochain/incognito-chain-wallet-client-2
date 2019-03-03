@@ -31,26 +31,20 @@ import {
   Warning as IconWarning
 } from "@material-ui/icons";
 
-import Icon from "../../components/core/Icon";
-import CreateAccountSVG from "../../assets/images/create-account.svg";
-import ImportAccountSVG from "../../assets/images/import-account.svg";
+import { ReactComponent as CreateAccountSVG } from "../../assets/images/create-account.svg";
+import { ReactComponent as ImportAccountSVG } from "../../assets/images/import-account.svg";
 import "./Header.scss";
 
 import AccountList from "../layout/Account/List";
+import styled from "styled-components";
 
 const styles = {
-  root: {
-    // flexGrow: 1,
-  },
   grow: {
     flexGrow: 1
   },
   menuButton: {
     marginLeft: -12,
     marginRight: 20
-  },
-  appBar: {
-    color: "#2D4CF5"
   }
 };
 
@@ -253,13 +247,13 @@ class Header extends React.Component {
         {this.renderAccountList()}
         <MenuItem onClick={() => this.selectMenu("CREATE_ACCOUNT")}>
           <ListItemIcon style={{ marginLeft: "10px" }}>
-            <Icon path={CreateAccountSVG} className="CreateAccountSVG" />
+            <CreateAccountSVG />
           </ListItemIcon>
           Create Account
         </MenuItem>
         <MenuItem onClick={() => this.selectMenu("IMPORT_ACCOUNT")}>
           <ListItemIcon style={{ marginLeft: "10px" }}>
-            <Icon path={ImportAccountSVG} className="ImportAccountSVG" />
+            <ImportAccountSVG />
           </ListItemIcon>
           Import Account
         </MenuItem>
@@ -285,9 +279,9 @@ class Header extends React.Component {
     const open = Boolean(anchorEl);
 
     return (
-      <div className={classes.root}>
+      <Wrapper>
         {showAlert}
-        <AppBar classes={classes.appBar} position="static">
+        <StyledAppBar classes={{ root: "AppBar" }} position="static">
           <Toolbar>
             <IconButton
               onClick={this.toggleDrawer("left", true)}
@@ -315,7 +309,7 @@ class Header extends React.Component {
               </div>
             )}
           </Toolbar>
-        </AppBar>
+        </StyledAppBar>
         <SwipeableDrawer
           open={this.state.left}
           onClose={this.toggleDrawer("left", false)}
@@ -330,7 +324,7 @@ class Header extends React.Component {
             {this.sideList}
           </div>
         </SwipeableDrawer>
-      </div>
+      </Wrapper>
     );
   }
 }
@@ -340,3 +334,11 @@ Header.propTypes = {
 };
 
 export default withStyles(styles)(Header);
+
+const StyledAppBar = styled(AppBar)`
+  &.AppBar {
+    background-color: #2d4cf5;
+  }
+`;
+
+const Wrapper = styled.div``;
