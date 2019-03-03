@@ -268,8 +268,8 @@ class Header extends React.Component {
         <span className="selectedAccountName">{selectedAccount.name}</span> (
         {(Number(selectedAccount.value) / 100).toLocaleString({
           maximumFractionDigits: 2
-        })}
-        ) Constant{" "}
+        })}{" "}
+        CONST)
       </div>
     );
   };
