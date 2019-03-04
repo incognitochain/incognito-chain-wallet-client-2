@@ -114,8 +114,8 @@ class MainTabs extends React.Component {
           onChange={this.handleChange}
           className="tokenTabs"
         >
-          <Tab classes={classesTab} label="TOKENS" />
-          <Tab classes={classesTab} label="PRIVACY KEY" />
+          <StyledTab classes={classesTab} label="TOKENS" />
+          <StyledTab classes={classesTab} label="PRIVACY KEY" />
         </Tabs>
         {this.renderPrivacyKey(value)}
         {this.renderTokenTabs(value)}
@@ -129,4 +129,8 @@ const Wrapper = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+`;
+
+const StyledTab = styled(Tab)`
+  flex: 1;
 `;

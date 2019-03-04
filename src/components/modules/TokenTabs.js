@@ -11,7 +11,6 @@ import "./TokenTabs.scss";
 import styled from "styled-components";
 
 const styles = theme => ({
-  tabRoot: {},
   selected: {
     fontWeight: "bold"
   }
@@ -116,7 +115,6 @@ class TokenTabs extends React.Component {
     };
 
     const classesTab = {
-      root: classes.tabRoot,
       selected: classes.selected
     };
     return (
