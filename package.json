@@ -7,6 +7,7 @@
     "@material-ui/core": "^3.3.2",
     "@material-ui/icons": "^3.0.1",
     "axios": "^0.18.0",
+    "contain-chain-web-js": "git://github.com/constant-money/constant-chain-web-js.git",
     "electron": "^3.0.9",
     "electron-dl": "^1.12.0",
     "install": "^0.12.2",
