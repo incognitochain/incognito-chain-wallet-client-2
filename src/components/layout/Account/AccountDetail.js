@@ -18,6 +18,7 @@ import {
 import { ReactComponent as CopyPasteSVG } from "assets/images/copy-paste.svg";
 import toastr from "toastr";
 import styled from "styled-components";
+import { connectAccountContext } from "common/context/AccountContext";
 
 const styles = theme => ({
   key: {
@@ -347,7 +348,7 @@ AccountDetail.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(AccountDetail);
+export default withStyles(styles)(connectAccountContext(AccountDetail));
 
 const Wrapper = styled.div`
   display: flex;
