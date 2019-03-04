@@ -6,7 +6,6 @@ import CreateAccount from "./components/pages/Account/Create";
 import Settings from "./components/pages/Settings";
 import ImportAccount from "./components/pages/Account/Import";
 import Snackbar from "@material-ui/core/Snackbar";
-import Server from "./services/Server";
 
 import Account from "./services/Account";
 import { AccountContext } from "./common/context/AccountContext";
@@ -18,6 +17,7 @@ import {
 import "toastr/build/toastr.css";
 import toastr from "toastr";
 import styled from "styled-components";
+import * as walletService from "services/WalletService";
 
 toastr.options.positionClass = "toast-bottom-center";
 
@@ -74,8 +74,8 @@ function appReducer(state = initialState, action) {
         ...state,
         selectedAccount: {
           ...state.selectedAccount,
-          ...action.key,
-          PrivateKey: action.PrivateKey
+          Pubkey: action.Pubkey,
+          PrivateKey: action.PrivateKey // TODO -
         }
       };
     default:
@@ -83,33 +83,27 @@ function appReducer(state = initialState, action) {
   }
 }
 
-// const loggerMiddleware = dispatch => action => {
-//   dispatch(action);
-//   process.env.NODE_ENV === "development" && console.log("dispatched:", action);
-// };
-
 const App = () => {
   let [state, dispatch] = React.useReducer(appReducer, initialState);
 
-  // dispatch = loggerMiddleware(dispatch);
-  // console.log("\tstate", state);
-
   React.useEffect(() => {
-    const server = Server.getDefault();
-    if (!server) {
-      Server.setDefault();
-    }
-    getAccountList();
+    getAccounts();
   }, []);
 
-  const getAccountList = async () => {
-    dispatch({ type: "LOAD_ACCOUNTS" });
-    const result = await Account.getAccountList([]);
-    console.log("result", result);
-    if (result) {
-      const accounts = result.Accounts,
-        walletName = result.WalletName;
-      let accountList = [];
+  const getAccounts = async () => {
+    try {
+      const wallet = await walletService.getWallet();
+      console.log("wallet", wallet);
+
+      const accounts = wallet.listAccount();
+      const walletName = wallet.Name;
+      let accountList = wallet.listAccount().map(account => ({
+        default: false,
+        name: account["Account Name"],
+        value: 0,
+        PaymentAddress: account.PaymentAddress,
+        ReadonlyKey: account.ReadonlyKey
+      }));
 
       Object.keys(accounts).forEach(a => {
         accountList.push({ default: false, name: a, value: accounts[a] });
@@ -138,9 +132,11 @@ const App = () => {
         headerTitle: "Home"
       });
       getAccountData(selectedAccount);
-    } else {
-      alert("Error on get account list. Please restart app!");
+      return;
+    } catch (e) {
+      console.error(e);
     }
+    alert("Error on get account list. Please restart app!");
   };
 
   const handleClose = (event, reason) => {
@@ -243,16 +239,18 @@ const App = () => {
 
   async function getAccountData(account) {
     try {
+      // TODO -
       const { PrivateKey, ...key } = await Account.getPaymentAddress(
         account.name
       );
-
-      const result = await Account.getPrivateKey(key.PaymentAddress);
+      console.log("key", key);
+      // TODO -
+      const result = await Account.getPrivateKey(account.PaymentAddress);
 
       dispatch({
         type: "ADD_ACCOUNT_DATA",
-        key,
-        PrivateKey: result.PrivateKey
+        PrivateKey: result.PrivateKey,
+        Pubkey: key.Pubkey
       });
     } catch (e) {
       alert("Error on get account data!");

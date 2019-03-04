@@ -1,6 +1,7 @@
 import axios from "axios";
 import Server from "./Server";
 
+// @depricated - use AccountService instead
 export default class Account {
   static getOption(method, params) {
     const server = Server.getDefault();
