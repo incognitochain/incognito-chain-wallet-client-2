@@ -95,7 +95,7 @@ const App = () => {
       const wallet = await walletService.getWallet();
       console.log("wallet", wallet);
 
-      const accounts = wallet.listAccount();
+      // const accounts = wallet.listAccount();
       const walletName = wallet.Name;
       let accountList = wallet.listAccount().map(account => ({
         default: false,
@@ -104,10 +104,10 @@ const App = () => {
         PaymentAddress: account.PaymentAddress,
         ReadonlyKey: account.ReadonlyKey
       }));
-
-      Object.keys(accounts).forEach(a => {
-        accountList.push({ default: false, name: a, value: accounts[a] });
-      });
+      //
+      // Object.keys(accounts).forEach(a => {
+      //   accountList.push({ default: false, name: a, value: accounts[a] });
+      // });
       let selectedAccount = {};
       if (accountList.length > 0) {
         let selectedAccountIndex = parseInt(
