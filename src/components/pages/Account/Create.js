@@ -6,6 +6,7 @@ import { Warning as IconWarning, Save as IconSave, CheckCircle as IconSuccess, E
 import Account from '../../../services/Account';
 
 import classNames from 'classnames';
+import * as walletService from "../../../services/WalletService";
 
 const styles = theme => ({
   textField: {
@@ -75,13 +76,13 @@ class CreateAccount extends React.Component {
 
   showSuccess = (msg) => {
     this.showAlert(msg, 'success');
-  }
+  };
 
   showError = (msg) => {
     this.showAlert(msg, 'danger');
-  }
+  };
 
-  createAccount = async () => {
+  createAccount = async (wallet) => {
     const { accountName } = this.state;
     if(!accountName){
       this.setState({isAlert: true}, ()=>{
@@ -90,18 +91,19 @@ class CreateAccount extends React.Component {
       return;
     }
 
-    const result = await Account.createAccount(accountName);
-    if(result && result.PaymentAddress){
+    const result = await Account.createAccount(accountName, wallet);
+    console.log("Result: ", result);
+    if(result && result.key){
       this.onFinish({message:'Account is created!'});
     }
     else{
       this.showError('Create error!');
     }
-  }
+  };
 
   changeAccountName = (e) => {
     this.setState({accountName: e.target.value});
-  }
+  };
 
   onFinish = (data) => {
     const { onFinish } = this.props;
@@ -133,7 +135,7 @@ class CreateAccount extends React.Component {
         />
 
         <Button variant="contained" size="large" color="primary" className={classes.button} fullWidth
-          onClick={() => this.createAccount()}
+          onClick={() => this.createAccount(this.props.wallet)}
         >
           <IconSave className={classNames(classes.leftIcon, classes.iconSmall)} />
           Create Account
