@@ -8,7 +8,7 @@ import { useAppContext } from "../../common/context/AppContext";
 export function Password({ history }) {
   const [password, setPassword] = React.useState("");
   const [isOpenCreateDialog, setIsOpenCreateDialog] = React.useState(false);
-  const { listAccounts } = useAppContext();
+  const { listAccounts, appDispatch } = useAppContext();
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -17,6 +17,7 @@ export function Password({ history }) {
     if (wallet) {
       history.push("/");
       listAccounts(wallet);
+      appDispatch({ type: "SET_WALLET", wallet });
     } else {
       setIsOpenCreateDialog(true);
     }
@@ -25,6 +26,7 @@ export function Password({ history }) {
   async function onCreate() {
     const wallet = await walletService.initWallet();
     listAccounts(wallet);
+    appDispatch({ type: "SET_WALLET", wallet });
     setIsOpenCreateDialog(false);
     history.push("/");
   }

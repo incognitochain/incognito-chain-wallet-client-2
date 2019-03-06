@@ -64,17 +64,16 @@ export default class Account {
     return false;
   }
 
-  static async importAccount(param) {
-    try {
-      const response = await axios(Account.getOption("importaccount", param));
-      if (response.status === 200) {
-        if (response.data && response.data.Result) return response.data.Result;
-      }
-    } catch (e) {
-      return { error: true, message: e.message };
+  static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
+    let account = wallet.importAccount(privakeyStr, accountName, passPhrase);
+    if (account.isImport === false){
+      console.log("Account is not imported");
+      return false;
     }
-
-    return false;
+    else{
+      console.log("Account is imported");
+      return true;
+    }
   }
 
   static async removeAccount(param) {
@@ -122,6 +121,7 @@ export default class Account {
 
 
   static async createAccount(accountName, wallet) {
+
       const result = wallet.createNewAccount(accountName);
       console.log("Result create account: ", result);
       return result;
