@@ -113,8 +113,6 @@ export default class Account {
     return false;
   }
 
-  // how we get account wallet object
-  // todo: accountWallet ???
   static async sendConstant(param, account, wallet) {
 
     // get accountWallet from wallet has name
