@@ -8,6 +8,7 @@ import { Wallet } from "constant-chain-web-js/build/wallet";
 import { connectWalletContext } from "../../../common/context/WalletContext";
 import {getPassphrase} from "../../../services/WalletService"
 import classNames from 'classnames';
+import {connectAppContext} from "../../../common/context/AppContext";
 
 const styles = theme => ({
   textField: {
@@ -100,6 +101,7 @@ class ImportAccount extends React.Component {
 
     const result = await Account.importAccount(privateKey, accountName, getPassphrase(), this.props.wallet);
     if(result){
+      this.props.app.listAccounts(this.props.wallet);
       this.onFinish({message:'Account is imported!'});
     }
     else{
@@ -182,4 +184,4 @@ ImportAccount.propTypes = {
 
 };
 
-export default withStyles(styles)(connectWalletContext(ImportAccount));
+export default withStyles(styles)(connectAppContext(connectWalletContext(ImportAccount)));
