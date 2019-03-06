@@ -8,6 +8,7 @@ import PrivacyKeys from "./PrivacyKeys";
 import TokenTabs from "./TokenTabs";
 import Account from "../../services/Account";
 import styled from "styled-components";
+import { History } from "../../modules/history/History";
 
 const styles = theme => ({
   indicator: {
@@ -26,6 +27,15 @@ const styles = theme => ({
     fontWeight: "bold"
   }
 });
+
+const mapTabNameToIndex = {
+  tokens: 0,
+  history: 1,
+  privacyKey: 2
+};
+
+const renderIf = cond => cmp => (cond ? cmp : null);
+
 class MainTabs extends React.Component {
   static propTypes = {
     paymentAddress: PropTypes.string.isRequired,
@@ -62,8 +72,7 @@ class MainTabs extends React.Component {
     }
   };
 
-  renderPrivacyKey = value => {
-    if (value !== 1) return null;
+  renderPrivacyKey = () => {
     const { privateKey } = this.state;
     const props = {
       privateKey,
@@ -72,9 +81,7 @@ class MainTabs extends React.Component {
     return <PrivacyKeys {...props} />;
   };
 
-  renderTokenTabs = value => {
-    if (value !== 0) return null;
-
+  renderTokenTabs = () => {
     const { paymentAddress } = this.props;
     const { privateKey } = this.state;
     const props = {
@@ -115,10 +122,16 @@ class MainTabs extends React.Component {
           className="tokenTabs"
         >
           <StyledTab classes={classesTab} label="TOKENS" />
+          <StyledTab classes={classesTab} label="HISTORY" />
           <StyledTab classes={classesTab} label="PRIVACY KEY" />
         </Tabs>
-        {this.renderPrivacyKey(value)}
-        {this.renderTokenTabs(value)}
+        {renderIf(value === mapTabNameToIndex["tokens"])(
+          this.renderTokenTabs()
+        )}
+        {renderIf(value === mapTabNameToIndex["history"])(<History />)}
+        {renderIf(value === mapTabNameToIndex["privacyKey"])(
+          this.renderPrivacyKey()
+        )}
       </Wrapper>
     );
   }
