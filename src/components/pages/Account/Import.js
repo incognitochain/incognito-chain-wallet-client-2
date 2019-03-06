@@ -82,7 +82,7 @@ class ImportAccount extends React.Component {
     this.showAlert(msg, 'danger');
   }
 
-  importAccount = async (wallet) => {
+  importAccount = async () => {
     const { privateKey, accountName } = this.state;
     if(!accountName){
       this.setState({isAlert: true}, ()=>{
@@ -98,7 +98,7 @@ class ImportAccount extends React.Component {
       return;
     }
 
-    const result = await Account.importAccount(privateKey, accountName, '12345678', wallet);
+    const result = await Account.importAccount(privateKey, accountName, '12345678', this.props.wallet);
     if(result){
       this.onFinish({message:'Account is imported!'});
     }
