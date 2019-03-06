@@ -12,7 +12,7 @@ import {
 import Account from "../../../services/Account";
 import { connectWalletContext } from "../../../common/context/WalletContext";
 import { connectAppContext } from "../../../common/context/AppContext";
-import { connectAccountListContext } from "../../../common/context/connectAccountListContext";
+import { connectAccountListContext } from "../../../common/context/AccountListContext";
 
 import classNames from "classnames";
 
