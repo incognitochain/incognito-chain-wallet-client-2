@@ -265,6 +265,7 @@ const App = ({ history, location }) => {
     dispatch({
       type: "SET_SCREEN",
       screen: <Home account={account} />,
+      shouldShowHeader: true,
       headerTitle: "Home"
     });
 
