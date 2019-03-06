@@ -11,6 +11,7 @@ import {
 } from "@material-ui/icons";
 import Account from "../../../services/Account";
 import { connectWalletContext } from "../../../common/context/WalletContext";
+import { connectAppContext } from "../../../common/context/AppContext";
 
 import classNames from "classnames";
 
@@ -91,7 +92,7 @@ class CreateAccount extends React.Component {
     this.showAlert(msg, "danger");
   };
 
-  createAccount = async (wallet) => {
+  createAccount = async () => {
     const { accountName } = this.state;
     if (!accountName) {
       this.setState({ isAlert: true }, () => {
@@ -100,7 +101,7 @@ class CreateAccount extends React.Component {
       return;
     }
 
-    const result = await Account.createAccount(accountName, wallet);
+    const result = await Account.createAccount(accountName, this.props.wallet);
     console.log("Result: ", result);
     if(result && result.key){
       this.onFinish({message:'Account is created!'});
@@ -153,7 +154,7 @@ class CreateAccount extends React.Component {
           color="primary"
           className={classes.button}
           fullWidth
-          onClick={() => this.createAccount(this.props.wallet)}
+          onClick={() => this.createAccount()}
         >
           <IconSave
             className={classNames(classes.leftIcon, classes.iconSmall)}
@@ -177,5 +178,5 @@ class CreateAccount extends React.Component {
 CreateAccount.propTypes = {
   classes: PropTypes.object.isRequired
 };
-
-export default withStyles(styles)(connectWalletContext(CreateAccount));
+// higher-order component
+export default withStyles(styles)(connectWalletContext(connectAppContext(CreateAccount)));
