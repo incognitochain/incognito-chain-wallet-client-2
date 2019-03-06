@@ -121,6 +121,7 @@ export default class Account {
 
 
   static async createAccount(accountName, wallet) {
+
       const result = wallet.createNewAccount(accountName);
       console.log("Result create account: ", result);
       return result;
