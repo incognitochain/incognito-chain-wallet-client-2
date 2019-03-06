@@ -9,6 +9,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 
 import Account from "./services/Account";
 import { AccountContext } from "./common/context/AccountContext";
+import { AccountListContext } from "./common/context/AccountListContext";
 import {
   Error as IconError,
   CheckCircle as IconSuccess,
@@ -295,30 +296,32 @@ const App = ({ history, location }) => {
   return (
     <Wrapper>
       <AppContext.Provider value={{ listAccounts, appDispatch: dispatch }}>
-        <AccountContext.Provider value={state.selectedAccount}>
-          <WalletContext.Provider value={{ wallet: state.wallet }}>
-            {state.showAlert}
+        <AccountListContext.Provider value={state.accounts}>
+          <AccountContext.Provider value={state.selectedAccount}>
+            <WalletContext.Provider value={{ wallet: state.wallet }}>
+              {state.showAlert}
 
-            {state.shouldShowHeader ? (
-              <Header
-                callbackSelected={action => {
-                  selectAccount(action);
-                }}
-                title={state.headerTitle}
-                accounts={state.accounts}
-                selectedAccount={state.selectedAccount}
-                onChangeAccount={handleChangeAccount}
-              />
-            ) : null}
-            <AppContainer>
-              {location.pathname === "/" ? (
-                state.screen /* TODO - move state.screen to react-router */
-              ) : (
-                <AppRoute />
-              )}
-            </AppContainer>
-          </WalletContext.Provider>
-        </AccountContext.Provider>
+              {state.shouldShowHeader ? (
+                <Header
+                  callbackSelected={action => {
+                    selectAccount(action);
+                  }}
+                  title={state.headerTitle}
+                  accounts={state.accounts}
+                  selectedAccount={state.selectedAccount}
+                  onChangeAccount={handleChangeAccount}
+                />
+              ) : null}
+              <AppContainer>
+                {location.pathname === "/" ? (
+                  state.screen /* TODO - move state.screen to react-router */
+                ) : (
+                  <AppRoute />
+                )}
+              </AppContainer>
+            </WalletContext.Provider>
+          </AccountContext.Provider>
+        </AccountListContext.Provider>
       </AppContext.Provider>
     </Wrapper>
   );

@@ -12,6 +12,7 @@ import {
 import Account from "../../../services/Account";
 import { connectWalletContext } from "../../../common/context/WalletContext";
 import { connectAppContext } from "../../../common/context/AppContext";
+import { connectAccountListContext } from "../../../common/context/connectAccountListContext";
 
 import classNames from "classnames";
 
@@ -104,16 +105,16 @@ class CreateAccount extends React.Component {
     }
 
     // check whether accountName is existed or not
-    let accountList = this.props.wallet.listAccount().map(account => ({
-      default: false,
+    let accountNameList = this.props.accountList.map(account => ({
+      // default: false,
       name: account["Account Name"],
-      value: 0,
-      PaymentAddress: account.PaymentAddress,
-      ReadonlyKey: account.ReadonlyKey
+      // value: 0,
+      // PaymentAddress: account.PaymentAddress,
+      // ReadonlyKey: account.ReadonlyKey
     }));
 
-    for (let i=0; i<accountList.length; i++){
-      if (accountList[i].name === accountName){
+    for (let i=0; i<accountNameList.length; i++){
+      if (accountNameList[i].name === accountName){
         this.showAlert("Account name is existed!");
         return;
       }
@@ -197,4 +198,4 @@ CreateAccount.propTypes = {
   classes: PropTypes.object.isRequired
 };
 // higher-order component
-export default withStyles(styles)(connectWalletContext(connectAppContext(CreateAccount)));
+export default withStyles(styles)(connectAccountListContext(connectWalletContext(connectAppContext(CreateAccount))));
