@@ -94,6 +94,8 @@ class CreateAccount extends React.Component {
 
   createAccount = async () => {
     const { accountName } = this.state;
+
+    // check whether accountName is null or not
     if (!accountName) {
       this.setState({ isAlert: true }, () => {
         this.showAlert("Account name is required!");
@@ -101,9 +103,26 @@ class CreateAccount extends React.Component {
       return;
     }
 
+    // check whether accountName is existed or not
+    let accountList = this.props.wallet.listAccount().map(account => ({
+      default: false,
+      name: account["Account Name"],
+      value: 0,
+      PaymentAddress: account.PaymentAddress,
+      ReadonlyKey: account.ReadonlyKey
+    }));
+
+    for (let i=0; i<accountList.length; i++){
+      if (accountList[i].name === accountName){
+        this.showAlert("Account name is existed!");
+        return;
+      }
+    }
+
     const result = await Account.createAccount(accountName, this.props.wallet);
     console.log("Result: ", result);
     if(result && result.key){
+      this.props.app.listAccounts(this.props.wallet);
       this.onFinish({message:'Account is created!'});
     }
     else{
@@ -118,7 +137,7 @@ class CreateAccount extends React.Component {
   onFinish = data => {
     const { onFinish } = this.props;
     if (onFinish) {
-      // this.props.wallet.listAccount();
+      // this.props.app.listAccount();
       onFinish(data);
     }
   };

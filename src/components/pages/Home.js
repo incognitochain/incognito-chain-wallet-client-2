@@ -11,7 +11,7 @@ class Home extends React.Component {
 
   render() {
     const { account } = this.props;
-    return <AccountDetail account={account} onFinish={() => this.reload()} />;
+    return <AccountDetail account={account} />;
   }
 }
 
