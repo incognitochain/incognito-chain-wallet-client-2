@@ -103,7 +103,6 @@ const App = ({ history, location }) => {
   }, []);
 
   async function onInit() {
-    console.log("here");
     if (walletService.hasPassword()) {
       const wallet = await walletService.loadWallet();
 
