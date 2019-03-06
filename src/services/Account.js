@@ -1,5 +1,8 @@
 import axios from "axios";
 import Server from "./Server";
+import {PaymentInfo} from "constant-chain-web-js/lib/key";
+import {KeyWallet} from "constant-chain-web-js/lib/wallet/hdwallet";
+import bn from 'bn.js';
 
 // @depricated
 export default class Account {
@@ -119,7 +122,17 @@ export default class Account {
 
     console.log("Account Wallet sender: ", accountWallet);
 
-    let result = await accountWallet.createAndSendConstant(param);
+    // create paymentInfos
+    let paymentInfos = new Array(param.length);
+    for (let i=0; i<paymentInfos.length; i++){
+      let keyWallet = KeyWallet.base58CheckDeserialize(param[i].paymentAddressStr);
+      // console.log("Payment addr:", paymentAddr);
+      paymentInfos[i] = new PaymentInfo(keyWallet.KeySet.PaymentAddress, new bn(param[i].amount));
+    }
+
+    let result = await accountWallet.createAndSendConstant(paymentInfos);
+
+    console.log("Result create and send tx: ", result);
     if (result.err == null && result.txId) {
       return result.txId;
     } else {

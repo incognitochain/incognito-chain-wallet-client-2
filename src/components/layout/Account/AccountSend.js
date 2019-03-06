@@ -137,8 +137,8 @@ function AccountSend(props) {
     let { toAddress, amount } = state;
 
     const result = await Account.sendConstant([
-      { [toAddress]: Number(amount) * 100 }
-    ], this.props.account, this.props.wallet);
+      { paymentAddressStr: toAddress, amount : Number(amount) * 100 }
+    ], props.account, props.wallet);
 
     if (result) {
       toastr.success("Completed");

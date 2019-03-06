@@ -265,7 +265,6 @@ class AccountDetail extends React.Component {
   };
 
   renderAccountInfo = () => {
-    const { paymentAddress, balance } = this.state;
     const { account } = this.props;
 
     return (
