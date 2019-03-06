@@ -21,6 +21,7 @@ import * as walletService from "./services/WalletService";
 import { AppRoute } from "./AppRoute";
 import { HashRouter, withRouter } from "react-router-dom";
 import { AppContext } from "./common/context/AppContext";
+import { WalletContext } from "./common/context/WalletContext";
 
 toastr.options.positionClass = "toast-bottom-center";
 
@@ -83,8 +84,13 @@ function appReducer(state = initialState, action) {
           PrivateKey: action.PrivateKey // TODO -
         }
       };
+    case "SET_WALLET":
+      return {
+        ...state,
+        wallet: action.wallet
+      };
     default:
-      return state;
+      throw new Error("Unknown action type", action);
   }
 }
 
@@ -101,6 +107,7 @@ const App = ({ history, location }) => {
       console.log("loaded wallet", wallet);
       if (wallet) {
         listAccounts(wallet);
+        dispatch({ type: "SET_WALLET", wallet });
       } else {
         promptPassword();
       }
@@ -288,26 +295,28 @@ const App = ({ history, location }) => {
     <Wrapper>
       <AppContext.Provider value={{ listAccounts }}>
         <AccountContext.Provider value={state.selectedAccount}>
-          {state.showAlert}
+          <WalletContext.Provider value={{ wallet: state.wallet }}>
+            {state.showAlert}
 
-          {state.shouldShowHeader ? (
-            <Header
-              callbackSelected={action => {
-                selectAccount(action);
-              }}
-              title={state.headerTitle}
-              accounts={state.accounts}
-              selectedAccount={state.selectedAccount}
-              onChangeAccount={handleChangeAccount}
-            />
-          ) : null}
-          <AppContainer>
-            {location.pathname === "/" ? (
-              state.screen /* TODO - move state.screen to react-router */
-            ) : (
-              <AppRoute />
-            )}
-          </AppContainer>
+            {state.shouldShowHeader ? (
+              <Header
+                callbackSelected={action => {
+                  selectAccount(action);
+                }}
+                title={state.headerTitle}
+                accounts={state.accounts}
+                selectedAccount={state.selectedAccount}
+                onChangeAccount={handleChangeAccount}
+              />
+            ) : null}
+            <AppContainer>
+              {location.pathname === "/" ? (
+                state.screen /* TODO - move state.screen to react-router */
+              ) : (
+                <AppRoute />
+              )}
+            </AppContainer>
+          </WalletContext.Provider>
         </AccountContext.Provider>
       </AppContext.Provider>
     </Wrapper>

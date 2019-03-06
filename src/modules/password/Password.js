@@ -15,6 +15,7 @@ export function Password({ history }) {
     walletService.savePassword(password);
     const wallet = await walletService.loadWallet();
     if (wallet) {
+      history.push("/");
       listAccounts(wallet);
     } else {
       setIsOpenCreateDialog(true);
