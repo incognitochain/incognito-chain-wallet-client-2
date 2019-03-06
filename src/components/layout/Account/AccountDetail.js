@@ -19,6 +19,7 @@ import { ReactComponent as CopyPasteSVG } from "assets/images/copy-paste.svg";
 import toastr from "toastr";
 import styled from "styled-components";
 import { connectAccountContext } from "common/context/AccountContext";
+import {connectWalletContext} from "../../../common/context/WalletContext";
 
 const styles = theme => ({
   key: {
@@ -157,17 +158,15 @@ class AccountDetail extends React.Component {
     }
 
     if (privateKey) {
-      const result = await Account.removeAccount([
-        privateKey,
-        account.name,
-        "12345678"
-      ]);
-      if (result) {
-        this.onFinish({ message: "Account is removed!" });
-      } else if (result.error) {
-        this.showError(result.message);
-      } else {
-        this.showError("Remove error!");
+      try{
+        let result = await Account.removeAccount(privateKey, account.name, "12345678", this.props.wallet);
+        if (result){
+          this.onFinish({ message: "Account is removed!" });
+        } else {
+          this.showError("Remove error!");
+        }
+      }catch (e) {
+        throw e
       }
     } else {
       this.showError("Not found Private Key!");
@@ -348,7 +347,7 @@ AccountDetail.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(connectAccountContext(AccountDetail));
+export default withStyles(styles)(connectWalletContext(connectAccountContext(AccountDetail)));
 
 const Wrapper = styled.div`
   display: flex;

@@ -72,17 +72,25 @@ export default class Account {
     }
   }
 
-  static async removeAccount(param) {
-    try {
-      const response = await axios(Account.getOption("removeaccount", param));
-      if (response.status === 200) {
-        if (response.data && response.data.Result) return response.data.Result;
-      }
+  static async removeAccount(privateKeyStr, accountName, passPhrase, wallet) {
+    try{
+      let result = wallet.removeAccount(privateKeyStr, accountName, passPhrase);
+      return result;
+
     } catch (e) {
-      return { error: true, message: e.message };
+      return e
     }
 
-    return false;
+    // try {
+    //   const response = await axios(Account.getOption("removeaccount", param));
+    //   if (response.status === 200) {
+    //     if (response.data && response.data.Result) return response.data.Result;
+    //   }
+    // } catch (e) {
+    //   return { error: true, message: e.message };
+    // }
+    //
+    // return false;
   }
 
   static async registerCandidate(param) {
@@ -100,7 +108,9 @@ export default class Account {
     return false;
   }
 
-  static async sendConstant(accountWallet, param) {
+  // how we get account wallet object
+  // todo: accountWallet ???
+  static async sendConstant(param, accountWallet) {
     let result = await accountWallet.createAndSendConstant(param);
     if (result.err == null && result.txId) {
       return result.txId;
@@ -147,19 +157,19 @@ export default class Account {
     // }
   }
 
-  static async getAccountList(param) {
-    try {
-      const response = await axios(Account.getOption("listaccounts", param));
-
-      if (response.status === 200) {
-        if (response.data && response.data.Result) return response.data.Result;
-      }
-    } catch (e) {
-      console.error(e);
-      return false;
-    }
-    return false;
-  }
+  // static async getAccountList(param) {
+  //   try {
+  //     const response = await axios(Account.getOption("listaccounts", param));
+  //
+  //     if (response.status === 200) {
+  //       if (response.data && response.data.Result) return response.data.Result;
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //     return false;
+  //   }
+  //   return false;
+  // }
 
   static async getSealerKey(param) {
     const response = await axios(

@@ -53,14 +53,21 @@ export default class Token {
           return response.data.Result;
       }
       return false;
-  }
-    static async createSendCustomTokenBalance(param) {
-      param.splice(1, 0, null)
-      const response = await axios(Token.getOption("createandsendcustomtokentransaction", param));
-      if (response.status === 200) {
-        if (response.data && response.data.Result)
-          return response.data.Result;
-      }
-      return false;
+    }
+
+    // how we get account wallet object
+    // todo: accountWallet ???
+    static async createSendCustomToken(param, accountWallet) {
+        await accountWallet.createAndSendCustomToken(param.paymentInfos, param.tokenParams);
+
+
+
+      // param.splice(1, 0, null)
+      // const response = await axios(Token.getOption("createandsendcustomtokentransaction", param));
+      // if (response.status === 200) {
+      //   if (response.data && response.data.Result)
+      //     return response.data.Result;
+      // }
+      // return false;
   }
 }

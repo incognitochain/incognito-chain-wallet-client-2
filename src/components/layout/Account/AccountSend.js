@@ -135,9 +135,9 @@ function AccountSend(props) {
   async function sendCoin() {
     let { toAddress, amount } = state;
 
-    const result = await Account.sendConstant(this.props.account, [
+    const result = await Account.sendConstant([
       { [toAddress]: Number(amount) * 100 }
-    ]);
+    ], this.props.account);
 
     if (result) {
       toastr.success("Completed");

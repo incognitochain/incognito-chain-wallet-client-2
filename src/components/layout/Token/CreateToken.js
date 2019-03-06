@@ -252,7 +252,7 @@ class CreateToken extends React.Component {
     this.handleAlertOpen();
   };
   createSendCustomTokenTransaction = async params => {
-    const results = await Token.createSendCustomTokenBalance(params);
+    const results = await Token.createSendCustomToken(params);
     console.log("Result:", results);
     const { Error: error } = results;
     if (error) {
