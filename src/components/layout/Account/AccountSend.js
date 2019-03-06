@@ -8,6 +8,7 @@ import { useAccountContext, connectAccountContext } from "../../../common/contex
 import { useGetBalance } from "./hook/useGetBalance";
 import toastr from "toastr";
 import { useDebugReducer } from "common/hook/useDebugReducer";
+import {connectWalletContext} from "../../../common/context/WalletContext";
 
 const styles = theme => ({
   textField: {
@@ -118,7 +119,7 @@ function AccountSend(props) {
       return;
     }
 
-    if (Number(amount) > Number(balance)) {
+    if (Number(amount) > Number(props.account.value)) {
       toastr.warning("Insufficient this account balance!");
       return;
     }
@@ -137,7 +138,7 @@ function AccountSend(props) {
 
     const result = await Account.sendConstant([
       { [toAddress]: Number(amount) * 100 }
-    ], this.props.account);
+    ], this.props.account, this.props.wallet);
 
     if (result) {
       toastr.success("Completed");
@@ -167,7 +168,7 @@ function AccountSend(props) {
 
       <div className="text-right">
         Balance:{" "}
-        {state.balance ? Math.round(state.balance).toLocaleString() : 0}{" "}
+        {props.account.value ? Math.round(props.account.value / 100).toLocaleString() : 0}{" "}
         CONSTANT
       </div>
 
@@ -231,4 +232,4 @@ function AccountSend(props) {
   );
 }
 
-export default withStyles(styles)(connectAccountContext(AccountSend));
+export default withStyles(styles)(connectWalletContext(connectAccountContext(AccountSend)));

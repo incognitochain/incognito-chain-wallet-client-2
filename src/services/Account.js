@@ -63,6 +63,8 @@ export default class Account {
 
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
     let account = wallet.importAccount(privakeyStr, accountName, passPhrase);
+
+    console.log("Account is imported: ", account);
     if (account.isImport === false) {
       console.log("Account is not imported");
       return false;
@@ -110,7 +112,13 @@ export default class Account {
 
   // how we get account wallet object
   // todo: accountWallet ???
-  static async sendConstant(param, accountWallet) {
+  static async sendConstant(param, account, wallet) {
+
+    // get accountWallet from wallet has name
+    let accountWallet = wallet.getAccountByName(account.name);
+
+    console.log("Account Wallet sender: ", accountWallet);
+
     let result = await accountWallet.createAndSendConstant(param);
     if (result.err == null && result.txId) {
       return result.txId;

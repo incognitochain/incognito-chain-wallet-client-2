@@ -18,7 +18,7 @@ import {
 import { ReactComponent as CopyPasteSVG } from "assets/images/copy-paste.svg";
 import toastr from "toastr";
 import styled from "styled-components";
-import { connectAccountContext } from "common/context/AccountContext";
+import { connectAccountContext } from "../../../common/context/AccountContext";
 import {connectWalletContext} from "../../../common/context/WalletContext";
 
 const styles = theme => ({
@@ -59,39 +59,39 @@ class AccountDetail extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const { account } = this.props;
-    this.getData(account);
-  }
+  // componentDidMount() {
+  //   const { account } = this.props;
+  //   this.getData(account);
+  // }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.account !== prevProps.account) {
-      this.getData(this.props.account);
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.account !== prevProps.account) {
+  //     this.getData(this.props.account);
+  //   }
+  // }
 
-  async getData(account) {
-    // TODO - use AccountContext instead
-    const key = await Account.getPaymentAddress(account.name);
-    if (key) {
-      const result = await Account.getPrivateKey(key.PaymentAddress);
-      if (result) {
-        this.setState({
-          privateKey: result.PrivateKey,
-          paymentAddress: key.PaymentAddress,
-          readonlyKey: key.ReadonlyKey
-        });
-      }
-    }
-
-    const result = await Account.getBalance([account.name, 1, "12345678"]);
-    if (result.error) {
-      this.showError(result.message);
-    } else {
-      //format mili constant to constant
-      this.setState({ balance: Number(result) / 100 });
-    }
-  }
+  // async getData(account) {
+  //   // TODO - use AccountContext instead
+  //   const key = await Account.getPaymentAddress(account.name);
+  //   if (key) {
+  //     const result = await Account.getPrivateKey(key.PaymentAddress);
+  //     if (result) {
+  //       this.setState({
+  //         privateKey: result.PrivateKey,
+  //         paymentAddress: key.PaymentAddress,
+  //         readonlyKey: key.ReadonlyKey
+  //       });
+  //     }
+  //   }
+  //
+  //   const result = await Account.getBalance([account.name, 1, "12345678"]);
+  //   if (result.error) {
+  //     this.showError(result.message);
+  //   } else {
+  //     //format mili constant to constant
+  //     this.setState({ balance: Number(result) / 100 });
+  //   }
+  // }
 
   onFinish = data => {
     const { onFinish } = this.props;
@@ -271,10 +271,10 @@ class AccountDetail extends React.Component {
     return (
       <AccountInfoWrapper>
         <QrCodeWrapper>
-          {paymentAddress && (
+          {account.PaymentAddress && (
             <QRCode
               className="qrCode"
-              value={paymentAddress}
+              value={account.PaymentAddress}
               size={164}
               renderAs="svg"
               fgColor="black"
@@ -283,14 +283,14 @@ class AccountDetail extends React.Component {
         </QrCodeWrapper>
         <CopyToClipboardWrapper>
           <CopyToClipboard
-            text={paymentAddress}
+            text={account.PaymentAddress}
             onCopy={() => this.copyToClipBoard()}
           >
             <PaymentInput>
               <input
                 className="form-control"
                 id="paymentAddress"
-                defaultValue={paymentAddress}
+                defaultValue={account.PaymentAddress}
               />
               <IconPasteWrapper>
                 <CopyPasteSVG />
@@ -299,7 +299,7 @@ class AccountDetail extends React.Component {
           </CopyToClipboard>
         </CopyToClipboardWrapper>
         <Balance>
-          {balance ? Math.round(balance).toLocaleString() : 0}{" "}
+          {account.value ? Math.round(account.value / 100).toLocaleString() : 0}{" "}
           <span className="constant">Constant</span>
         </Balance>
 
