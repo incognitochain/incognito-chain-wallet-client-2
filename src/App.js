@@ -102,6 +102,7 @@ const App = ({ history, location }) => {
   }, []);
 
   async function onInit() {
+    console.log("here");
     if (walletService.hasPassword()) {
       const wallet = await walletService.loadWallet();
 
@@ -126,14 +127,16 @@ const App = ({ history, location }) => {
     history.push("/password");
   }
 
-  function listAccounts(wallet) {
-    let accountList = wallet.listAccount().map(account => ({
-      default: false,
-      name: account["Account Name"],
-      value: 0,
-      PaymentAddress: account.PaymentAddress,
-      ReadonlyKey: account.ReadonlyKey
-    }));
+  async function listAccounts(wallet) {
+    let accountList = (await wallet.listAccount()).map(account => {
+      return {
+        default: false,
+        name: account["Account Name"],
+        value: account.Balance,
+        PaymentAddress: account.PaymentAddress,
+        ReadonlyKey: account.ReadonlyKey
+      };
+    });
 
     let selectedAccount = {};
     if (accountList.length > 0) {
@@ -274,7 +277,6 @@ const App = ({ history, location }) => {
 
   async function getAccountData(account) {
     try {
-      // TODO -
       const { PrivateKey, ...key } = await Account.getPaymentAddress(
         account.name
       );
