@@ -104,19 +104,28 @@ export default class Account {
     return false;
   }
 
-  static async sendConstant(param) {
-    try {
-      const response = await axios(
-        Account.getOption("createandsendtransaction", param)
-      );
-      if (response.status === 200) {
-        if (response.data && response.data.Result) return response.data.Result;
-      }
-    } catch (e) {
-      return { error: true, message: e.message };
+  static async sendConstant(accountWallet, param) {
+    let result = await accountWallet.createAndSendConstant(param);
+    if (result.err == null && result.txId){
+      return result.txId;
+    } else{
+      console.log("ERR when create and send constants");
+      return null;
     }
 
-    return false;
+
+    // try {
+    //   const response = await axios(
+    //     Account.getOption("createandsendtransaction", param)
+    //   );
+    //   if (response.status === 200) {
+    //     if (response.data && response.data.Result) return response.data.Result;
+    //   }
+    // } catch (e) {
+    //   return { error: true, message: e.message };
+    // }
+    //
+    // return false;
   }
 
 
