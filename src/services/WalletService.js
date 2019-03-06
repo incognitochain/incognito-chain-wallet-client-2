@@ -4,7 +4,7 @@ import localforage from "localforage";
 const numOfAccount = 1;
 const walletName = "wallet1";
 
-function getPassphrase() {
+export function getPassphrase() {
   return window.sessionStorage.getItem("passphrase");
 }
 
