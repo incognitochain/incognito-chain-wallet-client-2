@@ -105,16 +105,8 @@ class CreateAccount extends React.Component {
     }
 
     // check whether accountName is existed or not
-    let accountNameList = this.props.accountList.map(account => ({
-      // default: false,
-      name: account["Account Name"],
-      // value: 0,
-      // PaymentAddress: account.PaymentAddress,
-      // ReadonlyKey: account.ReadonlyKey
-    }));
-
-    for (let i=0; i<accountNameList.length; i++){
-      if (accountNameList[i].name === accountName){
+    for (let i=0; i<this.props.accountList.length; i++){
+      if (this.props.accountList[i].name.toLowerCase() === accountName.toLowerCase()){
         this.showAlert("Account name is existed!");
         return;
       }
