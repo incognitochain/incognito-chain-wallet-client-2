@@ -37,24 +37,28 @@ export function History() {
 
   return (
     <Wrapper>
-      {history.map(item => {
-        return (
-          <HistoryItem key={item.txID}>
-            <TxID>{truncateMiddle(item.txID)}</TxID>
-            <Div>
-              <Left>
-                {item.receiver.map((receiverItem, i) => {
-                  return (
-                    <Receiver key={i}>{truncateMiddle(receiverItem)}</Receiver>
-                  );
-                })}
-              </Left>
-              <Right>-{item.amount} Constant</Right>
-            </Div>
-            <Fee>Fee: {item.fee}</Fee>
-          </HistoryItem>
-        );
-      })}
+      <Scrollable>
+        {history.map(item => {
+          return (
+            <HistoryItem key={item.txID}>
+              <TxID>{truncateMiddle(item.txID)}</TxID>
+              <Div>
+                <Left>
+                  {item.receiver.map((receiverItem, i) => {
+                    return (
+                      <Receiver key={i}>
+                        {truncateMiddle(receiverItem)}
+                      </Receiver>
+                    );
+                  })}
+                </Left>
+                <Right>-{item.amount} Constant</Right>
+              </Div>
+              <Fee>Fee: {item.fee}</Fee>
+            </HistoryItem>
+          );
+        })}
+      </Scrollable>
     </Wrapper>
   );
 }
@@ -67,15 +71,21 @@ const Fee = styled.div`
 
 const Wrapper = styled.div`
   flex: 1;
+  padding: 12px 20px;
+  display: flex;
+`;
+
+const Scrollable = styled.div`
   overflow: auto;
+  flex: 1;
 `;
 
 const HistoryItem = styled.div`
   display: flex;
-  border: 3px dashed pink;
   flex-direction: column;
   align-items: stretch;
-  padding: 23px 20px;
+  padding: 23px 0px;
+  border-bottom: 1px solid #e4e7f2;
 `;
 
 const TxID = styled.div`
