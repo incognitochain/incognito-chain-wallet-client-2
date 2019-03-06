@@ -6,7 +6,7 @@ import { Warning as IconWarning, Save as IconSave, CheckCircle as IconSuccess, E
 import Account from '../../../services/Account';
 import { Wallet } from "constant-chain-web-js/build/wallet";
 import { connectWalletContext } from "../../../common/context/WalletContext";
-
+import {getPassphrase} from "../../../services/WalletService"
 import classNames from 'classnames';
 
 const styles = theme => ({
@@ -39,7 +39,6 @@ class ImportAccount extends React.Component {
       showAlert: '',
       isAlert: false,
     }
-    
   }
 
   handleClose = (event, reason) => {
@@ -99,7 +98,7 @@ class ImportAccount extends React.Component {
       return;
     }
 
-    const result = await Account.importAccount(privateKey, accountName, '12345678', this.props.wallet);
+    const result = await Account.importAccount(privateKey, accountName, getPassphrase(), this.props.wallet);
     if(result){
       this.onFinish({message:'Account is imported!'});
     }
