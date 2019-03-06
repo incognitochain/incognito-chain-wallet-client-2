@@ -17,7 +17,11 @@ import {
 import "toastr/build/toastr.css";
 import toastr from "toastr";
 import styled from "styled-components";
-import * as walletService from "services/WalletService";
+import * as walletService from "./services/WalletService";
+import { AppRoute } from "./AppRoute";
+import { HashRouter, withRouter } from "react-router-dom";
+import { AppContext } from "./common/context/AppContext";
+import { WalletContext } from "./common/context/WalletContext";
 
 toastr.options.positionClass = "toast-bottom-center";
 
@@ -27,7 +31,8 @@ const initialState = {
   showAlert: "",
   isAlert: false,
   selectedAccount: {},
-  accounts: []
+  accounts: [],
+  shouldShowHeader: true
 };
 
 function appReducer(state = initialState, action) {
@@ -62,6 +67,7 @@ function appReducer(state = initialState, action) {
       return {
         ...state,
         screen: action.screen,
+        shouldShowHeader: action.shouldShowHeader,
         headerTitle: action.headerTitle
       };
     case "SET_SELECTED_ACCOUNT":
@@ -78,66 +84,83 @@ function appReducer(state = initialState, action) {
           PrivateKey: action.PrivateKey // TODO -
         }
       };
+    case "SET_WALLET":
+      return {
+        ...state,
+        wallet: action.wallet
+      };
     default:
-      return state;
+      throw new Error("Unknown action type", action);
   }
 }
 
-const App = () => {
+const App = ({ history, location }) => {
   let [state, dispatch] = React.useReducer(appReducer, initialState);
 
   React.useEffect(() => {
-    getAccounts();
+    onInit();
   }, []);
 
-  const getAccounts = async () => {
-    try {
-      const wallet = await walletService.getWallet();
-      console.log("wallet", wallet);
-
-      // const accounts = wallet.listAccount();
-      const walletName = wallet.Name;
-      let accountList = wallet.listAccount().map(account => ({
-        default: false,
-        name: account["Account Name"],
-        value: 0,
-        PaymentAddress: account.PaymentAddress,
-        ReadonlyKey: account.ReadonlyKey
-      }));
-      //
-      // Object.keys(accounts).forEach(a => {
-      //   accountList.push({ default: false, name: a, value: accounts[a] });
-      // });
-      let selectedAccount = {};
-      if (accountList.length > 0) {
-        let selectedAccountIndex = parseInt(
-          window.localStorage.getItem("accountIndex")
-        );
-        if (isNaN(selectedAccountIndex)) selectedAccountIndex = 0;
-        if (!accountList[selectedAccountIndex]) selectedAccountIndex = 0;
-        accountList[selectedAccountIndex].default = true;
-        selectedAccount = accountList[selectedAccountIndex];
+  async function onInit() {
+    if (walletService.hasPassword()) {
+      const wallet = await walletService.loadWallet();
+      console.log("loaded wallet", wallet);
+      if (wallet) {
+        listAccounts(wallet);
+        dispatch({ type: "SET_WALLET", wallet });
+      } else {
+        promptPassword();
       }
-
-      dispatch({
-        type: "LOAD_ACCOUNTS_SUCCESS",
-        walletName,
-        selectedAccount,
-        accounts: accountList
-      });
-
-      dispatch({
-        type: "SET_SCREEN",
-        screen: <Home account={selectedAccount} />,
-        headerTitle: "Home"
-      });
-      getAccountData(selectedAccount);
-      return;
-    } catch (e) {
-      console.error(e);
+    } else {
+      promptPassword();
     }
-    alert("Error on get account list. Please restart app!");
-  };
+  }
+
+  function promptPassword() {
+    dispatch({
+      type: "SET_SCREEN",
+      screen: null,
+      headerTitle: "Password",
+      shouldShowHeader: false
+    });
+    history.push("/password");
+  }
+
+  function listAccounts(wallet) {
+    let accountList = wallet.listAccount().map(account => ({
+      default: false,
+      name: account["Account Name"],
+      value: 0,
+      PaymentAddress: account.PaymentAddress,
+      ReadonlyKey: account.ReadonlyKey
+    }));
+
+    let selectedAccount = {};
+    if (accountList.length > 0) {
+      let selectedAccountIndex = parseInt(
+        window.localStorage.getItem("accountIndex")
+      );
+      if (isNaN(selectedAccountIndex)) selectedAccountIndex = 0;
+      if (!accountList[selectedAccountIndex]) selectedAccountIndex = 0;
+      accountList[selectedAccountIndex].default = true;
+      selectedAccount = accountList[selectedAccountIndex];
+    }
+
+    dispatch({
+      type: "LOAD_ACCOUNTS_SUCCESS",
+      walletName: wallet.Name,
+      selectedAccount,
+      accounts: accountList
+    });
+
+    dispatch({
+      type: "SET_SCREEN",
+      screen: <Home account={selectedAccount} />,
+      headerTitle: "Home",
+      shouldShowHeader: true
+    });
+    getAccountData(selectedAccount);
+  }
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -147,6 +170,7 @@ const App = () => {
   };
 
   const selectAccount = action => {
+    // TODO - move this react-router
     let screen = "",
       headerTitle = "Home";
     if (action === "CREATE_ACCOUNT") {
@@ -178,7 +202,12 @@ const App = () => {
       headerTitle = "Settings";
     }
 
-    dispatch({ type: "SET_SCREEN", screen, headerTitle });
+    dispatch({
+      type: "SET_SCREEN",
+      screen,
+      headerTitle,
+      shouldShowHeader: true
+    });
   };
 
   const showAlert = (
@@ -216,7 +245,12 @@ const App = () => {
   };
 
   const backHome = data => {
-    dispatch({ type: "SET_SCREEN", screen: <Home />, headerTitle: "Home" });
+    dispatch({
+      type: "SET_SCREEN",
+      screen: <Home />,
+      headerTitle: "Home",
+      shouldShowHeader: true
+    });
 
     if (data && data.message) {
       showSuccess(data.message);
@@ -259,25 +293,43 @@ const App = () => {
 
   return (
     <Wrapper>
-      {state.showAlert}
+      <AppContext.Provider value={{ listAccounts }}>
+        <AccountContext.Provider value={state.selectedAccount}>
+          <WalletContext.Provider value={{ wallet: state.wallet }}>
+            {state.showAlert}
 
-      <AccountContext.Provider value={state.selectedAccount}>
-        <Header
-          callbackSelected={action => {
-            selectAccount(action);
-          }}
-          title={state.headerTitle}
-          accounts={state.accounts}
-          selectedAccount={state.selectedAccount}
-          onChangeAccount={handleChangeAccount}
-        />
-        <AppContainer>{state.screen}</AppContainer>
-      </AccountContext.Provider>
+            {state.shouldShowHeader ? (
+              <Header
+                callbackSelected={action => {
+                  selectAccount(action);
+                }}
+                title={state.headerTitle}
+                accounts={state.accounts}
+                selectedAccount={state.selectedAccount}
+                onChangeAccount={handleChangeAccount}
+              />
+            ) : null}
+            <AppContainer>
+              {location.pathname === "/" ? (
+                state.screen /* TODO - move state.screen to react-router */
+              ) : (
+                <AppRoute />
+              )}
+            </AppContainer>
+          </WalletContext.Provider>
+        </AccountContext.Provider>
+      </AppContext.Provider>
     </Wrapper>
   );
 };
 
-export default App;
+const WithRouterApp = withRouter(App);
+
+export default () => (
+  <HashRouter>
+    <WithRouterApp />
+  </HashRouter>
+);
 
 const Wrapper = styled.div`
   background: url(assets/images/bg.png) no-repeat center center;

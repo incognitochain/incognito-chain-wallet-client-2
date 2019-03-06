@@ -1,23 +1,38 @@
 import { Wallet } from "constant-chain-web-js/build/wallet";
 import localforage from "localforage";
 
-// TODO - not hardcoded below:
-const passphrase = "12345678";
 const numOfAccount = 1;
 const walletName = "wallet1";
-// ----
 
-export async function getWallet() {
+function getPassphrase() {
+  return window.sessionStorage.getItem("passphrase");
+}
+
+export function hasPassword() {
+  return !!getPassphrase();
+}
+
+export function savePassword(pass) {
+  window.sessionStorage.setItem("passphrase", pass);
+}
+
+export async function loadWallet() {
+  const passphrase = getPassphrase();
   let wallet = new Wallet();
   wallet.Storage = localforage;
 
   const result = await wallet.loadWallet(passphrase);
-
   if (result && wallet.Name) {
     return wallet;
-  } else {
-    wallet.init(passphrase, numOfAccount, walletName, localforage);
-    await wallet.save(passphrase);
-    return wallet;
   }
+  return false;
+}
+
+export async function initWallet() {
+  const passphrase = getPassphrase();
+  let wallet = new Wallet();
+  wallet.Storage = localforage;
+  wallet.init(passphrase, numOfAccount, walletName, localforage);
+  await wallet.save(passphrase);
+  return wallet;
 }
