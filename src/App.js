@@ -293,7 +293,7 @@ const App = ({ history, location }) => {
 
   return (
     <Wrapper>
-      <AppContext.Provider value={{ listAccounts }}>
+      <AppContext.Provider value={{ listAccounts, appDispatch: dispatch }}>
         <AccountContext.Provider value={state.selectedAccount}>
           <WalletContext.Provider value={{ wallet: state.wallet }}>
             {state.showAlert}
