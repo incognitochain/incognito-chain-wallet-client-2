@@ -1,6 +1,6 @@
 import axios from "axios";
 import Server from "./Server";
-import { Wallet } from "constant-chain-web-js/build/wallet";
+import { Wallet, AccountWallet } from "constant-chain-web-js/build/wallet";
 
 import * as walletService from "./WalletService";
 
@@ -104,8 +104,13 @@ export default class Account {
     return false;
   }
 
-  static async sendConstant(accountWallet, param) {
-    let result = await accountWallet.createAndSendConstant(param);
+  static async sendConstant(account, param) {
+
+    // let accountWallet = new AccountWallet();
+    // accountWallet.name = account.name;
+    // accountWallet.
+
+    let result = await account.createAndSendConstant(param);
     if (result.err == null && result.txId){
       return result.txId;
     } else{

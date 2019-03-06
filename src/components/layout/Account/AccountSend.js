@@ -4,7 +4,7 @@ import ConfirmDialog from "../../core/ConfirmDialog";
 import Account from "../../../services/Account";
 import { Button, TextField } from "@material-ui/core";
 import { useGetEstimateFee } from "common/hook/useGetEstimateFee";
-import { useAccountContext } from "../../../common/context/AccountContext";
+import { useAccountContext, connectAccountContext } from "../../../common/context/AccountContext";
 import { useGetBalance } from "./hook/useGetBalance";
 import toastr from "toastr";
 import { useDebugReducer } from "common/hook/useDebugReducer";
@@ -231,4 +231,4 @@ function AccountSend(props) {
   );
 }
 
-export default withStyles(styles)(AccountSend);
+export default withStyles(styles)(connectAccountContext(AccountSend));
