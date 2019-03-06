@@ -1,3 +1,4 @@
+
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
@@ -90,7 +91,7 @@ class CreateAccount extends React.Component {
     this.showAlert(msg, "danger");
   };
 
-  createAccount = async () => {
+  createAccount = async (wallet) => {
     const { accountName } = this.state;
     if (!accountName) {
       this.setState({ isAlert: true }, () => {
@@ -99,16 +100,18 @@ class CreateAccount extends React.Component {
       return;
     }
 
-    const result = await Account.createAccount(accountName);
-    if (result && result.PaymentAddress) {
-      this.onFinish({ message: "Account is created!" });
-    } else {
-      this.showError("Create error!");
+    const result = await Account.createAccount(accountName, wallet);
+    console.log("Result: ", result);
+    if(result && result.key){
+      this.onFinish({message:'Account is created!'});
+    }
+    else{
+      this.showError('Create error!');
     }
   };
 
   changeAccountName = e => {
-    this.setState({ accountName: e.target.value });
+    this.setState({accountName: e.target.value});
   };
 
   onFinish = data => {
@@ -150,7 +153,7 @@ class CreateAccount extends React.Component {
           color="primary"
           className={classes.button}
           fullWidth
-          onClick={() => this.createAccount()}
+          onClick={() => this.createAccount(this.props.wallet)}
         >
           <IconSave
             className={classNames(classes.leftIcon, classes.iconSmall)}

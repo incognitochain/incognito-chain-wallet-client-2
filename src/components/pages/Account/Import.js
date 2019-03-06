@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { Snackbar, TextField, Button } from '@material-ui/core';
 import { Warning as IconWarning, Save as IconSave, CheckCircle as IconSuccess, Error as IconError } from '@material-ui/icons';
 import Account from '../../../services/Account';
+import { Wallet } from "constant-chain-web-js/build/wallet";
 
 import classNames from 'classnames';
 
@@ -81,7 +82,7 @@ class ImportAccount extends React.Component {
     this.showAlert(msg, 'danger');
   }
 
-  importAccount = async () => {
+  importAccount = async (wallet) => {
     const { privateKey, accountName } = this.state;
     if(!accountName){
       this.setState({isAlert: true}, ()=>{
@@ -97,12 +98,9 @@ class ImportAccount extends React.Component {
       return;
     }
 
-    const result = await Account.importAccount([privateKey, accountName, '12345678']);
-    if(result && result.PaymentAddress){
+    const result = await Account.importAccount(privateKey, accountName, '12345678', wallet);
+    if(result){
       this.onFinish({message:'Account is imported!'});
-    }
-    else if(result.error){
-      this.showError(result.message);
     }
     else{
       this.showError('Import error!');
