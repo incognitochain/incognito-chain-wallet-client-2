@@ -11,7 +11,7 @@ class TokenList extends React.Component {
     if (list.length > 0) return null;
     return (
       <div className="wrapperTokenEmpty">
-        <div className="emptyHeader">NO TOKEN PRIVACY.</div>
+        <div className="emptyHeader">NO TOKEN.</div>
         <div className="emptyDes">
           You can always easily create your own one.
         </div>

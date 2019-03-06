@@ -135,8 +135,8 @@ function AccountSend(props) {
   async function sendCoin() {
     let { toAddress, amount } = state;
 
-    const result = await Account.sendConstant(this.props.account,[
-      { [toAddress]: Number(amount) * 100 },
+    const result = await Account.sendConstant(this.props.account, [
+      { [toAddress]: Number(amount) * 100 }
     ]);
 
     if (result) {
@@ -152,7 +152,7 @@ function AccountSend(props) {
     dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
 
   return (
-    <div style={{ padding: "2rem", border: "1px solid blue" }}>
+    <div style={{ padding: "2rem" }}>
       {state.showAlert}
       <TextField
         required

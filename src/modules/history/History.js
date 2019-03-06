@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useAccountContext } from "../../common/context/AccountContext";
+// import { useAccountContext } from "../../common/context/AccountContext";
 import _ from "lodash";
 
 function truncateMiddle(str = "") {

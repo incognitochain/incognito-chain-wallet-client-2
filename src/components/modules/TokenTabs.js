@@ -5,16 +5,10 @@ import { Tabs, Tab } from "@material-ui/core";
 import Token from "../../services/Token";
 import TokenList from "./TokenList";
 import { Button } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
 
 import "./TokenTabs.scss";
 import styled from "styled-components";
 
-const styles = theme => ({
-  selected: {
-    fontWeight: "bold"
-  }
-});
 class TokenTabs extends React.Component {
   static propTypes = {
     paymentAddress: PropTypes.string.isRequired,
@@ -53,7 +47,7 @@ class TokenTabs extends React.Component {
     const params = [];
     params.push(paymentAddress);
     const results = await Token.getListCustomTokenBalance(params);
-    console.log("Result:", results);
+
     const { ListCustomTokenBalance } = results;
     if (ListCustomTokenBalance) {
       this.setState({
@@ -66,7 +60,7 @@ class TokenTabs extends React.Component {
     const params = [];
     params.push(privateKey);
     const results = await Token.getListPrivacyCustomTokenBalance(params);
-    console.log("Result:", results);
+
     const { ListCustomTokenBalance } = results;
     if (ListCustomTokenBalance) {
       this.setState({
@@ -85,7 +79,7 @@ class TokenTabs extends React.Component {
     const { value } = this.state;
     this.props.onCreateToken(value);
   };
-
+  handleAddFollowingToken = () => {};
   renderNewTokenButton() {
     return (
       <ButtonWrapper>
@@ -97,12 +91,19 @@ class TokenTabs extends React.Component {
         >
           Create New Token
         </Button>
+        <Button
+          variant="contained"
+          size="medium"
+          className="newTokenButton"
+          onClick={this.handleAddFollowingToken}
+        >
+          Add Following Token
+        </Button>
       </ButtonWrapper>
     );
   }
 
   renderTabs() {
-    const { classes } = this.props;
     const {
       value,
       listCustomTokenBalance,
@@ -114,23 +115,17 @@ class TokenTabs extends React.Component {
       ...this.props
     };
 
-    const classesTab = {
-      selected: classes.selected
-    };
     return (
       <>
         <Tabs
-          classes={{
-            root: classes.root
-          }}
           value={value}
           indicatorColor="primary"
-          fullWidth
+          variant="fullWidth"
           onChange={this.handleChange}
           className="tokenTabs"
         >
-          <Tab classes={classesTab} label="Privacy" />
-          <Tab classes={classesTab} label="Custom" />
+          <Tab label="Privacy" />
+          <Tab label="Custom" />
         </Tabs>
         <TokenList {...props} />
       </>
@@ -145,7 +140,7 @@ class TokenTabs extends React.Component {
     );
   }
 }
-export default withStyles(styles)(TokenTabs);
+export default TokenTabs;
 
 const Wrapper = styled.div`
   flex: 1;

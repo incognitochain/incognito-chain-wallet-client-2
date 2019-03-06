@@ -1,10 +1,7 @@
 import axios from "axios";
 import Server from "./Server";
-import { Wallet, AccountWallet } from "constant-chain-web-js/build/wallet";
 
-import * as walletService from "./WalletService";
-
-// @depricated - use AccountService instead
+// @depricated
 export default class Account {
   static getOption(method, params) {
     const server = Server.getDefault();
@@ -66,11 +63,10 @@ export default class Account {
 
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
     let account = wallet.importAccount(privakeyStr, accountName, passPhrase);
-    if (account.isImport === false){
+    if (account.isImport === false) {
       console.log("Account is not imported");
       return false;
-    }
-    else{
+    } else {
       console.log("Account is imported");
       return true;
     }
@@ -104,20 +100,14 @@ export default class Account {
     return false;
   }
 
-  static async sendConstant(account, param) {
-
-    // let accountWallet = new AccountWallet();
-    // accountWallet.name = account.name;
-    // accountWallet.
-
-    let result = await account.createAndSendConstant(param);
-    if (result.err == null && result.txId){
+  static async sendConstant(accountWallet, param) {
+    let result = await accountWallet.createAndSendConstant(param);
+    if (result.err == null && result.txId) {
       return result.txId;
-    } else{
+    } else {
       console.log("ERR when create and send constants");
       return null;
     }
-
 
     // try {
     //   const response = await axios(
@@ -133,28 +123,25 @@ export default class Account {
     // return false;
   }
 
-
   static async createAccount(accountName, wallet) {
+    const result = wallet.createNewAccount(accountName);
+    console.log("Result create account: ", result);
+    return result;
 
-      const result = wallet.createNewAccount(accountName);
-      console.log("Result create account: ", result);
-      return result;
+    // if (result !== null){
+    //   return result;
+    // } else{
+    //   return null
+    // }
 
-      // if (result !== null){
-      //   return result;
-      // } else{
-      //   return null
-      // }
-
-      // const response = await axios(
-      //   Account.getOption("getaccountaddress", accountName)
-      // );
-      // if (response.status === 200) {
-      //   if (response.data && response.data.Result) return response.data.Result;
-      // }
-      // return false;
+    // const response = await axios(
+    //   Account.getOption("getaccountaddress", accountName)
+    // );
+    // if (response.status === 200) {
+    //   if (response.data && response.data.Result) return response.data.Result;
+    // }
+    // return false;
     // } catch (e) {
-
 
     //   return { error: true, message: e.message };
     // }

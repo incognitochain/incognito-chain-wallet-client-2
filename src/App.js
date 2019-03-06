@@ -105,7 +105,7 @@ const App = ({ history, location }) => {
   async function onInit() {
     if (walletService.hasPassword()) {
       const wallet = await walletService.loadWallet();
-      console.log("loaded wallet", wallet);
+
       if (wallet) {
         listAccounts(wallet);
         dispatch({ type: "SET_WALLET", wallet });
@@ -279,7 +279,7 @@ const App = ({ history, location }) => {
       const { PrivateKey, ...key } = await Account.getPaymentAddress(
         account.name
       );
-      console.log("key", key);
+
       // TODO -
       const result = await Account.getPrivateKey(account.PaymentAddress);
 
