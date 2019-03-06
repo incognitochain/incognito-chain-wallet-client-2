@@ -137,7 +137,6 @@ class CreateAccount extends React.Component {
   onFinish = data => {
     const { onFinish } = this.props;
     if (onFinish) {
-      // this.props.app.listAccount();
       onFinish(data);
     }
   };

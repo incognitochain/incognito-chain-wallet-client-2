@@ -135,16 +135,12 @@ function AccountSend(props) {
   async function sendCoin() {
     let { toAddress, amount } = state;
 
-    const result = await Account.sendConstant([
-      account.PrivateKey,
+    const result = await Account.sendConstant(this.props.account,[
       { [toAddress]: Number(amount) * 100 },
-      -1,
-      1
     ]);
 
     if (result) {
       toastr.success("Completed");
-
       dispatch({ type: "RESET" });
     } else {
       toastr.error("Send failed. Please try again!");
