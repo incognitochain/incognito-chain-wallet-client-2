@@ -3,6 +3,11 @@ import Server from "./Server";
 import {PaymentInfo} from "constant-chain-web-js/lib/key";
 import {KeyWallet} from "constant-chain-web-js/lib/wallet/hdwallet";
 import bn from 'bn.js';
+import * as ec from 'privacy-js-lib/lib/ec';
+
+
+// console.time("Big int");
+// let a = new bn(10);
 
 // @depricated
 export default class Account {
@@ -42,6 +47,7 @@ export default class Account {
     return false;
   }
 
+  // todo: thunderbird
   static async getEstimateFee(param) {
     try {
       return await axios(Account.getOption("estimatefee", param));
@@ -65,6 +71,7 @@ export default class Account {
   }
 
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
+    // console.log("Wallet when import account: ", wallet);
     let account = wallet.importAccount(privakeyStr, accountName, passPhrase);
 
     console.log("Account is imported: ", account);
@@ -127,6 +134,8 @@ export default class Account {
       // console.log("Payment addr:", paymentAddr);
       paymentInfos[i] = new PaymentInfo(keyWallet.KeySet.PaymentAddress, new bn(param[i].amount));
     }
+
+    // debugger
 
     let result = await accountWallet.createAndSendConstant(paymentInfos);
 

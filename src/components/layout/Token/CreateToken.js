@@ -21,6 +21,7 @@ import {
 } from "rxjs/operators";
 import Account from "services/Account";
 import { connectAccountContext } from "common/context/AccountContext";
+import { connectWalletContext } from "common/context/WalletContext";
 import toastr from "toastr";
 import _ from "lodash";
 import styled from "styled-components";
@@ -422,7 +423,7 @@ class CreateToken extends React.Component {
     );
   }
 }
-export default connectAccountContext(CreateToken);
+export default connectWalletContext(connectAccountContext(CreateToken));
 
 const Wrapper = styled.div`
   padding: 20px 20px;
