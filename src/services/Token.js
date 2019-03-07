@@ -57,7 +57,12 @@ export default class Token {
 
     // how we get account wallet object
     // todo: accountWallet ???
-    static async createSendCustomToken(param, accountWallet) {
+    static async createSendCustomToken(param, account, wallet) {
+        // get accountWallet from wallet has name
+        let accountWallet = wallet.getAccountByName(account.name);
+
+        console.log("Account Wallet sender: ", accountWallet);
+        
         await accountWallet.createAndSendCustomToken(param.paymentInfos, param.tokenParams);
 
 
