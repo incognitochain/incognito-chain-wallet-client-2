@@ -135,7 +135,7 @@ export default class Account {
   }
 
   static async sendConstant(param, account, wallet) {
-    debugger
+    // debugger
 
     // get accountWallet from wallet has name
     let accountWallet = wallet.getAccountByName(account.name);
