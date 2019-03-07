@@ -8,6 +8,20 @@ import { Button } from "@material-ui/core";
 
 import "./TokenTabs.scss";
 import styled from "styled-components";
+import { SearchFollowingTokensDialog } from "../../modules/tokens/SearchFollowingTokensDialog";
+
+const mapTabNameToIndex = {
+  privacy: 0,
+  custom: 1
+};
+
+const mapTabIndexToName = Object.entries(mapTabNameToIndex).reduce(
+  (acc, [tabName, tabIndex]) => ({
+    ...acc,
+    [tabIndex]: tabName
+  }),
+  {}
+);
 
 class TokenTabs extends React.Component {
   static propTypes = {
@@ -18,7 +32,7 @@ class TokenTabs extends React.Component {
     super(props);
     this.state = {
       showAlert: "",
-      value: 0,
+      value: mapTabNameToIndex["privacy"],
       listCustomTokenBalance: [],
       listPrivacyTokenBalance: []
     };
@@ -79,7 +93,9 @@ class TokenTabs extends React.Component {
     const { value } = this.state;
     this.props.onCreateToken(value);
   };
-  handleAddFollowingToken = () => {};
+  handleAddFollowingToken = () => {
+    this.setState({ isOpenSearchTokenDialog: true });
+  };
   renderNewTokenButton() {
     return (
       <ButtonWrapper>
@@ -91,13 +107,14 @@ class TokenTabs extends React.Component {
         >
           Create New Token
         </Button>
+
         <Button
           variant="contained"
           size="medium"
           className="newTokenButton"
           onClick={this.handleAddFollowingToken}
         >
-          Add Following Token
+          Add Tokens To Follow
         </Button>
       </ButtonWrapper>
     );
@@ -136,6 +153,12 @@ class TokenTabs extends React.Component {
       <Wrapper className="TokenTabs">
         {this.renderTabs()}
         {this.renderNewTokenButton()}
+
+        <SearchFollowingTokensDialog
+          isOpen={this.state.isOpenSearchTokenDialog}
+          onClose={() => this.setState({ isOpenSearchTokenDialog: false })}
+          tabName={mapTabIndexToName[this.state.value]}
+        />
       </Wrapper>
     );
   }
@@ -151,4 +174,7 @@ const Wrapper = styled.div`
 
 const ButtonWrapper = styled.div`
   text-align: center;
+  button {
+    margin-bottom: 10px;
+  }
 `;

@@ -25,12 +25,12 @@ const styles = {
 };
 
 const Modal = props => {
-  const { title, children, buttonAction, classes } = props;
+  const { title, children, buttonAction, classes, fullScreen = true } = props;
 
   return (
     <div className="modal">
       <Dialog
-        fullScreen
+        fullScreen={fullScreen}
         open={Boolean(props.isOpen)}
         onClose={props.onClose}
         TransitionComponent={Transition}
@@ -50,7 +50,7 @@ const Modal = props => {
             {buttonAction}
           </Toolbar>
         </AppBar>
-        <div>{children}</div>
+        <div style={{ display: "flex", flex: 1 }}>{children}</div>
       </Dialog>
     </div>
   );

@@ -29,10 +29,17 @@ export async function loadWallet() {
 }
 
 export async function initWallet() {
-  const passphrase = getPassphrase();
-  let wallet = new Wallet();
-  wallet.Storage = localforage;
-  wallet.init(passphrase, numOfAccount, walletName, localforage);
-  await wallet.save(passphrase);
-  return wallet;
+  try {
+    const passphrase = getPassphrase();
+
+    let wallet = new Wallet();
+    wallet.Storage = localforage;
+    wallet.init(passphrase, numOfAccount, walletName, localforage);
+
+    await wallet.save(passphrase);
+
+    return wallet;
+  } catch (e) {
+    throw e;
+  }
 }

@@ -11,24 +11,33 @@ export function Password({ history }) {
   const { listAccounts, appDispatch } = useAppContext();
 
   async function onSubmit(e) {
-    e.preventDefault();
-    walletService.savePassword(password);
-    const wallet = await walletService.loadWallet();
-    if (wallet) {
-      history.push("/");
-      listAccounts(wallet);
-      appDispatch({ type: "SET_WALLET", wallet });
-    } else {
-      setIsOpenCreateDialog(true);
+    try {
+      e.preventDefault();
+      walletService.savePassword(password);
+
+      const wallet = await walletService.loadWallet();
+      if (wallet) {
+        history.push("/");
+        listAccounts(wallet);
+        appDispatch({ type: "SET_WALLET", wallet });
+      } else {
+        setIsOpenCreateDialog(true);
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
   async function onCreate() {
-    const wallet = await walletService.initWallet();
-    listAccounts(wallet);
-    appDispatch({ type: "SET_WALLET", wallet });
-    setIsOpenCreateDialog(false);
-    history.push("/");
+    try {
+      const wallet = await walletService.initWallet();
+      listAccounts(wallet);
+      appDispatch({ type: "SET_WALLET", wallet });
+      setIsOpenCreateDialog(false);
+      history.push("/");
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   return (

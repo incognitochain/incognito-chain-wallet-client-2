@@ -6,8 +6,6 @@ import CreateAccount from "./components/pages/Account/Create";
 import Settings from "./components/pages/Settings";
 import ImportAccount from "./components/pages/Account/Import";
 import Snackbar from "@material-ui/core/Snackbar";
-
-import Account from "./services/Account";
 import { AccountContext } from "./common/context/AccountContext";
 import { AccountListContext } from "./common/context/AccountListContext";
 import {
@@ -22,7 +20,10 @@ import * as walletService from "./services/WalletService";
 import { AppRoute } from "./AppRoute";
 import { HashRouter, withRouter } from "react-router-dom";
 import { AppContext } from "./common/context/AppContext";
-import { WalletContext } from "./common/context/WalletContext";
+import {
+  WalletContext,
+  useWalletContext
+} from "./common/context/WalletContext";
 
 toastr.options.positionClass = "toast-bottom-center";
 
@@ -76,15 +77,7 @@ function appReducer(state = initialState, action) {
         ...state,
         selectedAccount: action.selectedAccount
       };
-    case "ADD_ACCOUNT_DATA":
-      return {
-        ...state,
-        selectedAccount: {
-          ...state.selectedAccount,
-          Pubkey: action.Pubkey,
-          PrivateKey: action.PrivateKey // TODO -
-        }
-      };
+
     case "SET_WALLET":
       return {
         ...state,
@@ -104,7 +97,10 @@ const App = ({ history, location }) => {
 
   async function onInit() {
     if (walletService.hasPassword()) {
+      console.log("haha");
       const wallet = await walletService.loadWallet();
+      console.log("hihi");
+      window._w = wallet;
 
       if (wallet) {
         listAccounts(wallet);
@@ -128,15 +124,21 @@ const App = ({ history, location }) => {
   }
 
   async function listAccounts(wallet) {
-    let accountList = (await wallet.listAccount()).map(account => {
-      return {
-        default: false,
-        name: account["Account Name"],
-        value: account.Balance,
-        PaymentAddress: account.PaymentAddress,
-        ReadonlyKey: account.ReadonlyKey
-      };
-    });
+    let accountList = [];
+    try {
+      accountList = (await wallet.listAccount()).map(account => {
+        return {
+          default: false,
+          name: account["Account Name"],
+          value: account.Balance,
+          PaymentAddress: account.PaymentAddress,
+          ReadonlyKey: account.ReadonlyKey
+        };
+      });
+    } catch (e) {
+      console.error(e);
+      alert("Error on get listAccount()!");
+    }
 
     let selectedAccount = {};
     if (accountList.length > 0) {
@@ -162,7 +164,6 @@ const App = ({ history, location }) => {
       headerTitle: "Home",
       shouldShowHeader: true
     });
-    getAccountData(selectedAccount);
   }
 
   const handleClose = (event, reason) => {
@@ -271,28 +272,7 @@ const App = ({ history, location }) => {
       shouldShowHeader: true,
       headerTitle: "Home"
     });
-
-    getAccountData(account);
   };
-
-  async function getAccountData(account) {
-    try {
-      const { PrivateKey, ...key } = await Account.getPaymentAddress(
-        account.name
-      );
-
-      // TODO -
-      const result = await Account.getPrivateKey(account.PaymentAddress);
-
-      dispatch({
-        type: "ADD_ACCOUNT_DATA",
-        PrivateKey: result.PrivateKey,
-        Pubkey: key.Pubkey
-      });
-    } catch (e) {
-      alert("Error on get account data!");
-    }
-  }
 
   return (
     <Wrapper>
