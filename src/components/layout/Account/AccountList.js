@@ -17,6 +17,8 @@ import { Send as IconSend } from "@material-ui/icons";
 import Dialog from "../../core/Dialog";
 import img1 from "../../../assets/images/img1.png";
 import "./List.scss";
+import _ from "lodash";
+import { connectWalletContext } from "../../../common/context/WalletContext";
 
 const styles = theme => ({
   root: {
@@ -46,7 +48,7 @@ class AccountList extends React.Component {
     this.state = {
       walletName: "",
       accountSelected: false,
-      accountList: [],
+      // accountList: [],
       modalAccountDetail: "",
       modalAccountSend: "",
       modalAccountCandidate: "",
@@ -54,52 +56,12 @@ class AccountList extends React.Component {
     };
   }
 
-  componentDidMount() {
-    //this.getAccountList();
-    const { accounts } = this.props;
-    this.setState({ accountList: accounts });
-  }
-
-  // async getAccountList() {
-  //   this.setState({ loading: true, accountList: [] });
-  //   const result = await Account.getAccountList([]);
-  //   if (result) {
-  //     const accounts = result.Accounts, walletName = result.WalletName;
-  //     let accountList = [];
-
-  //     Object.keys(accounts).forEach(a => {
-  //       accountList.push({ default: false, name: a, value: accounts[a] });
-  //     });
-
-  //     if (accountList.length > 0)
-  //       accountList[0].default = true;
-
-  //     this.setState({ walletName, accountList, loading: false });
-  //   } else {
-  //     setTimeout(() => { this.getAccountList() }, 1000);
-  //   }
+  // componentDidMount() {
+  //   const { accounts } = this.props;
+  //   this.setState({ accountList: accounts });
   // }
 
-  // reload = () => {
-  //   this.modalAccountDetailRef.close();
-  //
-  //   this.setState(
-  //     {
-  //       modalAccountDetail: "",
-  //       modalAccountSend: ""
-  //     },
-  //     () => {
-  //       this.getAccountList();
-  //     }
-  //   );
-  // };
-
   chooseAccount = account => {
-    //this.modalAccountDetailRef.open();
-    // this.setState({
-    //   accountSelected: account,
-    //   modalAccountDetail: <AccountDetail account={account} onFinish={() => this.reload()} />
-    // });
     this.props.onChangeAccount(account);
   };
 
@@ -138,11 +100,6 @@ class AccountList extends React.Component {
 
     return (
       <div>
-        {/*<Tooltip title="Register Candidate">
-        <Button mini variant="fab" color="secondary" className={classes.button} aria-label="Register Candidate" onClick={() => this.openAccountCandidate()}>
-          <IconAssignmentInd />
-        </Button>
-    </Tooltip>*/}
         <Tooltip title="Send Coin">
           <Button
             mini
@@ -166,11 +123,12 @@ class AccountList extends React.Component {
     const { classes } = this.props;
     const {
       loading,
-      accountList,
+      // accountList,
       modalAccountDetail,
       modalAccountSend,
       modalAccountCandidate
     } = this.state;
+    const accountList = this.props.accounts;
     if (accountList.length === 0) return null;
     return (
       <div className="wrapperAccountList">
@@ -242,4 +200,4 @@ AccountList.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(AccountList);
+export default _.flow([withStyles(styles), connectWalletContext])(AccountList);

@@ -36,6 +36,17 @@ const initialState = {
 
 function appReducer(state = initialState, action) {
   switch (action.type) {
+    case "SET_BALANCES":
+      console.log("###action.balances", action.balances);
+      return {
+        ...state,
+        accounts: state.accounts.map(account => ({
+          ...account,
+          value: action.balances.find(
+            ({ accountName }) => accountName === account.name
+          ).balance
+        }))
+      };
     case "LOAD_ACCOUNTS":
       return {
         ...state,
@@ -87,7 +98,7 @@ function appReducer(state = initialState, action) {
 
 const App = ({ history, location }) => {
   let [state, dispatch] = React.useReducer(appReducer, initialState);
-
+  console.log("###app state", state);
   const walletRef = React.useRef();
 
   React.useEffect(() => {
@@ -129,12 +140,13 @@ const App = ({ history, location }) => {
 
   async function listAccounts(wallet) {
     let accountList = [];
+    console.time("listAccounts");
     try {
       accountList = (await wallet.listAccount()).map(account => {
         return {
           default: false,
           name: account["Account Name"],
-          value: 0,
+          value: -1,
           PaymentAddress: account.PaymentAddress,
           ReadonlyKey: account.ReadonlyKey
         };
@@ -168,6 +180,7 @@ const App = ({ history, location }) => {
       headerTitle: "Home",
       shouldShowHeader: true
     });
+    console.timeEnd("listAccounts");
   }
 
   const handleClose = (event, reason) => {
@@ -324,6 +337,7 @@ const Wrapper = styled.div`
   background: url(assets/images/bg.png) no-repeat center center;
   margin: 0 auto;
   height: 100vh;
+  min-height: 931px;
   width: 414px;
   overflow: auto;
   background-color: #ffffff;

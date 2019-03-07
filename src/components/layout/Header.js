@@ -35,8 +35,14 @@ import { ReactComponent as CreateAccountSVG } from "../../assets/images/create-a
 import { ReactComponent as ImportAccountSVG } from "../../assets/images/import-account.svg";
 import "./Header.scss";
 
-import AccountList from "../layout/Account/List";
+import AccountList from "../layout/Account/AccountList";
 import styled from "styled-components";
+import { connectAppContext } from "../../common/context/AppContext";
+import {
+  useWalletContext,
+  connectWalletContext
+} from "../../common/context/WalletContext";
+import _ from "lodash";
 
 const styles = {
   grow: {
@@ -46,6 +52,36 @@ const styles = {
     marginLeft: -12,
     marginRight: 20
   }
+};
+
+const SelectedAccount = ({ name }) => {
+  const { wallet } = useWalletContext();
+
+  const [balance, setBalance] = React.useState(-1);
+
+  React.useEffect(() => {
+    getBalance();
+  }, [name, wallet]);
+
+  async function getBalance() {
+    if (name && wallet) {
+      const accountWallet = wallet.MasterAccount.child.find(
+        accountWallet => accountWallet.name === name
+      );
+      const balance = await accountWallet.getBalance();
+      setBalance(balance);
+    }
+  }
+
+  return (
+    <div className="selectedAccount">
+      <span className="selectedAccountName">{name}</span> (
+      {(Number(balance) / 100).toLocaleString({
+        maximumFractionDigits: 2
+      })}{" "}
+      CONST)
+    </div>
+  );
 };
 
 class Header extends React.Component {
@@ -65,6 +101,34 @@ class Header extends React.Component {
       isAlert: false
     };
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.anchorEl !== prevState.anchorEl) {
+      if (this.state.anchorEl) {
+        // menu just open
+        console.log("haha");
+        this.loadBalances();
+      }
+    }
+  }
+  loadBalances = async () => {
+    const balances = await Promise.all(
+      this.props.wallet.MasterAccount.child.map(async accountWallet => {
+        const balance = await accountWallet.getBalance();
+        console.log("###account name/balance", accountWallet.name, balance);
+        return {
+          accountName: accountWallet.name,
+          balance
+        };
+      })
+    );
+    console.log("###balances");
+
+    this.props.app.appDispatch({
+      type: "SET_BALANCES",
+      balances
+    });
+  };
 
   handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -260,19 +324,6 @@ class Header extends React.Component {
       </Menu>
     );
   };
-  renderSelectedAccount = selectedAccount => {
-    const { name, value } = selectedAccount;
-    if (name === undefined && value === undefined) return null;
-    return (
-      <div className="selectedAccount">
-        <span className="selectedAccountName">{selectedAccount.name}</span> (
-        {(Number(selectedAccount.value) / 100).toLocaleString({
-          maximumFractionDigits: 2
-        })}{" "}
-        CONST)
-      </div>
-    );
-  };
   render() {
     const { classes, title, selectedAccount } = this.props;
     const { auth, anchorEl, showAlert } = this.state;
@@ -302,7 +353,10 @@ class Header extends React.Component {
                   onClick={this.handleMenu}
                   color="inherit"
                 >
-                  {this.renderSelectedAccount(selectedAccount)}
+                  <SelectedAccount
+                    name={selectedAccount.name}
+                    value={selectedAccount.value}
+                  />
                   <AccountCircle />
                 </IconButton>
                 {this.renderMenu()}
@@ -333,7 +387,11 @@ Header.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Header);
+export default _.flow([
+  withStyles(styles),
+  connectAppContext,
+  connectWalletContext
+])(Header);
 
 const StyledAppBar = styled(AppBar)`
   &.AppBar {
