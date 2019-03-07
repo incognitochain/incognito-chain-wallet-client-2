@@ -108,9 +108,9 @@ const App = ({ history, location }) => {
   React.useEffect(() => {
     onInit();
 
-    window.onbeforeunload = () => {
-      if (walletRef.current) walletService.saveWallet(walletRef.current);
-    };
+    // window.onbeforeunload = () => {
+    //   walletService.saveWallet(walletRef.current);
+    // };
   }, []);
 
   async function onInit() {
@@ -140,6 +140,7 @@ const App = ({ history, location }) => {
 
   async function listAccounts(wallet) {
     let accountList = [];
+    console.time("listAccounts");
     try {
       accountList = (await wallet.listAccount()).map(account => {
         return {
@@ -179,6 +180,7 @@ const App = ({ history, location }) => {
       headerTitle: "Home",
       shouldShowHeader: true
     });
+    console.timeEnd("listAccounts");
   }
 
   const handleClose = (event, reason) => {
