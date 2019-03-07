@@ -285,6 +285,11 @@ class CreateToken extends React.Component {
 
     console.log("Submit param when create or send token: ", submitParams);
 
+
+
+
+
+    //  if type = 0: custom token, else: privacy custom token
     if (type === 0) {
       this.createSendCustomTokenTransaction(submitParams);
     } else {
