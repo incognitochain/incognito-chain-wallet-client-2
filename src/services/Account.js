@@ -65,6 +65,7 @@ export default class Account {
   }
 
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
+    // console.log("Wallet when import account: ", wallet);
     let account = wallet.importAccount(privakeyStr, accountName, passPhrase);
 
     console.log("Account is imported: ", account);
@@ -127,6 +128,8 @@ export default class Account {
       // console.log("Payment addr:", paymentAddr);
       paymentInfos[i] = new PaymentInfo(keyWallet.KeySet.PaymentAddress, new bn(param[i].amount));
     }
+
+    // debugger
 
     let result = await accountWallet.createAndSendConstant(paymentInfos);
 
