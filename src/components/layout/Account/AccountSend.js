@@ -4,11 +4,14 @@ import ConfirmDialog from "../../core/ConfirmDialog";
 import Account from "../../../services/Account";
 import { Button, TextField } from "@material-ui/core";
 import { useGetEstimateFee } from "common/hook/useGetEstimateFee";
-import { useAccountContext, connectAccountContext } from "../../../common/context/AccountContext";
+import {
+  useAccountContext,
+  connectAccountContext
+} from "../../../common/context/AccountContext";
 import { useGetBalance } from "./hook/useGetBalance";
 import toastr from "toastr";
 import { useDebugReducer } from "common/hook/useDebugReducer";
-import {connectWalletContext} from "../../../common/context/WalletContext";
+import { connectWalletContext } from "../../../common/context/WalletContext";
 
 const styles = theme => ({
   textField: {
@@ -88,7 +91,7 @@ function AccountSend(props) {
     const {
       toAddress,
       amount,
-      balance,
+
       fee,
       EstimateTxSizeInKb,
       GOVFeePerKbTx
@@ -136,9 +139,11 @@ function AccountSend(props) {
   async function sendCoin() {
     let { toAddress, amount } = state;
 
-    const result = await Account.sendConstant([
-      { paymentAddressStr: toAddress, amount : Number(amount) * 100 }
-    ], props.account, props.wallet);
+    const result = await Account.sendConstant(
+      [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
+      props.account,
+      props.wallet
+    );
 
     if (result) {
       toastr.success("Completed");
@@ -168,7 +173,9 @@ function AccountSend(props) {
 
       <div className="text-right">
         Balance:{" "}
-        {props.account.value ? Math.round(props.account.value / 100).toLocaleString() : 0}{" "}
+        {props.account.value
+          ? Math.round(props.account.value / 100).toLocaleString()
+          : 0}{" "}
         CONSTANT
       </div>
 
@@ -232,4 +239,6 @@ function AccountSend(props) {
   );
 }
 
-export default withStyles(styles)(connectWalletContext(connectAccountContext(AccountSend)));
+export default withStyles(styles)(
+  connectWalletContext(connectAccountContext(AccountSend))
+);
