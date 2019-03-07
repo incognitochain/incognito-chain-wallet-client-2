@@ -1,49 +1,96 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Button } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import styled from "styled-components";
 import { CopyableTooltip } from "common/components/copyable-tooltip";
+import { useAccountWallet } from "../../modules/tokens/hook/useAccountWallet";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
-export class TokenItem extends React.Component {
-  static propTypes = {
-    item: PropTypes.object.isRequired,
-    onSendToken: PropTypes.func
-  };
-  static defaultProps = {};
-  handleClickButton = () => {
-    const { onSendToken, item, tab } = this.props;
+export function TokenItem({
+  tab,
+  tabName,
+  item = {},
+  onSendToken,
+  handleUnfollow
+}) {
+  const accountWallet = useAccountWallet();
+
+  const [balance, setBalance] = React.useState(null);
+
+  React.useEffect(() => {
+    loadBalance();
+  }, [item.ID]);
+
+  async function loadBalance() {
+    try {
+      if (tabName === "privacy") {
+        const balance = await accountWallet.getPrivacyCustomTokenBalance(
+          item.ID
+        );
+        setBalance(balance);
+      } else if (tabName === "custom") {
+        const balance = await accountWallet.getCustomTokenBalance(item.ID);
+        setBalance(balance);
+      }
+    } catch (e) {
+      console.error(e);
+      setBalance("#ERR");
+    }
+  }
+
+  const handleClickButton = () => {
     onSendToken(item, tab);
   };
 
-  render() {
-    const { item } = this.props;
-    const { Amount, Name, TokenImage } = item;
-    return (
-      <Wrapper className="wrapperToken">
-        <Avatar alt="avatar" src={TokenImage} />
-        <Details>
-          <CopyableTooltip title={item.TokenID}>
-            <div className="wrapperTokenDetail">
-              <div className="tokenName">{Name}</div>
-              <div className="tokenAmount">{Amount.toLocaleString()}</div>
-            </div>
-          </CopyableTooltip>
-        </Details>
+  const showHistory = item => {};
 
-        <Buttons>
-          <StyledButton
-            variant="contained"
-            size="medium"
-            className="tokenButton"
-            onClick={this.handleClickButton}
-          >
-            Send
-          </StyledButton>
-        </Buttons>
-      </Wrapper>
-    );
-  }
+  return (
+    <Wrapper className="wrapperToken">
+      <Avatar alt="avatar" src={item.Image} />
+      <Details>
+        <CopyableTooltip title={item.ID}>
+          <div className="wrapperTokenDetail">
+            <div className="tokenName">{item.Name}</div>
+            <div className="tokenAmount">
+              {balance === null ? <CircularProgress /> : balance}
+            </div>
+          </div>
+        </CopyableTooltip>
+      </Details>
+
+      <Buttons>
+        <StyledButton
+          variant="contained"
+          size="medium"
+          className="tokenButton"
+          onClick={handleClickButton}
+        >
+          Send
+        </StyledButton>
+        <div style={{ height: 3 }} />
+
+        <StyledButton
+          variant="contained"
+          size="medium"
+          className="tokenButton"
+          onClick={() => handleUnfollow(item)}
+        >
+          Unfollow
+        </StyledButton>
+
+        <div style={{ height: 3 }} />
+
+        <StyledButton
+          variant="contained"
+          size="medium"
+          className="tokenButton"
+          onClick={() => showHistory(item)}
+        >
+          History
+        </StyledButton>
+      </Buttons>
+    </Wrapper>
+  );
 }
 
 const StyledButton = styled(Button)`
@@ -57,10 +104,13 @@ const Wrapper = styled.div`
   padding-bottom: 10px;
   display: flex;
   flex-direction: row;
+  align-items: stretch;
 `;
 
 const Details = styled.div`
   flex: 1;
+  display: flex;
+  cursor: pointer;
 `;
 
 const Buttons = styled.div`

@@ -43,3 +43,7 @@ export async function initWallet() {
     throw e;
   }
 }
+
+export function saveWallet(wallet) {
+  wallet.save(getPassphrase());
+}

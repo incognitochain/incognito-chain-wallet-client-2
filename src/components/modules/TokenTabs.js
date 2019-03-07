@@ -1,14 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Tabs, Tab } from "@material-ui/core";
-
-import Token from "../../services/Token";
 import TokenList from "./TokenList";
 import { Button } from "@material-ui/core";
 
 import "./TokenTabs.scss";
 import styled from "styled-components";
-import { SearchFollowingTokensDialog } from "../../modules/tokens/SearchFollowingTokensDialog";
+import { FollowTokenDialog } from "../../modules/tokens/FollowTokenDialog";
+import { connectWalletContext } from "../../common/context/WalletContext";
+import { connectAccountContext } from "../../common/context/AccountContext";
+import _ from "lodash";
 
 const mapTabNameToIndex = {
   privacy: 0,
@@ -38,57 +39,70 @@ class TokenTabs extends React.Component {
     };
   }
   componentDidMount() {
-    const { value } = this.state;
-    this.getTokens(value);
+    this.onRefresh();
   }
-  componentWillReceiveProps(nextProps) {
-    const { value } = this.state;
-    this.getTokens(value);
+  componentDidUpdate(prevProps) {
+    if (this.props.account.name !== prevProps.account.name) {
+      this.onRefresh();
+    }
   }
+
   onRefresh = () => {
-    const { value } = this.state;
-    setTimeout(() => {
-      this.getTokens(value);
-    }, 2000);
+    try {
+      const { wallet, account } = this.props;
+      const accountWallet = wallet.getAccountByName(account.name);
+      const followingTokens = accountWallet.listFollowingTokens();
+
+      this.setState({
+        listCustomTokenBalance: followingTokens.filter(
+          token => token.type === "custom"
+        ),
+        listPrivacyTokenBalance: followingTokens.filter(
+          token => token.type === "privacy"
+        )
+      });
+    } catch (e) {
+      console.error("CAN NOT GET LIST OF FOLLOWING TOKENS");
+    }
   };
   handleChange = (event, value) => {
     this.setState({ value });
-    this.getTokens(value);
+    //this.getTokens(value);
   };
 
-  getCustomTokenBalance = async () => {
-    const { paymentAddress } = this.props;
-    const params = [];
-    params.push(paymentAddress);
-    const results = await Token.getListCustomTokenBalance(params);
+  // getCustomTokenBalance = async () => {
+  //   const { paymentAddress } = this.props;
+  //   const params = [];
+  //   params.push(paymentAddress);
+  //   const results = await Token.getListCustomTokenBalance(params);
 
-    const { ListCustomTokenBalance } = results;
-    if (ListCustomTokenBalance) {
-      this.setState({
-        listCustomTokenBalance: ListCustomTokenBalance
-      });
-    }
-  };
-  getPrivacyTokenBalance = async () => {
-    const { privateKey } = this.props;
-    const params = [];
-    params.push(privateKey);
-    const results = await Token.getListPrivacyCustomTokenBalance(params);
+  //   const { ListCustomTokenBalance } = results;
+  //   if (ListCustomTokenBalance) {
+  //     this.setState({
+  //       listCustomTokenBalance: ListCustomTokenBalance
+  //     });
+  //   }
+  // };
+  // getPrivacyTokenBalance = async () => {
+  //   const { privateKey } = this.props;
+  //   const params = [];
+  //   params.push(privateKey);
+  //   const results = await Token.getListPrivacyCustomTokenBalance(params);
 
-    const { ListCustomTokenBalance } = results;
-    if (ListCustomTokenBalance) {
-      this.setState({
-        listPrivacyTokenBalance: ListCustomTokenBalance
-      });
-    }
-  };
-  getTokens = async tab => {
-    if (tab === 0) {
-      await this.getCustomTokenBalance();
-    } else {
-      await this.getPrivacyTokenBalance();
-    }
-  };
+  //   const { ListCustomTokenBalance } = results;
+  //   if (ListCustomTokenBalance) {
+  //     this.setState({
+  //       listPrivacyTokenBalance: ListCustomTokenBalance
+  //     });
+  //   }
+  // };
+  // getTokens = async tab => {
+  //   if (tab === 0) {
+  //     await this.getCustomTokenBalance();
+  //   } else {
+  //     await this.getPrivacyTokenBalance();
+  //   }
+  // };
   handleCreateToken = () => {
     const { value } = this.state;
     this.props.onCreateToken(value);
@@ -119,6 +133,12 @@ class TokenTabs extends React.Component {
       </ButtonWrapper>
     );
   }
+  handleUnfollow = ({ ID }) => {
+    const { wallet, account } = this.props;
+    const accountWallet = wallet.getAccountByName(account.name);
+    accountWallet.removeFollowingToken(ID);
+    this.onRefresh();
+  };
 
   renderTabs() {
     const {
@@ -128,7 +148,9 @@ class TokenTabs extends React.Component {
     } = this.state;
     const props = {
       list: value === 0 ? listPrivacyTokenBalance : listCustomTokenBalance,
-      tab: value,
+      tab: value, // depricated
+      tabName: mapTabIndexToName[value],
+      handleUnfollow: this.handleUnfollow,
       ...this.props
     };
 
@@ -154,16 +176,22 @@ class TokenTabs extends React.Component {
         {this.renderTabs()}
         {this.renderNewTokenButton()}
 
-        <SearchFollowingTokensDialog
+        <FollowTokenDialog
           isOpen={this.state.isOpenSearchTokenDialog}
           onClose={() => this.setState({ isOpenSearchTokenDialog: false })}
           tabName={mapTabIndexToName[this.state.value]}
+          refreshTokenList={this.onRefresh}
+          followedTokens={
+            this.state.value === 0
+              ? this.state.listPrivacyTokenBalance
+              : this.state.listCustomTokenBalance
+          }
         />
       </Wrapper>
     );
   }
 }
-export default TokenTabs;
+export default _.flow([connectWalletContext, connectAccountContext])(TokenTabs);
 
 const Wrapper = styled.div`
   flex: 1;

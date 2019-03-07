@@ -1,35 +1,27 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { TokenItem } from "./TokenItem";
 import styled from "styled-components";
 
-class TokenList extends React.Component {
-  static propTypes = {
-    list: PropTypes.array.isRequired
-  };
-  renderEmpty = list => {
-    if (list.length > 0) return null;
-    return (
-      <div className="wrapperTokenEmpty">
-        <div className="emptyHeader">NO TOKEN.</div>
-        <div className="emptyDes">
-          You can always easily create your own one.
+function TokenList(props) {
+  const { list = [] } = props;
+  return (
+    <Wrapper className="wrapperTokenList TokenList">
+      {list.length ? (
+        list.map((item, index) => (
+          <TokenItem key={index} item={item} {...props} />
+        ))
+      ) : (
+        <div className="wrapperTokenEmpty">
+          <div className="emptyHeader">NO TOKEN.</div>
+          <div className="emptyDes">
+            You can always easily create your own one.
+          </div>
         </div>
-      </div>
-    );
-  };
-  render() {
-    const { list } = this.props;
-    return (
-      <Wrapper className="wrapperTokenList TokenList">
-        {this.renderEmpty(list)}
-        {list.map((item, index) => (
-          <TokenItem key={index} item={item} {...this.props} />
-        ))}
-      </Wrapper>
-    );
-  }
+      )}
+    </Wrapper>
+  );
 }
+
 export default TokenList;
 
 const Wrapper = styled.div`
