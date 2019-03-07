@@ -10,6 +10,7 @@
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
     "constant-chain-web-js": "constant-money/constant-chain-web-js",
+    "privacy-js-lib": "git://github.com/constant-money/privacy-js-lib",
     "electron": "^3.0.9",
     "electron-dl": "^1.12.0",
     "install": "^0.12.2",

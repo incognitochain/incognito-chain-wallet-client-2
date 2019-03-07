@@ -21,6 +21,7 @@ import {
 } from "rxjs/operators";
 import Account from "services/Account";
 import { connectAccountContext } from "common/context/AccountContext";
+import { connectWalletContext } from "common/context/WalletContext";
 import toastr from "toastr";
 import _ from "lodash";
 import styled from "styled-components";
@@ -252,7 +253,8 @@ class CreateToken extends React.Component {
     this.handleAlertOpen();
   };
   createSendCustomTokenTransaction = async params => {
-    const results = await Token.createSendCustomToken(params);
+    const results = await Token.createSendCustomToken(params, this.props.account, this.props.wallet);
+
     console.log("Result:", results);
     const { Error: error } = results;
     if (error) {
@@ -280,6 +282,9 @@ class CreateToken extends React.Component {
   createOrSendToken = () => {
     const { type } = this.props;
     const { submitParams } = this.state;
+
+    console.log("Submit param when create or send token: ", submitParams);
+
     if (type === 0) {
       this.createSendCustomTokenTransaction(submitParams);
     } else {
@@ -422,7 +427,7 @@ class CreateToken extends React.Component {
     );
   }
 }
-export default connectAccountContext(CreateToken);
+export default connectWalletContext(connectAccountContext(CreateToken));
 
 const Wrapper = styled.div`
   padding: 20px 20px;

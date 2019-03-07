@@ -88,10 +88,18 @@ function appReducer(state = initialState, action) {
 const App = ({ history, location }) => {
   let [state, dispatch] = React.useReducer(appReducer, initialState);
 
-  console.log("App state", state);
+  const walletRef = React.useRef();
+
+  React.useEffect(() => {
+    walletRef.current = state.wallet;
+  }, [state.wallet]);
 
   React.useEffect(() => {
     onInit();
+
+    // window.onbeforeunload = () => {
+    //   walletService.saveWallet(walletRef.current);
+    // };
   }, []);
 
   async function onInit() {

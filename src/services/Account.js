@@ -3,6 +3,25 @@ import Server from "./Server";
 import {PaymentInfo} from "constant-chain-web-js/lib/key";
 import {KeyWallet} from "constant-chain-web-js/lib/wallet/hdwallet";
 import bn from 'bn.js';
+// import * as ec from 'privacy-js-lib/lib/ec';
+// import * as privacyUtils from 'privacy-js-lib/lib/privacy_utils';
+
+
+// console.time("Big int");
+// let a = new bn(10);
+
+// function test() {
+//   let G = ec.P256.randomize();
+//   let rand =privacyUtils.randScalar();
+//
+//   console.time("Test scalar: ");
+//   let H = G.mul(rand);
+//   console.timeEnd("Test scalar: ");
+//
+//   console.log("H: ", H);
+// }
+//
+// window._test = test
 
 // @depricated
 export default class Account {
@@ -42,6 +61,7 @@ export default class Account {
     return false;
   }
 
+  // todo: thunderbird
   static async getEstimateFee(param) {
     try {
       return await axios(Account.getOption("estimatefee", param));
@@ -115,6 +135,7 @@ export default class Account {
   }
 
   static async sendConstant(param, account, wallet) {
+    debugger
 
     // get accountWallet from wallet has name
     let accountWallet = wallet.getAccountByName(account.name);
