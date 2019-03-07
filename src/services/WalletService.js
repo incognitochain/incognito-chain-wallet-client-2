@@ -1,4 +1,4 @@
-import { Wallet } from "constant-chain-web-js/build/wallet";
+import {Wallet} from "constant-chain-web-js/build/wallet";
 import localforage from "localforage";
 
 const numOfAccount = 1;
@@ -17,19 +17,23 @@ export function savePassword(pass) {
 }
 
 export async function loadWallet() {
+  console.time("loadWallet")
   const passphrase = getPassphrase();
   let wallet = new Wallet();
   wallet.Storage = localforage;
 
   const result = await wallet.loadWallet(passphrase);
   if (result && wallet.Name) {
+    console.timeEnd("loadWallet")
     return wallet;
   }
+  console.timeEnd("loadWallet")
   return false;
 }
 
 export async function initWallet() {
   try {
+    console.time("initWallet")
     const passphrase = getPassphrase();
 
     let wallet = new Wallet();
@@ -37,7 +41,7 @@ export async function initWallet() {
     wallet.init(passphrase, numOfAccount, walletName, localforage);
 
     await wallet.save(passphrase);
-
+    console.timeEnd("initWallet")
     return wallet;
   } catch (e) {
     throw e;

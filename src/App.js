@@ -6,8 +6,8 @@ import CreateAccount from "./components/pages/Account/Create";
 import Settings from "./components/pages/Settings";
 import ImportAccount from "./components/pages/Account/Import";
 import Snackbar from "@material-ui/core/Snackbar";
-import { AccountContext } from "./common/context/AccountContext";
-import { AccountListContext } from "./common/context/AccountListContext";
+import {AccountContext} from "./common/context/AccountContext";
+import {AccountListContext} from "./common/context/AccountListContext";
 import {
   Error as IconError,
   CheckCircle as IconSuccess,
@@ -17,10 +17,10 @@ import "toastr/build/toastr.css";
 import toastr from "toastr";
 import styled from "styled-components";
 import * as walletService from "./services/WalletService";
-import { AppRoute } from "./AppRoute";
-import { HashRouter, withRouter } from "react-router-dom";
-import { AppContext } from "./common/context/AppContext";
-import { WalletContext } from "./common/context/WalletContext";
+import {AppRoute} from "./AppRoute";
+import {HashRouter, withRouter} from "react-router-dom";
+import {AppContext} from "./common/context/AppContext";
+import {WalletContext} from "./common/context/WalletContext";
 
 toastr.options.positionClass = "toast-bottom-center";
 
@@ -85,7 +85,7 @@ function appReducer(state = initialState, action) {
   }
 }
 
-const App = ({ history, location }) => {
+const App = ({history, location}) => {
   let [state, dispatch] = React.useReducer(appReducer, initialState);
 
   const walletRef = React.useRef();
@@ -108,7 +108,7 @@ const App = ({ history, location }) => {
 
       if (wallet) {
         listAccounts(wallet);
-        dispatch({ type: "SET_WALLET", wallet });
+        dispatch({type: "SET_WALLET", wallet});
       } else {
         promptPassword();
       }
@@ -129,6 +129,7 @@ const App = ({ history, location }) => {
 
   async function listAccounts(wallet) {
     let accountList = [];
+    console.time("listAccounts")
     try {
       accountList = (await wallet.listAccount()).map(account => {
         return {
@@ -164,17 +165,18 @@ const App = ({ history, location }) => {
 
     dispatch({
       type: "SET_SCREEN",
-      screen: <Home account={selectedAccount} />,
+      screen: <Home account={selectedAccount}/>,
       headerTitle: "Home",
       shouldShowHeader: true
     });
+    console.timeEnd("listAccounts")
   }
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
-    dispatch({ type: "CLOSE_ALERT" });
+    dispatch({type: "CLOSE_ALERT"});
   };
 
   const selectAccount = action => {
@@ -220,13 +222,13 @@ const App = ({ history, location }) => {
 
   const showAlert = (
     msg,
-    { flag = "warning", html = false, duration = 2000, hideIcon = false }
+    {flag = "warning", html = false, duration = 2000, hideIcon = false}
   ) => {
     let icon = "";
 
-    if (flag === "success") icon = <IconSuccess />;
-    else if (flag === "danger") icon = <IconError />;
-    else if (flag === "warning") icon = <IconWarning />;
+    if (flag === "success") icon = <IconSuccess/>;
+    else if (flag === "danger") icon = <IconError/>;
+    else if (flag === "warning") icon = <IconWarning/>;
 
     dispatch({
       type: "SHOW_ALERT",
@@ -249,13 +251,13 @@ const App = ({ history, location }) => {
   };
 
   const showSuccess = msg => {
-    showAlert(msg, { flag: "success", duration: 3000, hideIcon: true });
+    showAlert(msg, {flag: "success", duration: 3000, hideIcon: true});
   };
 
   const backHome = data => {
     dispatch({
       type: "SET_SCREEN",
-      screen: <Home />,
+      screen: <Home/>,
       headerTitle: "Home",
       shouldShowHeader: true
     });
@@ -269,10 +271,10 @@ const App = ({ history, location }) => {
       "accountIndex",
       state.accounts.indexOf(account)
     );
-    dispatch({ type: "SET_SELECTED_ACCOUNT", selectedAccount: account });
+    dispatch({type: "SET_SELECTED_ACCOUNT", selectedAccount: account});
     dispatch({
       type: "SET_SCREEN",
-      screen: <Home account={account} />,
+      screen: <Home account={account}/>,
       shouldShowHeader: true,
       headerTitle: "Home"
     });
@@ -280,10 +282,10 @@ const App = ({ history, location }) => {
 
   return (
     <Wrapper>
-      <AppContext.Provider value={{ listAccounts, appDispatch: dispatch }}>
+      <AppContext.Provider value={{listAccounts, appDispatch: dispatch}}>
         <AccountListContext.Provider value={state.accounts}>
           <AccountContext.Provider value={state.selectedAccount}>
-            <WalletContext.Provider value={{ wallet: state.wallet }}>
+            <WalletContext.Provider value={{wallet: state.wallet}}>
               {state.showAlert}
 
               {state.shouldShowHeader ? (
@@ -301,7 +303,7 @@ const App = ({ history, location }) => {
                 {location.pathname === "/" ? (
                   state.screen /* TODO - move state.screen to react-router */
                 ) : (
-                  <AppRoute />
+                  <AppRoute/>
                 )}
               </AppContainer>
             </WalletContext.Provider>
@@ -316,7 +318,7 @@ const WithRouterApp = withRouter(App);
 
 export default () => (
   <HashRouter>
-    <WithRouterApp />
+    <WithRouterApp/>
   </HashRouter>
 );
 
