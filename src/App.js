@@ -97,9 +97,9 @@ const App = ({ history, location }) => {
   React.useEffect(() => {
     onInit();
 
-    window.onbeforeunload = () => {
-      walletService.saveWallet(walletRef.current);
-    };
+    // window.onbeforeunload = () => {
+    //   walletService.saveWallet(walletRef.current);
+    // };
   }, []);
 
   async function onInit() {
