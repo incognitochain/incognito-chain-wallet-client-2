@@ -80,19 +80,19 @@ class AccountList extends React.Component {
   //   }
   // }
 
-  reload = () => {
-    this.modalAccountDetailRef.close();
-
-    this.setState(
-      {
-        modalAccountDetail: "",
-        modalAccountSend: ""
-      },
-      () => {
-        this.getAccountList();
-      }
-    );
-  };
+  // reload = () => {
+  //   this.modalAccountDetailRef.close();
+  //
+  //   this.setState(
+  //     {
+  //       modalAccountDetail: "",
+  //       modalAccountSend: ""
+  //     },
+  //     () => {
+  //       this.getAccountList();
+  //     }
+  //   );
+  // };
 
   chooseAccount = account => {
     //this.modalAccountDetailRef.open();

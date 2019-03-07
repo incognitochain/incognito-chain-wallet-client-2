@@ -1,5 +1,8 @@
 import axios from "axios";
 import Server from "./Server";
+import {PaymentInfo} from "constant-chain-web-js/lib/key";
+import {KeyWallet} from "constant-chain-web-js/lib/wallet/hdwallet";
+import bn from 'bn.js';
 
 // @depricated
 export default class Account {
@@ -63,6 +66,8 @@ export default class Account {
 
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
     let account = wallet.importAccount(privakeyStr, accountName, passPhrase);
+
+    console.log("Account is imported: ", account);
     if (account.isImport === false) {
       console.log("Account is not imported");
       return false;
@@ -72,17 +77,25 @@ export default class Account {
     }
   }
 
-  static async removeAccount(param) {
-    try {
-      const response = await axios(Account.getOption("removeaccount", param));
-      if (response.status === 200) {
-        if (response.data && response.data.Result) return response.data.Result;
-      }
+  static async removeAccount(privateKeyStr, accountName, passPhrase, wallet) {
+    try{
+      let result = wallet.removeAccount(privateKeyStr, accountName, passPhrase);
+      return result;
+
     } catch (e) {
-      return { error: true, message: e.message };
+      return e
     }
 
-    return false;
+    // try {
+    //   const response = await axios(Account.getOption("removeaccount", param));
+    //   if (response.status === 200) {
+    //     if (response.data && response.data.Result) return response.data.Result;
+    //   }
+    // } catch (e) {
+    //   return { error: true, message: e.message };
+    // }
+    //
+    // return false;
   }
 
   static async registerCandidate(param) {
@@ -100,8 +113,24 @@ export default class Account {
     return false;
   }
 
-  static async sendConstant(accountWallet, param) {
-    let result = await accountWallet.createAndSendConstant(param);
+  static async sendConstant(param, account, wallet) {
+
+    // get accountWallet from wallet has name
+    let accountWallet = wallet.getAccountByName(account.name);
+
+    console.log("Account Wallet sender: ", accountWallet);
+
+    // create paymentInfos
+    let paymentInfos = new Array(param.length);
+    for (let i=0; i<paymentInfos.length; i++){
+      let keyWallet = KeyWallet.base58CheckDeserialize(param[i].paymentAddressStr);
+      // console.log("Payment addr:", paymentAddr);
+      paymentInfos[i] = new PaymentInfo(keyWallet.KeySet.PaymentAddress, new bn(param[i].amount));
+    }
+
+    let result = await accountWallet.createAndSendConstant(paymentInfos);
+
+    console.log("Result create and send tx: ", result);
     if (result.err == null && result.txId) {
       return result.txId;
     } else {
@@ -147,19 +176,19 @@ export default class Account {
     // }
   }
 
-  static async getAccountList(param) {
-    try {
-      const response = await axios(Account.getOption("listaccounts", param));
-
-      if (response.status === 200) {
-        if (response.data && response.data.Result) return response.data.Result;
-      }
-    } catch (e) {
-      console.error(e);
-      return false;
-    }
-    return false;
-  }
+  // static async getAccountList(param) {
+  //   try {
+  //     const response = await axios(Account.getOption("listaccounts", param));
+  //
+  //     if (response.status === 200) {
+  //       if (response.data && response.data.Result) return response.data.Result;
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //     return false;
+  //   }
+  //   return false;
+  // }
 
   static async getSealerKey(param) {
     const response = await axios(
