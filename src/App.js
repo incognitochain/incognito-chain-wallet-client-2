@@ -134,7 +134,7 @@ const App = ({ history, location }) => {
         return {
           default: false,
           name: account["Account Name"],
-          value: account.Balance,
+          value: 0,
           PaymentAddress: account.PaymentAddress,
           ReadonlyKey: account.ReadonlyKey
         };
