@@ -82,7 +82,7 @@ export function SearchFollowingTokensDialog({ tabName, isOpen, onClose }) {
     }));
 
   return (
-    <Modal title="Tokens to Follow" isOpen={isOpen} onClose={onClose}>
+    <Modal title="Select Tokens to Follow" isOpen={isOpen} onClose={onClose}>
       <Wrapper>
         <Form noValidate>
           <TextField
@@ -97,20 +97,7 @@ export function SearchFollowingTokensDialog({ tabName, isOpen, onClose }) {
             }
           />
         </Form>
-        {renderIf(selectedTokens.length)(
-          <Tags>
-            <ReactTags
-              allowDragDrop={false}
-              tags={selectedTokens}
-              handleDelete={i => {
-                dispatch({
-                  type: "SELECT_TOKEN",
-                  selectedId: selectedTokens[i].id
-                });
-              }}
-            />
-          </Tags>
-        )}
+
         <List>
           {suggestTokens.length ? (
             suggestTokens.map((token, i) => {
@@ -138,6 +125,20 @@ export function SearchFollowingTokensDialog({ tabName, isOpen, onClose }) {
             </div>
           )}
         </List>
+        {renderIf(selectedTokens.length)(
+          <Tags>
+            <ReactTags
+              allowDragDrop={false}
+              tags={selectedTokens}
+              handleDelete={i => {
+                dispatch({
+                  type: "SELECT_TOKEN",
+                  selectedId: selectedTokens[i].id
+                });
+              }}
+            />
+          </Tags>
+        )}
         <FollowButtonWrapper>
           <Button
             disabled={!selectedTokens.length}
@@ -154,6 +155,7 @@ export function SearchFollowingTokensDialog({ tabName, isOpen, onClose }) {
 }
 
 const Tags = styled.div`
+  padding: 20px 20px;
   .ReactTags__tagInput {
     display: none;
   }
@@ -234,8 +236,8 @@ const Token = styled.div`
 `;
 
 const List = styled.div`
-  flex: 1;
   overflow: auto;
+  max-height: 500px;
 `;
 
 const Wrapper = styled.div`
@@ -249,12 +251,4 @@ const Form = styled.form`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-`;
-
-const ButtonWrapper = styled.div`
-  height: 56px;
-  transform: translateY(4px);
-  button {
-    height: 56px;
-  }
 `;

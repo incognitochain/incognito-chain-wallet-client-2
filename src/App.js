@@ -20,10 +20,7 @@ import * as walletService from "./services/WalletService";
 import { AppRoute } from "./AppRoute";
 import { HashRouter, withRouter } from "react-router-dom";
 import { AppContext } from "./common/context/AppContext";
-import {
-  WalletContext,
-  useWalletContext
-} from "./common/context/WalletContext";
+import { WalletContext } from "./common/context/WalletContext";
 
 toastr.options.positionClass = "toast-bottom-center";
 
