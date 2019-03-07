@@ -46,7 +46,7 @@ export function SearchFollowingTokensDialog({ tabName, isOpen, onClose }) {
     searchKey: "",
     tokens: []
   });
-  console.log("state", state);
+
   React.useEffect(() => {
     isOpen && onInit();
   }, [isOpen]);

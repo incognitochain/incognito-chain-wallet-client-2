@@ -19,7 +19,7 @@ import { ReactComponent as CopyPasteSVG } from "assets/images/copy-paste.svg";
 import toastr from "toastr";
 import styled from "styled-components";
 import { connectAccountContext } from "../../../common/context/AccountContext";
-import {connectWalletContext} from "../../../common/context/WalletContext";
+import { connectWalletContext } from "../../../common/context/WalletContext";
 
 const styles = theme => ({
   key: {
@@ -58,40 +58,6 @@ class AccountDetail extends React.Component {
       modalAccountSend: ""
     };
   }
-
-  // componentDidMount() {
-  //   const { account } = this.props;
-  //   this.getData(account);
-  // }
-
-  // componentDidUpdate(prevProps) {
-  //   if (this.props.account !== prevProps.account) {
-  //     this.getData(this.props.account);
-  //   }
-  // }
-
-  // async getData(account) {
-  //   // TODO - use AccountContext instead
-  //   const key = await Account.getPaymentAddress(account.name);
-  //   if (key) {
-  //     const result = await Account.getPrivateKey(key.PaymentAddress);
-  //     if (result) {
-  //       this.setState({
-  //         privateKey: result.PrivateKey,
-  //         paymentAddress: key.PaymentAddress,
-  //         readonlyKey: key.ReadonlyKey
-  //       });
-  //     }
-  //   }
-  //
-  //   const result = await Account.getBalance([account.name, 1, "12345678"]);
-  //   if (result.error) {
-  //     this.showError(result.message);
-  //   } else {
-  //     //format mili constant to constant
-  //     this.setState({ balance: Number(result) / 100 });
-  //   }
-  // }
 
   onFinish = data => {
     const { onFinish } = this.props;
@@ -158,15 +124,20 @@ class AccountDetail extends React.Component {
     }
 
     if (privateKey) {
-      try{
-        let result = await Account.removeAccount(privateKey, account.name, "12345678", this.props.wallet);
-        if (result){
+      try {
+        let result = await Account.removeAccount(
+          privateKey,
+          account.name,
+          "12345678",
+          this.props.wallet
+        );
+        if (result) {
           this.onFinish({ message: "Account is removed!" });
         } else {
           this.showError("Remove error!");
         }
-      }catch (e) {
-        throw e
+      } catch (e) {
+        throw e;
       }
     } else {
       this.showError("Not found Private Key!");
@@ -289,7 +260,7 @@ class AccountDetail extends React.Component {
               <input
                 className="form-control"
                 id="paymentAddress"
-                defaultValue={account.PaymentAddress}
+                value={account.PaymentAddress}
               />
               <IconPasteWrapper>
                 <CopyPasteSVG />
@@ -346,7 +317,9 @@ AccountDetail.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(connectWalletContext(connectAccountContext(AccountDetail)));
+export default withStyles(styles)(
+  connectWalletContext(connectAccountContext(AccountDetail))
+);
 
 const Wrapper = styled.div`
   display: flex;

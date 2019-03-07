@@ -88,16 +88,15 @@ function appReducer(state = initialState, action) {
 const App = ({ history, location }) => {
   let [state, dispatch] = React.useReducer(appReducer, initialState);
 
+  console.log("App state", state);
+
   React.useEffect(() => {
     onInit();
   }, []);
 
   async function onInit() {
     if (walletService.hasPassword()) {
-      console.log("haha");
       const wallet = await walletService.loadWallet();
-      console.log("hihi");
-      window._w = wallet;
 
       if (wallet) {
         listAccounts(wallet);
@@ -171,7 +170,7 @@ const App = ({ history, location }) => {
   };
 
   const selectAccount = action => {
-    // TODO - move this react-router
+    // TODO - move this to react-router
     let screen = "",
       headerTitle = "Home";
     if (action === "CREATE_ACCOUNT") {
