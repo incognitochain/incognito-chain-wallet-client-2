@@ -37,7 +37,7 @@ const CopyableTooltip = props => {
 
   return (
     <>
-      <div onClick={handlePopoverOpen}>{children}</div>
+      <Wrapper onClick={handlePopoverOpen}>{children}</Wrapper>
       <Popover
         id="simple-popper"
         open={open}
@@ -66,6 +66,10 @@ const CopyableTooltip = props => {
 };
 
 export default withStyles(styles)(CopyableTooltip);
+
+const Wrapper = styled.div`
+  flex: 1;
+`;
 
 const CopyContentWrapper = styled.div`
   display: flex;

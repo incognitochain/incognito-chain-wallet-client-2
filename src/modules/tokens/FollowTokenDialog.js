@@ -6,6 +6,8 @@ import * as rpcClientService from "../../services/RpcClientService";
 import _ from "lodash";
 import cls from "classnames";
 import { WithContext as ReactTags } from "react-tag-input";
+import { useWalletContext } from "../../common/context/WalletContext";
+import { useAccountContext } from "../../common/context/AccountContext";
 
 const renderIf = cond => cmp => (cond ? cmp : null);
 
@@ -21,6 +23,11 @@ function getIsSelected(token, selectedId) {
   }
 }
 
+const initialState = {
+  searchKey: "",
+  tokens: []
+};
+
 function reducer(state, action) {
   switch (action.type) {
     case "SET_TOKENS":
@@ -35,23 +42,31 @@ function reducer(state, action) {
       };
     case "CHANGE_SEARCH_KEY":
       return { ...state, searchKey: action.searchKey };
-
+    case "RESET":
+      return initialState;
     default:
       throw new Error();
   }
 }
 
-export function SearchFollowingTokensDialog({ tabName, isOpen, onClose }) {
-  const [state, dispatch] = React.useReducer(reducer, {
-    searchKey: "",
-    tokens: []
-  });
+export function FollowTokenDialog({
+  followedTokens = [],
+  tabName,
+  isOpen,
+  onClose,
+  refreshTokenList
+}) {
+  const [state, dispatch] = React.useReducer(reducer, initialState);
+
+  const { wallet } = useWalletContext();
+  const account = useAccountContext();
 
   React.useEffect(() => {
     isOpen && onInit();
   }, [isOpen]);
 
   async function onInit() {
+    dispatch({ type: "RESET" });
     if (tabName === "privacy") {
       const result = await rpcClientService.listPrivacyTokens();
       dispatch({ type: "SET_TOKENS", tokens: result.listCustomToken });
@@ -65,13 +80,13 @@ export function SearchFollowingTokensDialog({ tabName, isOpen, onClose }) {
     dispatch({ type: "SELECT_TOKEN", selectedId });
   }
 
-  function onClickFollow() {}
-
   const suggestTokens = state.tokens.filter(
     token =>
       (token.Name + token.ID || "")
         .toUpperCase()
-        .includes((state.searchKey || "").toUpperCase()) && !token.isSelected
+        .includes((state.searchKey || "").toUpperCase()) &&
+      !token.isSelected &&
+      !followedTokens.find(followedToken => followedToken.ID === token.ID)
   );
 
   const selectedTokens = state.tokens
@@ -80,6 +95,20 @@ export function SearchFollowingTokensDialog({ tabName, isOpen, onClose }) {
       id: token.ID,
       text: token.Name
     }));
+
+  function onClickFollow() {
+    const accountWallet = wallet.getAccountByName(account.name);
+    accountWallet.addFollowingToken(
+      ...state.tokens
+        .filter(token => token.isSelected)
+        .map(token => ({
+          ...token,
+          type: tabName
+        }))
+    );
+    refreshTokenList();
+    onClose();
+  }
 
   return (
     <Modal title="Select Tokens to Follow" isOpen={isOpen} onClose={onClose}>
