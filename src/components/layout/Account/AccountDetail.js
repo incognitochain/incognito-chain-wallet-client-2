@@ -181,6 +181,8 @@ class AccountDetail extends React.Component {
   };
   handleCloseCreateToken = () => {
     this.modalTokenCreateRef.close();
+
+    // this.tokenTabsRef??????
     this.tokenTabsRef.onRefresh();
   };
   handleRemoveAccount = () => {
