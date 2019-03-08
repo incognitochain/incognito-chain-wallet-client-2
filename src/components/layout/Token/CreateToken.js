@@ -267,7 +267,7 @@ class CreateToken extends React.Component {
     }
   };
   createSendPrivacyTokenTransaction = async params => {
-    const results = await Token.createSendPrivacyCustomTokenTransaction(params);
+    const results = await Token.createSendPrivacyCustomTokenTransaction(params, this.props.account, this.props.wallet);
     console.log("Result:", results);
     const { Error: error } = results;
     if (error) {
@@ -285,6 +285,11 @@ class CreateToken extends React.Component {
 
     console.log("Submit param when create or send token: ", submitParams);
 
+
+
+
+
+    //  if type = 0: custom token, else: privacy custom token
     if (type === 0) {
       this.createSendCustomTokenTransaction(submitParams);
     } else {
