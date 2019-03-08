@@ -52,7 +52,7 @@ export function History() {
               <TxID>{truncateMiddle(item.txID)}</TxID>
               <Div>
                 <Left>
-                  {item.receiver.map((receiverItem, i) => {
+                  {(item.receivers || []).map((receiverItem, i) => {
                     return (
                       <Receiver key={i}>
                         {truncateMiddle(receiverItem)}

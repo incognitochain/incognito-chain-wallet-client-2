@@ -10,6 +10,7 @@ import { FollowTokenDialog } from "../../modules/tokens/FollowTokenDialog";
 import { connectWalletContext } from "../../common/context/WalletContext";
 import { connectAccountContext } from "../../common/context/AccountContext";
 import _ from "lodash";
+import { TokenHistoryDialog } from "../../modules/tokens/TokenHistoryDialog";
 
 const mapTabNameToIndex = {
   privacy: 0,
@@ -67,42 +68,8 @@ class TokenTabs extends React.Component {
   };
   handleChange = (event, value) => {
     this.setState({ value });
-    //this.getTokens(value);
   };
 
-  // getCustomTokenBalance = async () => {
-  //   const { paymentAddress } = this.props;
-  //   const params = [];
-  //   params.push(paymentAddress);
-  //   const results = await Token.getListCustomTokenBalance(params);
-
-  //   const { ListCustomTokenBalance } = results;
-  //   if (ListCustomTokenBalance) {
-  //     this.setState({
-  //       listCustomTokenBalance: ListCustomTokenBalance
-  //     });
-  //   }
-  // };
-  // getPrivacyTokenBalance = async () => {
-  //   const { privateKey } = this.props;
-  //   const params = [];
-  //   params.push(privateKey);
-  //   const results = await Token.getListPrivacyCustomTokenBalance(params);
-
-  //   const { ListCustomTokenBalance } = results;
-  //   if (ListCustomTokenBalance) {
-  //     this.setState({
-  //       listPrivacyTokenBalance: ListCustomTokenBalance
-  //     });
-  //   }
-  // };
-  // getTokens = async tab => {
-  //   if (tab === 0) {
-  //     await this.getCustomTokenBalance();
-  //   } else {
-  //     await this.getPrivacyTokenBalance();
-  //   }
-  // };
   handleCreateToken = () => {
     const { value } = this.state;
     this.props.onCreateToken(value);
@@ -110,29 +77,6 @@ class TokenTabs extends React.Component {
   handleAddFollowingToken = () => {
     this.setState({ isOpenSearchTokenDialog: true });
   };
-  renderNewTokenButton() {
-    return (
-      <ButtonWrapper>
-        <Button
-          variant="contained"
-          size="medium"
-          className="newTokenButton"
-          onClick={this.handleCreateToken}
-        >
-          Create New Token
-        </Button>
-
-        <Button
-          variant="contained"
-          size="medium"
-          className="newTokenButton"
-          onClick={this.handleAddFollowingToken}
-        >
-          Add Tokens To Follow
-        </Button>
-      </ButtonWrapper>
-    );
-  }
   handleUnfollow = ({ ID }) => {
     const { wallet, account } = this.props;
     const accountWallet = wallet.getAccountByName(account.name);
@@ -174,7 +118,35 @@ class TokenTabs extends React.Component {
     return (
       <Wrapper className="TokenTabs">
         {this.renderTabs()}
-        {this.renderNewTokenButton()}
+
+        <ButtonWrapper>
+          <Button
+            variant="contained"
+            size="medium"
+            className="newTokenButton"
+            onClick={this.handleCreateToken}
+          >
+            Create New Token
+          </Button>
+
+          <Button
+            variant="contained"
+            size="medium"
+            className="newTokenButton"
+            onClick={this.handleAddFollowingToken}
+          >
+            Add Tokens To Follow
+          </Button>
+
+          <Button
+            variant="contained"
+            size="medium"
+            className="newTokenButton"
+            onClick={() => this.setState({ isOpenTokenHistory: true })}
+          >
+            Show Token History
+          </Button>
+        </ButtonWrapper>
 
         <FollowTokenDialog
           isOpen={this.state.isOpenSearchTokenDialog}
@@ -186,6 +158,12 @@ class TokenTabs extends React.Component {
               ? this.state.listPrivacyTokenBalance
               : this.state.listCustomTokenBalance
           }
+        />
+
+        <TokenHistoryDialog
+          tabName={mapTabIndexToName[this.state.value]}
+          isOpen={this.state.isOpenTokenHistory}
+          onClose={() => this.setState({ isOpenTokenHistory: false })}
         />
       </Wrapper>
     );

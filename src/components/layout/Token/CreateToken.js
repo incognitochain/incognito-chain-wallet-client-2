@@ -119,6 +119,7 @@ class CreateToken extends React.Component {
         })
       )
       .subscribe(fee => {
+        console.log(" CreateToken feeeeeeeeeeeeeeeeeeeeeeeeee:", fee);
         this.setState({ fee });
       }, console.error);
   };
