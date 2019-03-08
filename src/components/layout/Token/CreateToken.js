@@ -267,7 +267,7 @@ class CreateToken extends React.Component {
     }
   };
   createSendPrivacyTokenTransaction = async params => {
-    const results = await Token.createSendPrivacyCustomTokenTransaction(params);
+    const results = await Token.createSendPrivacyCustomTokenTransaction(params, this.props.account, this.props.wallet);
     console.log("Result:", results);
     const { Error: error } = results;
     if (error) {

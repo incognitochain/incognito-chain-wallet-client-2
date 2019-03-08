@@ -1,7 +1,6 @@
 import axios from "axios";
 import Server from "./Server";
-import {PaymentInfo} from "constant-chain-web-js/lib/key";
-import {KeyWallet} from "constant-chain-web-js/lib/wallet/hdwallet";
+import {KeyWallet, PaymentInfo} from "constant-chain-web-js/build/wallet";
 import bn from 'bn.js';
 // import * as ec from 'privacy-js-lib/lib/ec';
 // import * as privacyUtils from 'privacy-js-lib/lib/privacy_utils';
