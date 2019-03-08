@@ -21,96 +21,15 @@ import { AppRoute } from "./AppRoute";
 import { HashRouter, withRouter } from "react-router-dom";
 import { AppContext } from "./common/context/AppContext";
 import { WalletContext } from "./common/context/WalletContext";
+import { appReducer, initialAppState } from "./modules/app/appReducer";
 
 toastr.options.positionClass = "toast-bottom-center";
 
-const initialState = {
-  screen: "",
-  headerTitle: "Wallet home",
-  showAlert: "",
-  isAlert: false,
-  selectedAccount: {},
-  accounts: [],
-  shouldShowHeader: true
-};
-
-function appReducer(state = initialState, action) {
-  switch (action.type) {
-    case "SET_BALANCES":
-      console.log("###action.balances", action.balances);
-      return {
-        ...state,
-        accounts: state.accounts.map(account => ({
-          ...account,
-          value: action.balances.find(
-            ({ accountName }) => accountName === account.name
-          ).balance
-        }))
-      };
-    case "LOAD_ACCOUNTS":
-      return {
-        ...state,
-        loading: true,
-        accounts: []
-      };
-    case "LOAD_ACCOUNTS_SUCCESS":
-      return {
-        ...state,
-        walletName: action.walletName,
-        loading: false,
-        selectedAccount: action.selectedAccount,
-        accounts: action.accounts
-      };
-    case "SHOW_ALERT":
-      return {
-        ...state,
-        isAlert: true,
-        showAlert: action.showAlert
-      };
-    case "CLOSE_ALERT":
-      return {
-        ...state,
-        showAlert: "",
-        isAlert: false
-      };
-    case "SET_SCREEN":
-      return {
-        ...state,
-        screen: action.screen,
-        shouldShowHeader: action.shouldShowHeader,
-        headerTitle: action.headerTitle
-      };
-    case "SET_SELECTED_ACCOUNT":
-      return {
-        ...state,
-        selectedAccount: action.selectedAccount
-      };
-
-    case "SET_WALLET":
-      return {
-        ...state,
-        wallet: action.wallet
-      };
-    default:
-      throw new Error("Unknown action type", action);
-  }
-}
-
 const App = ({ history, location }) => {
-  let [state, dispatch] = React.useReducer(appReducer, initialState);
-  console.log("###app state", state);
-  const walletRef = React.useRef();
-
-  React.useEffect(() => {
-    walletRef.current = state.wallet;
-  }, [state.wallet]);
+  let [state, dispatch] = React.useReducer(appReducer, initialAppState);
 
   React.useEffect(() => {
     onInit();
-
-    // window.onbeforeunload = () => {
-    //   walletService.saveWallet(walletRef.current);
-    // };
   }, []);
 
   async function onInit() {
@@ -118,8 +37,8 @@ const App = ({ history, location }) => {
       const wallet = await walletService.loadWallet();
 
       if (wallet) {
-        listAccounts(wallet);
         dispatch({ type: "SET_WALLET", wallet });
+        listAccounts(wallet);
       } else {
         promptPassword();
       }
@@ -140,7 +59,6 @@ const App = ({ history, location }) => {
 
   async function listAccounts(wallet) {
     let accountList = [];
-    console.time("listAccounts");
     try {
       accountList = (await wallet.listAccount()).map(account => {
         return {
@@ -180,6 +98,8 @@ const App = ({ history, location }) => {
       headerTitle: "Home",
       shouldShowHeader: true
     });
+
+    loadBalance(selectedAccount.name, wallet);
     console.timeEnd("listAccounts");
   }
 
@@ -289,7 +209,18 @@ const App = ({ history, location }) => {
       shouldShowHeader: true,
       headerTitle: "Home"
     });
+
+    loadBalance(account.name, state.wallet);
   };
+
+  async function loadBalance(accountName, wallet) {
+    const accountWallet = wallet.MasterAccount.child.find(
+      accountWallet => accountWallet.name === accountName
+    );
+
+    const balance = await accountWallet.getBalance();
+    dispatch({ type: "SET_SELECTED_ACCOUNT_BALANCE", balance });
+  }
 
   return (
     <Wrapper>

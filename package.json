@@ -9,6 +9,10 @@
     "@material-ui/styles": "^3.0.0-alpha.10",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
+<<<<<<< HEAD
+=======
+    "constant-chain-web-js": "constant-money/constant-chain-web-js",
+>>>>>>> 0eb570a5e9ea7e691df846651258eaf0192aa1c9
     "electron": "^3.0.9",
     "electron-dl": "^1.12.0",
     "install": "^0.12.2",

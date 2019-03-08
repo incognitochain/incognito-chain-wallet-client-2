@@ -32,7 +32,6 @@ export function useGetEstimateFee({
   const privateKey = account.PrivateKey;
 
   React.useEffect(() => {
-    console.log("useGetEstmiateFee", toAddressInput, amountInput);
     if (!toAddressInput || !amountInput) {
       return;
     }
@@ -56,7 +55,6 @@ export function useGetEstimateFee({
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
-          console.log("switchmap", toAddress, amount);
           return Account.getEstimateFee([
             privateKey,
             {
@@ -86,7 +84,6 @@ export function useGetEstimateFee({
 
     return () => {
       subscription.unsubscribe();
-      console.log("\t unsubscribed");
     };
   }, [
     fee,
