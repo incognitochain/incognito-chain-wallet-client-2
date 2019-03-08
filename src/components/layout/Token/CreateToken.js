@@ -19,22 +19,14 @@ import {
   filter,
   startWith
 } from "rxjs/operators";
-import Account from "services/Account";
 import { connectAccountContext } from "common/context/AccountContext";
 import { connectWalletContext } from "common/context/WalletContext";
-import toastr from "toastr";
 import _ from "lodash";
 import styled from "styled-components";
 import * as rpcClientService from "../../../services/RpcClientService";
 
-function feePerTx(fee, EstimateTxSizeInKb) {
-  const result = Number(fee) / EstimateTxSizeInKb;
-  return result || -1;
-}
-
 class CreateToken extends React.Component {
   static propTypes = {
-    paymentAddress: PropTypes.string.isRequired,
     privateKey: PropTypes.string.isRequired,
     balance: PropTypes.number,
     toAddress: PropTypes.string,
@@ -110,7 +102,7 @@ class CreateToken extends React.Component {
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
           return rpcClientService.getEstimateFeeForSendingToken(
-            this.props.paymentAddress,
+            this.props.account.PaymentAddress,
             toAddress,
             amount,
             this.getRequestTokenObject(),
@@ -316,8 +308,6 @@ class CreateToken extends React.Component {
     );
   }
   renderForm() {
-    const { paymentAddress } = this.props;
-
     return (
       <form onSubmit={this.handleSubmit}>
         {this.renderBalance()}
@@ -330,7 +320,7 @@ class CreateToken extends React.Component {
           className="textField"
           margin="normal"
           variant="outlined"
-          value={paymentAddress}
+          value={this.props.account.PaymentAddress}
         />
 
         <TextField
@@ -411,7 +401,9 @@ class CreateToken extends React.Component {
     );
   }
 }
-export default connectWalletContext(connectAccountContext(CreateToken));
+export default _.flow([connectWalletContext, connectAccountContext])(
+  CreateToken
+);
 
 const Wrapper = styled.div`
   padding: 20px 20px;

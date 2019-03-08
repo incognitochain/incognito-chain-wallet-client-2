@@ -145,7 +145,6 @@ class AccountDetail extends React.Component {
   };
 
   handleSendToken = (item, tab) => {
-    debugger;
     const { paymentAddress, privateKey } = this.state;
     const props = {
       paymentAddress,
@@ -160,6 +159,7 @@ class AccountDetail extends React.Component {
       onClose: this.handleCloseCreateToken
     };
     this.setState({
+      isSendToken: true,
       modalCreateToken: <CreateToken {...props} />
     });
     this.modalTokenCreateRef.open();
@@ -176,6 +176,7 @@ class AccountDetail extends React.Component {
     };
 
     this.setState({
+      isSendToken: false,
       modalCreateToken: <CreateToken {...props} />
     });
     this.modalTokenCreateRef.open();
@@ -191,10 +192,10 @@ class AccountDetail extends React.Component {
   };
 
   renderTokenCreate() {
-    const { modalCreateToken } = this.state;
+    const { isSendToken, modalCreateToken } = this.state;
     return (
       <Dialog
-        title="Create Token"
+        title={(isSendToken ? "Send " : "Create") + " Token"}
         onRef={modal => (this.modalTokenCreateRef = modal)}
         className={{ margin: 0 }}
       >
