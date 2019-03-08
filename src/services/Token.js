@@ -3,7 +3,10 @@ import Server from "./Server";
 import {
   PaymentInfo,
   CustomTokenPrivacyParamTx,
-  CustomTokenParamTx
+  CustomTokenParamTx,
+  TxTokenVin,
+  TxTokenVout,
+  KeyWallet,
 } from "constant-chain-web-js/build/wallet";
 
 export default class Token {
@@ -52,6 +55,8 @@ export default class Token {
     return false;
   }
   static async createSendPrivacyCustomTokenTransaction(param, account, wallet) {
+
+    console.log("SEND PRIVACY CUSTOM TOKEN!!!!!!!");
     // get accountWallet from wallet has name
     let accountWallet = wallet.getAccountByName(account.name);
 
@@ -96,6 +101,9 @@ export default class Token {
   }
 
   static async createSendCustomToken(submitParam, account, wallet) {
+
+
+    console.log("SEND CUSTOM TOKEN!!!!!!!");
     // get accountWallet from wallet has name
     let accountWallet = wallet.getAccountByName(account.name);
 
@@ -115,13 +123,21 @@ export default class Token {
     // get current token to get token param
     let tokenParam = new CustomTokenParamTx();
     tokenParam.propertyID = "";
-    tokenParam.propertyName = "";
-    tokenParam.propertySymbol = "";
-    tokenParam.amount = 0;
-    tokenParam.tokenTxType = 0;
-    tokenParam.receivers = [];
+    tokenParam.propertyName = submitParam.TokenName;
+    tokenParam.propertySymbol = submitParam.TokenSymbol;
+    tokenParam.amount = submitParam.TokenAmount * 100;
+    tokenParam.tokenTxType = submitParam.TokenTxType;
+    tokenParam.receivers = new Array(1);
+    tokenParam.receivers[0] = new TxTokenVout();
+    console.log("To address seriallize: ", submitParam.TokenReceivers.PaymentAddress);
 
-    await accountWallet.createAndSendCustomToken(paymentInfos, tokenParam);
+    let receiverKey = KeyWallet.base58CheckDeserialize(submitParam.TokenReceivers.PaymentAddress);
+    console.log("Payment address of receiver:", receiverKey);
+    tokenParam.receivers[0].set(receiverKey.KeySet.PaymentAddress, submitParam.TokenReceivers.Amount * 100);
+    
+    let res = await accountWallet.createAndSendCustomToken(paymentInfos, tokenParam);
+    console.log("Res when create and send token:", res);
+    return res;
 
     // param.splice(1, 0, null)
     // const response = await axios(Token.getOption("createandsendcustomtokentransaction", param));
