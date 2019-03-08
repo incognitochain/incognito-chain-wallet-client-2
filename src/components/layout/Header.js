@@ -57,7 +57,7 @@ const SelectedAccount = ({ name, value }) => {
     <div className="selectedAccount">
       <span className="selectedAccountName">{name}</span> (
       {value === -1 ? (
-        <CircularProgress />
+        <CircularProgress size={20} />
       ) : (
         (Number(value) / 100).toLocaleString({
           maximumFractionDigits: 2
