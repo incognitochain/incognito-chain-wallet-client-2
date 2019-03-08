@@ -102,6 +102,7 @@ function AccountSend(props) {
       )
       .subscribe(
         fee => {
+          console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", fee)
           dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee });
         },
         error => {
