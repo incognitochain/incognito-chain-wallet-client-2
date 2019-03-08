@@ -1,7 +1,5 @@
 import React from "react";
 
-const SHOULD_LOG = false;
-
 /**
  * Use just as the same as React.useReducer, but state and action is be logged to the console.
  * @param  {...any} params The same params passed to React.useReducer()
