@@ -3,15 +3,23 @@ import { withStyles } from "@material-ui/core/styles";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Account from "../../../services/Account";
 import { Button, TextField } from "@material-ui/core";
-import { useGetEstimateFee } from "common/hook/useGetEstimateFee";
 import {
   useAccountContext,
   connectAccountContext
 } from "../../../common/context/AccountContext";
 import { useGetBalance } from "./hook/useGetBalance";
 import toastr from "toastr";
-import { useDebugReducer } from "common/hook/useDebugReducer";
 import { connectWalletContext } from "../../../common/context/WalletContext";
+import { fromEvent, combineLatest } from "rxjs";
+import {
+  map,
+  debounceTime,
+  switchMap,
+  distinctUntilChanged,
+  filter,
+  startWith
+} from "rxjs/operators";
+import * as rpcClientService from "../../../services/RpcClientService";
 
 const styles = theme => ({
   textField: {
@@ -34,9 +42,11 @@ function reducer(state, action) {
     case "CHANGE_INPUT":
       return { ...state, [action.name]: action.value };
     case "SET_ESTIMATE_FEE":
-      return { ...state, ...action.payload };
+      return { ...state, fee: action.fee, isLoadingEstimationFee: false };
     case "RESET":
       return { ...state, amount: 0, toAddress: "" };
+    case "LOADING_ESTIMATION_FEE":
+      return { ...state, isLoadingEstimationFee: true };
     default:
       return state;
   }
@@ -45,12 +55,12 @@ function reducer(state, action) {
 const refs = { modalConfirmationRef: null }; //TODO - remove this
 
 function AccountSend(props) {
-  const amountRef = React.useRef();
-  const toAddressRef = React.useRef();
+  const amountInputRef = React.useRef();
+  const toInputRef = React.useRef();
 
   const account = useAccountContext();
 
-  let [state, dispatch] = useDebugReducer(reducer, account, account => ({
+  let [state, dispatch] = React.useReducer(reducer, account, account => ({
     paymentAddress: account.PaymentAddress,
     toAddress: "",
     amount: "",
@@ -60,42 +70,48 @@ function AccountSend(props) {
     isAlert: false
   }));
 
-  useGetEstimateFee({
-    toAddressInput: toAddressRef.current,
-    amountInput: amountRef.current,
-    toAddress: state.toAddress,
-    fee: state.fee,
-    EstimateTxSizeInKb: state.EstimateTxSizeInKb,
-    GOVFeePerKbTx: state.GOVFeePerKbTx,
-    onGotEstimateFee: onGotEstimateFee
-  });
+  React.useEffect(() => {
+    const toAddressObservable = fromEvent(toInputRef.current, "keyup").pipe(
+      map(e => e.target.value),
+      filter(Boolean),
+      debounceTime(750),
+      distinctUntilChanged(),
+      startWith("")
+    );
 
-  function onGotEstimateFee({
-    estimateFee,
-    EstimateTxSizeInKb,
-    GOVFeePerKbTx
-  }) {
-    dispatch({
-      type: "SET_ESTIMATE_FEE",
-      payload: {
-        fee: estimateFee,
-        EstimateTxSizeInKb,
-        GOVFeePerKbTx
-      }
-    });
-  }
+    const amountObservable = fromEvent(amountInputRef.current, "keyup").pipe(
+      map(e => Number(e.target.value)),
+      filter(Boolean),
+      debounceTime(750),
+      distinctUntilChanged(),
+      startWith(0)
+    );
+
+    const subscription = combineLatest(toAddressObservable, amountObservable)
+      .pipe(
+        filter(([toAddress, amount]) => toAddress && amount),
+        switchMap(([toAddress, amount]) => {
+          dispatch({ type: "LOADING_ESTIMATION_FEE" });
+          return rpcClientService.getEstimateFee(
+            account.PaymentAddress,
+            toAddress,
+            amount
+          );
+        })
+      )
+      .subscribe(fee => {
+        dispatch({ type: "SET_ESTIMATE_FEE", fee });
+      }, console.error);
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   useGetBalance({ dispatch, accountName: account.name });
 
   const confirmSendCoin = () => {
-    const {
-      toAddress,
-      amount,
-
-      fee,
-      EstimateTxSizeInKb,
-      GOVFeePerKbTx
-    } = state;
+    const { toAddress, amount, fee, EstimateTxSizeInKb, GOVFeePerKbTx } = state;
 
     if (!toAddress) {
       toastr.warning("To address is required!");
@@ -151,7 +167,6 @@ function AccountSend(props) {
     } else {
       toastr.error("Send failed. Please try again!");
     }
-    //{"jsonrpc":"1.0","method":"sendregistration","params":["112t8rnXFybceEiUtWA9zTLVmaPQFzVmWmN9Day5SJKAhUFm1ew6p1dCyQtNAG8bEFom5q4aGiTBpDVWqmuPgs2iivj5vLmuMeq5nYZZNup7",1,-1,1,"/p2p-circuit/ipfs/QmWccFS3pjoGCdfHgP4t2Y4zWx1CRcPgqbzA7ZintfpFZs"],"id":1}
   }
 
   const onChangeInput = name => e =>
@@ -188,7 +203,7 @@ function AccountSend(props) {
         variant="outlined"
         value={state.toAddress}
         onChange={onChangeInput("toAddress")}
-        inputProps={{ ref: toAddressRef }}
+        inputProps={{ ref: toInputRef }}
       />
 
       <TextField
@@ -200,7 +215,7 @@ function AccountSend(props) {
         variant="outlined"
         value={state.amount}
         onChange={e => onChangeInput("amount")(e)}
-        inputProps={{ ref: amountRef }}
+        inputProps={{ ref: amountInputRef }}
       />
 
       <TextField
@@ -227,6 +242,7 @@ function AccountSend(props) {
       <div className="badge badge-pill badge-light mt-3">
         * Only send CONSTANT to a CONSTANT address.
       </div>
+
       <ConfirmDialog
         title="Confirmation"
         onRef={modal => (refs.modalConfirmationRef = modal)}
