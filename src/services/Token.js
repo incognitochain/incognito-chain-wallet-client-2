@@ -4,7 +4,7 @@ import {
   PaymentInfo,
   CustomTokenPrivacyParamTx,
   CustomTokenParamTx,
-  TxTokenVin,
+  // TxTokenVin,
   TxTokenVout,
   KeyWallet,
 } from "constant-chain-web-js/build/wallet";
@@ -101,9 +101,9 @@ export default class Token {
   }
 
   static async createSendCustomToken(submitParam, account, wallet) {
-
-
     console.log("SEND CUSTOM TOKEN!!!!!!!");
+
+    console.log("submitParam.TokenID: ", submitParam.TokenID);
     // get accountWallet from wallet has name
     let accountWallet = wallet.getAccountByName(account.name);
 
@@ -122,7 +122,7 @@ export default class Token {
     // param 1: token param
     // get current token to get token param
     let tokenParam = new CustomTokenParamTx();
-    tokenParam.propertyID = "";
+    tokenParam.propertyID = submitParam.TokenID;
     tokenParam.propertyName = submitParam.TokenName;
     tokenParam.propertySymbol = submitParam.TokenSymbol;
     tokenParam.amount = submitParam.TokenAmount * 100;
