@@ -2,39 +2,51 @@ import React from "react";
 import styled from "styled-components";
 // import { useAccountContext } from "../../common/context/AccountContext";
 import _ from "lodash";
-import {useAccountContext} from "../../common/context/AccountContext";
-import {useWalletContext} from "../../common/context/WalletContext";
+import { useAccountContext } from "../../common/context/AccountContext";
+import { useWalletContext } from "../../common/context/WalletContext";
 
 function truncateMiddle(str = "") {
   return _.truncate(str, { length: 15 }) + str.slice(-4);
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_HISTORY":
+      return {
+        ...state,
+        history: action.history
+      };
+    default:
+      throw new Error();
+  }
 }
 /**
  * NOTE: Only show sending history for now
  */
 export function History() {
-  console.error("TODO - show real history");
+  const [state, dispatch] = React.useReducer(reducer, {
+    history: []
+  });
 
   let account = useAccountContext();
-  let {wallet} = useWalletContext();
-  let txList = [];
+  let { wallet } = useWalletContext();
+
   React.useEffect(() => {
-    let txList = wallet.getHistoryByAccount(account.name);
+    loadHistory();
   }, []);
 
-  let history = []
-  for (let i=0;i<txList.NormalTrx.length;i++){
-    let Obj = {
-      txId : txList.NormalTrx[i].txID,
-      account: txList.NormalTrx[i].account,
-      fee: txList.NormalTrx[i].amount
-    }
-    history.push(Obj)
+  async function loadHistory() {
+    let history = await wallet.getHistoryByAccount(account.name);
+    dispatch({
+      type: "SET_HISTORY",
+      history
+    });
   }
 
   return (
     <Wrapper>
       <Scrollable>
-        {history.map(item => {
+        {state.history.map(item => {
           return (
             <HistoryItem key={item.txID}>
               <TxID>{truncateMiddle(item.txID)}</TxID>
