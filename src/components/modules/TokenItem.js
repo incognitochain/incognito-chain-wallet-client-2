@@ -24,11 +24,13 @@ export function TokenItem({
   async function loadBalance() {
     try {
       if (tabName === "privacy") {
+        console.log("### load privacy balance", item.ID);
         const balance = await accountWallet.getPrivacyCustomTokenBalance(
           item.ID
         );
         setBalance(balance);
       } else if (tabName === "custom") {
+        console.log("### load custom balance");
         const balance = await accountWallet.getCustomTokenBalance(item.ID);
         setBalance(balance);
       }
@@ -52,7 +54,7 @@ export function TokenItem({
           <div className="wrapperTokenDetail">
             <div className="tokenName">{item.Name}</div>
             <div className="tokenAmount">
-              {balance === null ? <CircularProgress /> : balance}
+              {balance === null ? <CircularProgress size={20} /> : balance}
             </div>
           </div>
         </CopyableTooltip>
