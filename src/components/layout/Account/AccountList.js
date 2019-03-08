@@ -151,7 +151,11 @@ class AccountList extends React.Component {
                 <div className="accountName">{a.name}</div>
                 <ListItemSecondaryAction style={{ marginRight: "10px" }}>
                   <div className="accountAmount">
-                    {this.formatAmount(a.value)}
+                    {a.value === -1 ? (
+                      <CircularProgress />
+                    ) : (
+                      this.formatAmount(a.value)
+                    )}
                   </div>
                 </ListItemSecondaryAction>
               </ListItem>

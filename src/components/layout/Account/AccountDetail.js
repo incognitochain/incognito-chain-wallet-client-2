@@ -173,7 +173,7 @@ class AccountDetail extends React.Component {
       isCreate: true,
       onClose: this.handleCloseCreateToken
     };
-    console.log(props);
+
     this.setState({
       modalCreateToken: <CreateToken {...props} />
     });

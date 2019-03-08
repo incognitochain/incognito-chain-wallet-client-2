@@ -38,11 +38,9 @@ import "./Header.scss";
 import AccountList from "../layout/Account/AccountList";
 import styled from "styled-components";
 import { connectAppContext } from "../../common/context/AppContext";
-import {
-  useWalletContext,
-  connectWalletContext
-} from "../../common/context/WalletContext";
+import { connectWalletContext } from "../../common/context/WalletContext";
 import _ from "lodash";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = {
   grow: {
@@ -54,31 +52,17 @@ const styles = {
   }
 };
 
-const SelectedAccount = ({ name }) => {
-  const { wallet } = useWalletContext();
-
-  const [balance, setBalance] = React.useState(-1);
-
-  React.useEffect(() => {
-    getBalance();
-  }, [name, wallet]);
-
-  async function getBalance() {
-    if (name && wallet) {
-      const accountWallet = wallet.MasterAccount.child.find(
-        accountWallet => accountWallet.name === name
-      );
-      const balance = await accountWallet.getBalance();
-      setBalance(balance);
-    }
-  }
-
+const SelectedAccount = ({ name, value }) => {
   return (
     <div className="selectedAccount">
       <span className="selectedAccountName">{name}</span> (
-      {(Number(balance) / 100).toLocaleString({
-        maximumFractionDigits: 2
-      })}{" "}
+      {value === -1 ? (
+        <CircularProgress />
+      ) : (
+        (Number(value) / 100).toLocaleString({
+          maximumFractionDigits: 2
+        })
+      )}{" "}
       CONST)
     </div>
   );
@@ -106,7 +90,7 @@ class Header extends React.Component {
     if (this.state.anchorEl !== prevState.anchorEl) {
       if (this.state.anchorEl) {
         // menu just open
-        console.log("haha");
+
         this.loadBalances();
       }
     }
@@ -115,14 +99,13 @@ class Header extends React.Component {
     const balances = await Promise.all(
       this.props.wallet.MasterAccount.child.map(async accountWallet => {
         const balance = await accountWallet.getBalance();
-        console.log("###account name/balance", accountWallet.name, balance);
+
         return {
           accountName: accountWallet.name,
           balance
         };
       })
     );
-    console.log("###balances");
 
     this.props.app.appDispatch({
       type: "SET_BALANCES",

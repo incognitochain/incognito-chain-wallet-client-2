@@ -92,7 +92,6 @@ class CreateToken extends React.Component {
       map(e => e.target.value),
       filter(Boolean),
       map(x => {
-        console.log("\tto Address", x);
         return x;
       }),
       debounceTime(750),
@@ -104,7 +103,6 @@ class CreateToken extends React.Component {
       map(e => Number(e.target.value)),
       filter(Boolean),
       map(x => {
-        console.log("\tamount", x);
         return x;
       }),
       debounceTime(750),
@@ -116,7 +114,6 @@ class CreateToken extends React.Component {
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
         map(x => {
-          console.log("x", x);
           return x;
         }),
         switchMap(([toAddress, amount]) => {
@@ -253,9 +250,12 @@ class CreateToken extends React.Component {
     this.handleAlertOpen();
   };
   createSendCustomTokenTransaction = async params => {
-    const results = await Token.createSendCustomToken(params, this.props.account, this.props.wallet);
+    const results = await Token.createSendCustomToken(
+      params,
+      this.props.account,
+      this.props.wallet
+    );
 
-    console.log("Result:", results);
     const { Error: error } = results;
     if (error) {
       console.log("Error", error);

@@ -8,6 +8,7 @@ import cls from "classnames";
 import { WithContext as ReactTags } from "react-tag-input";
 import { useWalletContext } from "../../common/context/WalletContext";
 import { useAccountContext } from "../../common/context/AccountContext";
+import * as walletService from "../../services/WalletService";
 
 const renderIf = cond => cmp => (cond ? cmp : null);
 
@@ -106,6 +107,7 @@ export function FollowTokenDialog({
           type: tabName
         }))
     );
+    walletService.saveWallet(wallet);
     refreshTokenList();
     onClose();
   }
