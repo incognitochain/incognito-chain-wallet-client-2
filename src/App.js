@@ -17,16 +17,17 @@ import "toastr/build/toastr.css";
 import toastr from "toastr";
 import styled from "styled-components";
 import * as walletService from "./services/WalletService";
-import {AppRoute} from "./AppRoute";
-import {HashRouter, withRouter} from "react-router-dom";
-import {AppContext} from "./common/context/AppContext";
-import {WalletContext} from "./common/context/WalletContext";
-import {appReducer, initialAppState} from "./modules/app/appReducer";
+import { AppRoute } from "./AppRoute";
+import { HashRouter, withRouter } from "react-router-dom";
+import { AppContext } from "./common/context/AppContext";
+import { WalletContext } from "./common/context/WalletContext";
+import { appReducer, initialAppState } from "./modules/app/appReducer";
+import { useDebugReducer } from "./common/hook/useDebugReducer";
 
 toastr.options.positionClass = "toast-bottom-center";
 
-const App = ({history, location}) => {
-  let [state, dispatch] = React.useReducer(appReducer, initialAppState);
+const App = ({ history, location }) => {
+  let [state, dispatch] = useDebugReducer("App", appReducer, initialAppState);
 
   React.useEffect(() => {
     onInit();
@@ -66,7 +67,8 @@ const App = ({history, location}) => {
           name: account["Account Name"],
           value: -1,
           PaymentAddress: account.PaymentAddress,
-          ReadonlyKey: account.ReadonlyKey
+          ReadonlyKey: account.ReadonlyKey,
+          PrivateKey: account.PrivateKey
         };
       });
     } catch (e) {

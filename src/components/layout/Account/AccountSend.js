@@ -20,6 +20,7 @@ import {
   startWith
 } from "rxjs/operators";
 import * as rpcClientService from "../../../services/RpcClientService";
+import { useDebugReducer } from "../../../common/hook/useDebugReducer";
 
 const styles = theme => ({
   textField: {
@@ -41,12 +42,12 @@ function reducer(state, action) {
       return { ...state, balance: action.balance };
     case "CHANGE_INPUT":
       return { ...state, [action.name]: action.value };
-    case "SET_ESTIMATE_FEE":
-      return { ...state, fee: action.fee, isLoadingEstimationFee: false };
     case "RESET":
       return { ...state, amount: 0, toAddress: "" };
-    case "LOADING_ESTIMATION_FEE":
+    case "LOAD_ESTIMATION_FEE":
       return { ...state, isLoadingEstimationFee: true };
+    case "LOAD_ESTIMATION_FEE_SUCCESS":
+      return { ...state, isLoadingEstimationFee: false, fee: action.fee };
     default:
       return state;
   }
@@ -60,15 +61,20 @@ function AccountSend(props) {
 
   const account = useAccountContext();
 
-  let [state, dispatch] = React.useReducer(reducer, account, account => ({
-    paymentAddress: account.PaymentAddress,
-    toAddress: "",
-    amount: "",
-    fee: "",
-    balance: 0,
-    showAlert: "",
-    isAlert: false
-  }));
+  let [state, dispatch] = useDebugReducer(
+    "AccountSend",
+    reducer,
+    account,
+    account => ({
+      paymentAddress: account.PaymentAddress,
+      toAddress: "",
+      amount: "",
+      fee: "",
+      balance: 0,
+      showAlert: "",
+      isAlert: false
+    })
+  );
 
   React.useEffect(() => {
     const toAddressObservable = fromEvent(toInputRef.current, "keyup").pipe(
@@ -91,17 +97,25 @@ function AccountSend(props) {
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
-          dispatch({ type: "LOADING_ESTIMATION_FEE" });
+          dispatch({ type: "LOAD_ESTIMATION_FEE" });
           return rpcClientService.getEstimateFee(
             account.PaymentAddress,
             toAddress,
-            amount
+            amount,
+            account.PrivateKey
           );
         })
       )
-      .subscribe(fee => {
-        dispatch({ type: "SET_ESTIMATE_FEE", fee });
-      }, console.error);
+      .subscribe(
+        fee => {
+          console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", fee);
+          dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee });
+        },
+        error => {
+          dispatch({ type: "LOAD_ESTIMATION_FEE_ERROR" });
+          console.error(error);
+        }
+      );
 
     return () => {
       subscription.unsubscribe();
@@ -242,6 +256,11 @@ function AccountSend(props) {
       <div className="badge badge-pill badge-light mt-3">
         * Only send CONSTANT to a CONSTANT address.
       </div>
+      {state.isLoadingEstimationFee ? (
+        <div className="badge badge-pill badge-light mt-3">
+          * Loading estimation fee...
+        </div>
+      ) : null}
 
       <ConfirmDialog
         title="Confirmation"

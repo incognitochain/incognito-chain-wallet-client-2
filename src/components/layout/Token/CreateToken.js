@@ -25,6 +25,7 @@ import { connectWalletContext } from "common/context/WalletContext";
 import toastr from "toastr";
 import _ from "lodash";
 import styled from "styled-components";
+import * as rpcClientService from "../../../services/RpcClientService";
 
 function feePerTx(fee, EstimateTxSizeInKb) {
   const result = Number(fee) / EstimateTxSizeInKb;
@@ -91,9 +92,6 @@ class CreateToken extends React.Component {
     ).pipe(
       map(e => e.target.value),
       filter(Boolean),
-      map(x => {
-        return x;
-      }),
       debounceTime(750),
       distinctUntilChanged(),
       startWith("")
@@ -102,9 +100,6 @@ class CreateToken extends React.Component {
     const amountObservable = fromEvent(this.amountRef.current, "keyup").pipe(
       map(e => Number(e.target.value)),
       filter(Boolean),
-      map(x => {
-        return x;
-      }),
       debounceTime(750),
       distinctUntilChanged(),
       startWith(0)
@@ -113,39 +108,18 @@ class CreateToken extends React.Component {
     this.subscription = combineLatest(toAddressObservable, amountObservable)
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
-        map(x => {
-          return x;
-        }),
         switchMap(([toAddress, amount]) => {
-          return Account.getEstimateFee([
-            this.props.account.PrivateKey,
-            {
-              [toAddress]: parseFloat(amount) * 1000
-            },
-            feePerTx(
-              this.state.fee, // TODO - fee to state
-              this.state.EstimateTxSizeInKb
-            ),
-            1,
-            this.getRequestTokenObject()
-          ]);
+          return rpcClientService.getEstimateFeeForSendingToken(
+            this.props.paymentAddress,
+            toAddress,
+            amount,
+            this.getRequestTokenObject(),
+            this.props.account.PrivateKey
+          );
         })
       )
-      .subscribe((response = {}) => {
-        if (response.status === 200 && !_.get(response, "data.Error")) {
-          const { EstimateFeeCoinPerKb, EstimateTxSizeInKb, GOVFeePerKbTx } =
-            _.get(response, "data.Result", {}) || {};
-
-          this.setState({
-            fee: EstimateFeeCoinPerKb * EstimateTxSizeInKb,
-            EstimateTxSizeInKb,
-            GOVFeePerKbTx
-          });
-        } else {
-          toastr.error(
-            _.get(response, "data.Error.Message", "Error on load estimate fee")
-          );
-        }
+      .subscribe(fee => {
+        this.setState({ fee });
       }, console.error);
   };
 
@@ -176,7 +150,8 @@ class CreateToken extends React.Component {
       TokenTxType: this.props.isCreate ? 0 : 1,
       TokenAmount: amount,
       TokenReceivers: {
-        [this.state.toAddress]: amount
+        PaymentAddress: this.state.toAddress,
+        Amount: amount
       }
     };
   };
@@ -256,44 +231,47 @@ class CreateToken extends React.Component {
       this.props.wallet
     );
 
-    const { Error: error } = results;
-    if (error) {
-      console.log("Error", error);
+    if (results.err) {
+      console.log("Error", results.err);
       this.setState({
-        error: error
+        error: results.err
       });
     } else {
       this.closePage();
     }
   };
   createSendPrivacyTokenTransaction = async params => {
-    const results = await Token.createSendPrivacyCustomTokenTransaction(params, this.props.account, this.props.wallet);
+    const results = await Token.createSendPrivacyCustomTokenTransaction(
+      params,
+      this.props.account,
+      this.props.wallet
+    );
+
     console.log("Result:", results);
-    const { Error: error } = results;
-    if (error) {
-      console.log("Error", error);
+
+    if (results.err) {
+      console.log("Error", results.err);
       this.setState({
-        error: error
+        error: results.err
       });
     } else {
       this.closePage();
     }
   };
+
   createOrSendToken = () => {
+    // isCreate = true: init token, else: send token
     const { type } = this.props;
+
     const { submitParams } = this.state;
 
-    console.log("Submit param when create or send token: ", submitParams);
+    console.log("Submit param when create or send token: ", submitParams[3]);
 
-
-
-
-
-    //  if type = 0: custom token, else: privacy custom token
+    //  if type = 0: privacy custom token, else: custom token
     if (type === 0) {
-      this.createSendCustomTokenTransaction(submitParams);
+      this.createSendPrivacyTokenTransaction(submitParams[3]);
     } else {
-      this.createSendPrivacyTokenTransaction(submitParams);
+      this.createSendCustomTokenTransaction(submitParams[3]);
     }
   };
   renderTokenName() {
@@ -320,7 +298,7 @@ class CreateToken extends React.Component {
           className="textField"
           margin="normal"
           variant="outlined"
-          value={tokenSymbol || ""}
+          defaultValue={tokenSymbol || ""}
           onChange={this.onChangeInput("tokenSymbol")}
           disabled={isCreate ? false : true}
         />

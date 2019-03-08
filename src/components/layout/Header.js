@@ -90,7 +90,6 @@ class Header extends React.Component {
     if (this.state.anchorEl !== prevState.anchorEl) {
       if (this.state.anchorEl) {
         // menu just open
-
         this.loadBalances();
       }
     }

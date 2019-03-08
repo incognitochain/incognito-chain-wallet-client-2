@@ -16,12 +16,22 @@ export function listPrivacyTokens() {
   return getRpcClient().listPrivacyCustomTokens();
 }
 
-export function getEstimateFee(from, to, amount) {
-  // Wallet.RpcClient.getEstimateFee(from, to, amount)
-  console.error("!!!!!!!!getEstimateFee is mocking!!!!!!");
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(Math.random());
-    }, 500);
-  });
+export function getEstimateFee(from, to, amount, privateKey) {
+  return getRpcClient().getEstimateFee(from, to, amount, privateKey);
+}
+
+export function getEstimateFeeForSendingToken(
+  from,
+  to,
+  amount,
+  tokenObject,
+  privateKey
+) {
+  return getRpcClient().getEstimateFeeForSendingToken(
+    from,
+    to,
+    amount,
+    tokenObject,
+    privateKey
+  );
 }

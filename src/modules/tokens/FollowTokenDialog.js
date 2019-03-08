@@ -9,6 +9,7 @@ import { WithContext as ReactTags } from "react-tag-input";
 import { useWalletContext } from "../../common/context/WalletContext";
 import { useAccountContext } from "../../common/context/AccountContext";
 import * as walletService from "../../services/WalletService";
+import numeral from "numeral";
 
 const renderIf = cond => cmp => (cond ? cmp : null);
 
@@ -145,7 +146,10 @@ export function FollowTokenDialog({
                     <div>ID: {truncateMiddle(token.ID)}</div>
                     <div>Name: {token.Name}</div>
                     <div>Symbol: {token["Symbol"]}</div>
-                    <div>Amount: {token.Amount}</div>
+                    <div>
+                      Amount:{" "}
+                      {numeral(parseFloat(token.Amount) / 100).format("0,0")}
+                    </div>
                   </Right>
                 </Token>
               );
