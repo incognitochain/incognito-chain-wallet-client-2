@@ -41,12 +41,12 @@ function reducer(state, action) {
       return { ...state, balance: action.balance };
     case "CHANGE_INPUT":
       return { ...state, [action.name]: action.value };
-    case "SET_ESTIMATE_FEE":
-      return { ...state, fee: action.fee, isLoadingEstimationFee: false };
     case "RESET":
       return { ...state, amount: 0, toAddress: "" };
-    case "LOADING_ESTIMATION_FEE":
+    case "LOAD_ESTIMATION_FEE":
       return { ...state, isLoadingEstimationFee: true };
+    case "LOAD_ESTIMATION_FEE_SUCCESS":
+      return { ...state, isLoadingEstimationFee: false, fe: action.fee };
     default:
       return state;
   }
@@ -91,7 +91,7 @@ function AccountSend(props) {
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
-          dispatch({ type: "LOADING_ESTIMATION_FEE" });
+          dispatch({ type: "LOAD_ESTIMATION_FEE" });
           return rpcClientService.getEstimateFee(
             account.PaymentAddress,
             toAddress,
@@ -99,9 +99,15 @@ function AccountSend(props) {
           );
         })
       )
-      .subscribe(fee => {
-        dispatch({ type: "SET_ESTIMATE_FEE", fee });
-      }, console.error);
+      .subscribe(
+        fee => {
+          dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee });
+        },
+        error => {
+          dispatch({ type: "LOAD_ESTIMATION_FEE_ERROR" });
+          console.error(error);
+        }
+      );
 
     return () => {
       subscription.unsubscribe();
@@ -242,6 +248,11 @@ function AccountSend(props) {
       <div className="badge badge-pill badge-light mt-3">
         * Only send CONSTANT to a CONSTANT address.
       </div>
+      {state.isLoadingEstimationFee ? (
+        <div className="badge badge-pill badge-light mt-3">
+          * Loading estimation fee...
+        </div>
+      ) : null}
 
       <ConfirmDialog
         title="Confirmation"

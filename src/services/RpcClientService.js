@@ -17,11 +17,5 @@ export function listPrivacyTokens() {
 }
 
 export function getEstimateFee(from, to, amount) {
-  // Wallet.RpcClient.getEstimateFee(from, to, amount)
-  console.error("!!!!!!!!getEstimateFee is mocking!!!!!!");
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(Math.random());
-    }, 500);
-  });
+  return getRpcClient().getEstimateFee(from, to, amount);
 }
