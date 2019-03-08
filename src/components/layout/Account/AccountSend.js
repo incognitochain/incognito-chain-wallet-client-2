@@ -95,7 +95,8 @@ function AccountSend(props) {
           return rpcClientService.getEstimateFee(
             account.PaymentAddress,
             toAddress,
-            amount
+            amount,
+            account.PrivateKey
           );
         })
       )

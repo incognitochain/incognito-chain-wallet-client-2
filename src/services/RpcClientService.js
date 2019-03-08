@@ -16,6 +16,7 @@ export function listPrivacyTokens() {
   return getRpcClient().listPrivacyCustomTokens();
 }
 
-export function getEstimateFee(from, to, amount) {
-  return getRpcClient().getEstimateFee(from, to, amount);
+export function getEstimateFee(from, to, amount, privateKey) {
+  console.log("privateKey", privateKey);
+  return getRpcClient().getEstimateFee(from, to, amount, privateKey);
 }
