@@ -258,6 +258,7 @@ class AccountDetail extends React.Component {
           >
             <PaymentInput>
               <input
+                readOnly
                 className="form-control"
                 id="paymentAddress"
                 value={account.PaymentAddress}
