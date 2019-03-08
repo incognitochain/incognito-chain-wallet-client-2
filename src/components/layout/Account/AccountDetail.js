@@ -145,13 +145,14 @@ class AccountDetail extends React.Component {
   };
 
   handleSendToken = (item, tab) => {
+    debugger;
     const { paymentAddress, privateKey } = this.state;
     const props = {
       paymentAddress,
       privateKey,
       balance: item.Amount,
       tokenName: item.Name,
-      tokenId: item.TokenID,
+      tokenId: item.ID,
       tokenSymbol: item.Symbol,
       type: tab, //@depricated
       tokenType: mapTabIndexToType[tab],
@@ -183,7 +184,7 @@ class AccountDetail extends React.Component {
     this.modalTokenCreateRef.close();
 
     // this.tokenTabsRef??????
-    this.tokenTabsRef.onRefresh();
+    // this.tokenTabsRef.onRefresh();
   };
   handleRemoveAccount = () => {
     this.modalDeleteAccountRef.open();
