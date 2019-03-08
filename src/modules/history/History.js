@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 // import { useAccountContext } from "../../common/context/AccountContext";
 import _ from "lodash";
+import {useAccountContext} from "../../common/context/AccountContext";
+import {useWalletContext} from "../../common/context/WalletContext";
 
 function truncateMiddle(str = "") {
   return _.truncate(str, { length: 15 }) + str.slice(-4);
@@ -12,28 +14,22 @@ function truncateMiddle(str = "") {
 export function History() {
   console.error("TODO - show real history");
 
-  const history = [
-    {
-      txID:
-        "1Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog",
-      receiver: [
-        "1Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog",
-        "1Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog"
-      ],
-      amount: 10000,
-      fee: 100
-    },
-    {
-      txID:
-        "2Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog",
-      receiver: [
-        "1Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog",
-        "1Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog"
-      ],
-      amount: 10000,
-      fee: 100
+  let account = useAccountContext();
+  let {wallet} = useWalletContext();
+  let txList = [];
+  React.useEffect(() => {
+    let txList = wallet.getHistoryByAccount(account.name);
+  }, []);
+
+  let history = []
+  for (let i=0;i<txList.NormalTrx.length;i++){
+    let Obj = {
+      txId : txList.NormalTrx[i].txID,
+      account: txList.NormalTrx[i].account,
+      fee: txList.NormalTrx[i].amount
     }
-  ];
+    history.push(Obj)
+  }
 
   return (
     <Wrapper>
