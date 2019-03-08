@@ -2,43 +2,51 @@ import React from "react";
 import styled from "styled-components";
 // import { useAccountContext } from "../../common/context/AccountContext";
 import _ from "lodash";
+import { useAccountContext } from "../../common/context/AccountContext";
+import { useWalletContext } from "../../common/context/WalletContext";
 
 function truncateMiddle(str = "") {
   return _.truncate(str, { length: 15 }) + str.slice(-4);
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_HISTORY":
+      return {
+        ...state,
+        history: action.history
+      };
+    default:
+      throw new Error();
+  }
 }
 /**
  * NOTE: Only show sending history for now
  */
 export function History() {
-  console.error("TODO - show real history");
+  const [state, dispatch] = React.useReducer(reducer, {
+    history: []
+  });
 
-  const history = [
-    {
-      txID:
-        "1Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog",
-      receiver: [
-        "1Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog",
-        "1Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog"
-      ],
-      amount: 10000,
-      fee: 100
-    },
-    {
-      txID:
-        "2Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog",
-      receiver: [
-        "1Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog",
-        "1Uv2GdF6kBKvb4tQPsHaN4oHU7vHZAjgqyCEdKkKjAHKj986DhLiw3VKUwYWBBH8hDKHhnkgm3Vkd5VLRbYAKFeTXVvGcTWjHjZkwvxog"
-      ],
-      amount: 10000,
-      fee: 100
-    }
-  ];
+  let account = useAccountContext();
+  let { wallet } = useWalletContext();
+
+  React.useEffect(() => {
+    loadHistory();
+  }, []);
+
+  async function loadHistory() {
+    let history = await wallet.getHistoryByAccount(account.name);
+    dispatch({
+      type: "SET_HISTORY",
+      history
+    });
+  }
 
   return (
     <Wrapper>
       <Scrollable>
-        {history.map(item => {
+        {state.history.map(item => {
           return (
             <HistoryItem key={item.txID}>
               <TxID>{truncateMiddle(item.txID)}</TxID>
