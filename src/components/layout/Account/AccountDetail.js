@@ -273,7 +273,7 @@ class AccountDetail extends React.Component {
           </CopyToClipboard>
         </CopyToClipboardWrapper>
         <Balance>
-          {account.value ? Math.round(account.value / 100).toLocaleString(navigator.language, { minimumFractionDigits: 2 }) : 0}{" "}
+          {account.value ? (account.value / 100).toLocaleString(navigator.language, { minimumFractionDigits: 2 }) : 0}{" "}
           <span className="constant">Constant</span>
         </Balance>
 
