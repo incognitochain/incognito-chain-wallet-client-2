@@ -25,6 +25,7 @@ import { connectWalletContext } from "common/context/WalletContext";
 import toastr from "toastr";
 import _ from "lodash";
 import styled from "styled-components";
+import * as rpcClientService from "../../../services/RpcClientService";
 
 function feePerTx(fee, EstimateTxSizeInKb) {
   const result = Number(fee) / EstimateTxSizeInKb;
@@ -91,9 +92,6 @@ class CreateToken extends React.Component {
     ).pipe(
       map(e => e.target.value),
       filter(Boolean),
-      map(x => {
-        return x;
-      }),
       debounceTime(750),
       distinctUntilChanged(),
       startWith("")
@@ -102,9 +100,6 @@ class CreateToken extends React.Component {
     const amountObservable = fromEvent(this.amountRef.current, "keyup").pipe(
       map(e => Number(e.target.value)),
       filter(Boolean),
-      map(x => {
-        return x;
-      }),
       debounceTime(750),
       distinctUntilChanged(),
       startWith(0)
@@ -113,39 +108,18 @@ class CreateToken extends React.Component {
     this.subscription = combineLatest(toAddressObservable, amountObservable)
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
-        map(x => {
-          return x;
-        }),
         switchMap(([toAddress, amount]) => {
-          return Account.getEstimateFee([
-            this.props.account.PrivateKey,
-            {
-              [toAddress]: parseFloat(amount) * 1000
-            },
-            feePerTx(
-              this.state.fee, // TODO - fee to state
-              this.state.EstimateTxSizeInKb
-            ),
-            1,
-            this.getRequestTokenObject()
-          ]);
+          return rpcClientService.getEstimateFeeForSendingToken(
+            this.props.paymentAddress,
+            toAddress,
+            amount,
+            this.getRequestTokenObject(),
+            this.props.account.PrivateKey
+          );
         })
       )
-      .subscribe((response = {}) => {
-        if (response.status === 200 && !_.get(response, "data.Error")) {
-          const { EstimateFeeCoinPerKb, EstimateTxSizeInKb, GOVFeePerKbTx } =
-            _.get(response, "data.Result", {}) || {};
-
-          this.setState({
-            fee: EstimateFeeCoinPerKb * EstimateTxSizeInKb,
-            EstimateTxSizeInKb,
-            GOVFeePerKbTx
-          });
-        } else {
-          toastr.error(
-            _.get(response, "data.Error.Message", "Error on load estimate fee")
-          );
-        }
+      .subscribe(fee => {
+        this.setState({ fee });
       }, console.error);
   };
 
@@ -177,7 +151,7 @@ class CreateToken extends React.Component {
       TokenAmount: amount,
       TokenReceivers: {
         PaymentAddress: this.state.toAddress,
-        Amount: amount,
+        Amount: amount
       }
     };
   };
@@ -268,9 +242,10 @@ class CreateToken extends React.Component {
   };
   createSendPrivacyTokenTransaction = async params => {
     const results = await Token.createSendPrivacyCustomTokenTransaction(
-      params, 
-      this.props.account, 
-      this.props.wallet);
+      params,
+      this.props.account,
+      this.props.wallet
+    );
 
     console.log("Result:", results);
 
@@ -285,7 +260,7 @@ class CreateToken extends React.Component {
   };
 
   createOrSendToken = () => {
-    // isCreate = true: init token, else: send token 
+    // isCreate = true: init token, else: send token
     const { type } = this.props;
 
     const { submitParams } = this.state;

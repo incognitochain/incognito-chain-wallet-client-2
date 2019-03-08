@@ -20,6 +20,7 @@ import {
   startWith
 } from "rxjs/operators";
 import * as rpcClientService from "../../../services/RpcClientService";
+import { useDebugReducer } from "../../../common/hook/useDebugReducer";
 
 const styles = theme => ({
   textField: {
@@ -46,7 +47,7 @@ function reducer(state, action) {
     case "LOAD_ESTIMATION_FEE":
       return { ...state, isLoadingEstimationFee: true };
     case "LOAD_ESTIMATION_FEE_SUCCESS":
-      return { ...state, isLoadingEstimationFee: false, fe: action.fee };
+      return { ...state, isLoadingEstimationFee: false, fee: action.fee };
     default:
       return state;
   }
@@ -60,15 +61,20 @@ function AccountSend(props) {
 
   const account = useAccountContext();
 
-  let [state, dispatch] = React.useReducer(reducer, account, account => ({
-    paymentAddress: account.PaymentAddress,
-    toAddress: "",
-    amount: "",
-    fee: "",
-    balance: 0,
-    showAlert: "",
-    isAlert: false
-  }));
+  let [state, dispatch] = useDebugReducer(
+    "AccountSend",
+    reducer,
+    account,
+    account => ({
+      paymentAddress: account.PaymentAddress,
+      toAddress: "",
+      amount: "",
+      fee: "",
+      balance: 0,
+      showAlert: "",
+      isAlert: false
+    })
+  );
 
   React.useEffect(() => {
     const toAddressObservable = fromEvent(toInputRef.current, "keyup").pipe(
@@ -102,7 +108,7 @@ function AccountSend(props) {
       )
       .subscribe(
         fee => {
-          console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", fee)
+          console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", fee);
           dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee });
         },
         error => {
