@@ -141,6 +141,9 @@ export default class Account {
 
     console.log("Account Wallet sender: ", accountWallet);
 
+    console.log("KeyWallet ", KeyWallet);
+    console.log("PaymentInfo ", PaymentInfo);
+
     // create paymentInfos
     let paymentInfos = new Array(param.length);
     for (let i=0; i<paymentInfos.length; i++){

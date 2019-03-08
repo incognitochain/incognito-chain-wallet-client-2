@@ -17,6 +17,8 @@ export function savePassword(pass) {
 }
 
 export async function loadWallet() {
+
+  console.log("Wallet when load wallet:", Wallet);
   console.time("loadWallet")
   const passphrase = getPassphrase();
   let wallet = new Wallet();
