@@ -175,7 +175,7 @@ function AccountSend(props) {
       props.wallet
     );
 
-    if (result) {
+    if (result.txId) {
       toastr.success("Completed");
       dispatch({ type: "RESET" });
     } else {

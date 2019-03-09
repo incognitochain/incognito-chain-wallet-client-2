@@ -152,17 +152,17 @@ export default class Account {
       paymentInfos[i] = new PaymentInfo(keyWallet.KeySet.PaymentAddress, new bn(param[i].amount));
     }
 
-    // debugger
-
     let result = await accountWallet.createAndSendConstant(paymentInfos);
 
-    console.log("Result create and send tx: ", result);
-    if (result.err == null && result.txId) {
-      return result.txId;
-    } else {
-      console.log("ERR when create and send constants");
-      return null;
-    }
+    return result;
+
+    // console.log("Result create and send tx: ", result);
+    // if (result.err == null && result.txId) {
+    //   return result.txId;
+    // } else {
+    //   console.log("ERR when create and send constants");
+    //   return null;
+    // }
 
     // try {
     //   const response = await axios(
