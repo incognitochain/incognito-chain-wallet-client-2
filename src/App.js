@@ -101,7 +101,6 @@ const App = ({ history, location }) => {
       shouldShowHeader: true
     });
 
-    loadBalance(selectedAccount.name, wallet);
     console.timeEnd("listAccounts");
   }
 
@@ -211,18 +210,7 @@ const App = ({ history, location }) => {
       shouldShowHeader: true,
       headerTitle: "Home"
     });
-
-    loadBalance(account.name, state.wallet);
   };
-
-  async function loadBalance(accountName, wallet) {
-    const accountWallet = wallet.MasterAccount.child.find(
-      accountWallet => accountWallet.name === accountName
-    );
-
-    const balance = await accountWallet.getBalance();
-    dispatch({ type: "SET_SELECTED_ACCOUNT_BALANCE", balance });
-  }
 
   return (
     <Wrapper>
@@ -239,7 +227,6 @@ const App = ({ history, location }) => {
                   }}
                   title={state.headerTitle}
                   accounts={state.accounts}
-                  selectedAccount={state.selectedAccount}
                   onChangeAccount={handleChangeAccount}
                 />
               ) : null}

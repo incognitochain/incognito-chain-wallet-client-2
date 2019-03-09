@@ -1,13 +1,13 @@
 import React from "react";
 
 export const AppContext = React.createContext({
-  listAccounts: () => {}
+  listAccounts: () => {},
+  appDispatch: () => {}
 });
 
 export function useAppContext() {
   return React.useContext(AppContext);
 }
-
 
 export const connectAppContext = WrappedComponent => {
   return props => {
@@ -15,4 +15,3 @@ export const connectAppContext = WrappedComponent => {
     return <WrappedComponent {...props} app={app} />;
   };
 };
-

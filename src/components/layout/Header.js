@@ -40,7 +40,9 @@ import styled from "styled-components";
 import { connectAppContext } from "../../common/context/AppContext";
 import { connectWalletContext } from "../../common/context/WalletContext";
 import _ from "lodash";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { Subject } from "rxjs";
+import { debounceTime, switchMap } from "rxjs/operators";
+import { HeaderSelectedAccount } from "../../modules/account/HeaderSelectedAccount";
 
 const styles = {
   grow: {
@@ -52,26 +54,9 @@ const styles = {
   }
 };
 
-const SelectedAccount = ({ name, value }) => {
-  return (
-    <div className="selectedAccount">
-      <span className="selectedAccountName">{name}</span> (
-      {value === -1 ? (
-        <CircularProgress size={20} />
-      ) : (
-        (Number(value) / 100).toLocaleString({
-          maximumFractionDigits: 2
-        })
-      )}{" "}
-      CONST)
-    </div>
-  );
-};
-
 class Header extends React.Component {
   static propTypes = {
     accounts: PropTypes.array.isRequired,
-    selectedAccount: PropTypes.object.isRequired,
     onChangeAccount: PropTypes.func
   };
   constructor(props) {
@@ -82,35 +67,71 @@ class Header extends React.Component {
       title: props.title,
       left: false,
       showAlert: "",
-      isAlert: false
+      isAlert: false,
+      balances: []
     };
+
+    this.balanceSubjects = [];
+  }
+  componentDidMount() {
+    if (_.get(this, "props.accounts.length")) {
+      this.resetRegisterBalanceSubjects();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.accounts !== prevProps.accounts) {
+      this.resetRegisterBalanceSubjects();
+    }
+
+    // when user click to open menu, fire an event to registered subject
     if (this.state.anchorEl !== prevState.anchorEl) {
       if (this.state.anchorEl) {
-        // menu just open
-        this.loadBalances();
+        this.balanceSubjects.forEach(subject => subject.next(true));
       }
     }
   }
-  loadBalances = async () => {
-    const balances = await Promise.all(
-      this.props.wallet.MasterAccount.child.map(async accountWallet => {
-        const balance = await accountWallet.getBalance();
-
-        return {
-          accountName: accountWallet.name,
-          balance
-        };
-      })
-    );
-
-    this.props.app.appDispatch({
-      type: "SET_BALANCES",
-      balances
+  //register subject for each account
+  resetRegisterBalanceSubjects = () => {
+    if (this.balanceSubjects) {
+      this.balanceSubjects.forEach(subject => subject.unsubscribe());
+    }
+    this.balanceSubjects = this.props.accounts.map(({ name }) => {
+      const subject = new Subject();
+      subject
+        .pipe(
+          debounceTime(720),
+          switchMap(this.loadBalance(name))
+        )
+        .subscribe(balance => {
+          this.props.app.appDispatch({
+            type: "SET_ACCOUNT_BALANCE",
+            accountName: name,
+            balance: balance
+          });
+        });
+      return subject;
     });
   };
+  loadBalance = name => () => {
+    // getBalance maybe slow, so we need mockGetBalance sometimes
+    // return this.mockGetBalance(name);
+    //---
+    return this.props.wallet.getAccountByName(name).getBalance();
+  };
+  mapNameToBalance = {
+    "AccountWallet 0": 1101001,
+    a: 10101,
+    b: 1100110
+  };
+  mockGetBalance(name) {
+    // TODO - remove this method
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(this.mapNameToBalance[name] || 101010);
+      }, 2000);
+    });
+  }
 
   handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -307,7 +328,7 @@ class Header extends React.Component {
     );
   };
   render() {
-    const { classes, title, selectedAccount } = this.props;
+    const { classes, title } = this.props;
     const { auth, anchorEl, showAlert } = this.state;
     const open = Boolean(anchorEl);
 
@@ -335,10 +356,7 @@ class Header extends React.Component {
                   onClick={this.handleMenu}
                   color="inherit"
                 >
-                  <SelectedAccount
-                    name={selectedAccount.name}
-                    value={selectedAccount.value}
-                  />
+                  <HeaderSelectedAccount />
                   <AccountCircle />
                 </IconButton>
                 {this.renderMenu()}
