@@ -10,17 +10,24 @@ export const initialAppState = {
 
 export function appReducer(state = initialAppState, action) {
   switch (action.type) {
-    case "SET_BALANCES":
-      console.log("###action.balances", action.balances);
+    case "SET_ACCOUNT_BALANCE": {
+      const { accountName, balance } = action;
+      const accountIndex = state.accounts.findIndex(
+        account => account.name === accountName
+      );
       return {
         ...state,
-        accounts: state.accounts.map(account => ({
-          ...account,
-          value: action.balances.find(
-            ({ accountName }) => accountName === account.name
-          ).balance
-        }))
+        accounts: [
+          ...state.accounts.slice(0, accountIndex),
+          {
+            ...state.accounts[accountIndex],
+            value: balance
+          },
+          ...state.accounts.slice(accountIndex + 1)
+        ]
       };
+    }
+
     case "LOAD_ACCOUNTS":
       return {
         ...state,

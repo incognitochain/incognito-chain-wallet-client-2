@@ -19,6 +19,9 @@ import img1 from "../../../assets/images/img1.png";
 import "./List.scss";
 import _ from "lodash";
 import { connectWalletContext } from "../../../common/context/WalletContext";
+import { connectAccountContext } from "../../../common/context/AccountContext";
+import styled from "styled-components";
+import cls from "classnames";
 
 const styles = theme => ({
   root: {
@@ -56,11 +59,6 @@ class AccountList extends React.Component {
     };
   }
 
-  // componentDidMount() {
-  //   const { accounts } = this.props;
-  //   this.setState({ accountList: accounts });
-  // }
-
   chooseAccount = account => {
     this.props.onChangeAccount(account);
   };
@@ -69,7 +67,7 @@ class AccountList extends React.Component {
     this.modalAccountDetailRef.close();
     this.setState({
       modalAccountDetail: "",
-      modalAccountSend: <AccountSend account={this.state.accountSelected} />
+      modalAccountSend: <AccountSend />
     });
     this.modalAccountSendRef.open();
   };
@@ -116,9 +114,13 @@ class AccountList extends React.Component {
     );
   }
   formatAmount = amount => {
-    return (Number(amount) / 100).toLocaleString(navigator.language, { minimumFractionDigits: 2 });
+    return (Number(amount) / 100).toLocaleString(navigator.language, {
+      minimumFractionDigits: 2
+    });
   };
-
+  isSelectedAccount = account => {
+    return account.name === this.props.account.name;
+  };
   render() {
     const { classes } = this.props;
     const {
@@ -136,19 +138,20 @@ class AccountList extends React.Component {
         <List component="nav">
           {accountList.map(a => {
             return (
-              <ListItem
+              <StyledListItem
                 button
-                key={Math.random()}
+                key={a.name}
                 onClick={() => this.chooseAccount(a)}
+                className={cls({ isSelected: this.isSelectedAccount(a) })}
               >
                 <ListItemIcon>
-                  {a.default ? (
-                    <div className="defaultDot" />
-                  ) : (
-                    <span className="emptyIcon" />
-                  )}
+                  <Icon
+                    className={cls({ isSelected: this.isSelectedAccount(a) })}
+                  />
                 </ListItemIcon>
-                <div className="accountName">{a.name}</div>
+                <div className="accountName" style={{ paddingRight: 10 }}>
+                  {a.name}
+                </div>
                 <ListItemSecondaryAction style={{ marginRight: "10px" }}>
                   <div className="accountAmount">
                     {a.value === -1 ? (
@@ -158,7 +161,7 @@ class AccountList extends React.Component {
                     )}
                   </div>
                 </ListItemSecondaryAction>
-              </ListItem>
+              </StyledListItem>
             );
           })}
         </List>
@@ -204,4 +207,23 @@ AccountList.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default _.flow([withStyles(styles), connectWalletContext])(AccountList);
+export default _.flow([
+  withStyles(styles),
+  connectWalletContext,
+  connectAccountContext
+])(AccountList);
+
+const StyledListItem = styled(ListItem)`
+  &.isSelected {
+    pointer-events: none;
+  }
+`;
+
+const Icon = styled.div`
+  &.isSelected {
+    background-color: #4be1a6;
+  }
+  height: 10px;
+  width: 10px;
+  border-radius: 5px;
+`;

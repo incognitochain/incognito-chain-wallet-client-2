@@ -27,6 +27,12 @@ export function getEstimateFeeForSendingToken(
   tokenObject,
   privateKey
 ) {
+  console.log("getEstimateFeeForSendingToken");
+  console.log("\tfrom:" + from);
+  console.log("\tto: " + to);
+  console.log("\tamount:" + amount);
+  console.log("\ttokenObject", tokenObject);
+  console.log("\tprivateKey", privateKey);
   return getRpcClient().getEstimateFeeForSendingToken(
     from,
     to,

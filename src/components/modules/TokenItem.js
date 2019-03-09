@@ -44,8 +44,6 @@ export function TokenItem({
     onSendToken(item, tab);
   };
 
-  const showHistory = item => {};
-
   return (
     <Wrapper className="wrapperToken">
       <Avatar alt="avatar" src={item.Image} />
@@ -78,17 +76,6 @@ export function TokenItem({
           onClick={() => handleUnfollow(item)}
         >
           Unfollow
-        </StyledButton>
-
-        <div style={{ height: 3 }} />
-
-        <StyledButton
-          variant="contained"
-          size="medium"
-          className="tokenButton"
-          onClick={() => showHistory(item)}
-        >
-          History
         </StyledButton>
       </Buttons>
     </Wrapper>
