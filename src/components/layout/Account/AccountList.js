@@ -67,7 +67,7 @@ class AccountList extends React.Component {
     this.modalAccountDetailRef.close();
     this.setState({
       modalAccountDetail: "",
-      modalAccountSend: <AccountSend account={this.state.accountSelected} />
+      modalAccountSend: <AccountSend />
     });
     this.modalAccountSendRef.open();
   };
@@ -114,7 +114,9 @@ class AccountList extends React.Component {
     );
   }
   formatAmount = amount => {
-    return (Number(amount) / 100).toLocaleString(navigator.language, { minimumFractionDigits: 2 });
+    return (Number(amount) / 100).toLocaleString(navigator.language, {
+      minimumFractionDigits: 2
+    });
   };
   isSelectedAccount = account => {
     return account.name === this.props.account.name;

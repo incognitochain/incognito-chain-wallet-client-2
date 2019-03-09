@@ -5,8 +5,8 @@ export const AccountContext = React.createContext({
   PrivateKey: "",
   Pubkey: "",
   ReadonlyKey: "",
-  name: "",
-  value: 0
+  name: ""
+  // value: 0 // WARNING: get account balance from AccountListContext instead
 });
 
 // hook

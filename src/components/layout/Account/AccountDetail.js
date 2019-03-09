@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { Divider, Snackbar, Button } from "@material-ui/core";
+import { Divider, Snackbar, Button, CircularProgress } from "@material-ui/core";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import QRCode from "qrcode.react";
 import ConfirmDialog from "../../core/ConfirmDialog";
@@ -20,6 +20,8 @@ import toastr from "toastr";
 import styled from "styled-components";
 import { connectAccountContext } from "../../../common/context/AccountContext";
 import { connectWalletContext } from "../../../common/context/WalletContext";
+import { connectAccountListContext } from "../../../common/context/AccountListContext";
+import _ from "lodash";
 
 const styles = theme => ({
   key: {
@@ -234,13 +236,24 @@ class AccountDetail extends React.Component {
     // this.modalAccountDetailRef.close();
     this.setState({
       modalAccountDetail: "",
-      modalAccountSend: <AccountSend account={this.props.account} />
+      modalAccountSend: <AccountSend />
     });
     this.modalAccountSendRef.open();
   };
+  getAccountBalance(accountName) {
+    try {
+      return this.props.accountList.find(({ name }) => name === accountName)
+        .value;
+    } catch (e) {
+      console.error(e);
+      return -1;
+    }
+  }
 
   renderAccountInfo = () => {
     const { account } = this.props;
+
+    const balance = this.getAccountBalance(account.name);
 
     return (
       <AccountInfoWrapper>
@@ -273,10 +286,7 @@ class AccountDetail extends React.Component {
             </PaymentInput>
           </CopyToClipboard>
         </CopyToClipboardWrapper>
-        <Balance>
-          {account.value ? (account.value / 100).toLocaleString(navigator.language, { minimumFractionDigits: 2 }) : 0}{" "}
-          <span className="constant">Constant</span>
-        </Balance>
+        <Balance>{this.renderBalance(balance)}</Balance>
 
         <SendButton
           className="SendButton"
@@ -288,6 +298,22 @@ class AccountDetail extends React.Component {
       </AccountInfoWrapper>
     );
   };
+
+  renderBalance(balance) {
+    if (balance === -1) {
+      return <CircularProgress size={60} color="secondary" />;
+    }
+    return (
+      <>
+        {typeof balance === "number"
+          ? (balance / 100).toLocaleString(navigator.language, {
+              minimumFractionDigits: 2
+            })
+          : 0}{" "}
+        <span className="constant">Constant</span>
+      </>
+    );
+  }
 
   renderTabs() {
     const { paymentAddress, readonlyKey } = this.state;
@@ -322,9 +348,12 @@ AccountDetail.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(
-  connectWalletContext(connectAccountContext(AccountDetail))
-);
+export default _.flow([
+  withStyles(styles),
+  connectWalletContext,
+  connectAccountContext,
+  connectAccountListContext
+])(AccountDetail);
 
 const Wrapper = styled.div`
   display: flex;

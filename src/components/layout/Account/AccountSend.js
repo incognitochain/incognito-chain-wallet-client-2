@@ -3,13 +3,10 @@ import { withStyles } from "@material-ui/core/styles";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Account from "../../../services/Account";
 import { Button, TextField } from "@material-ui/core";
-import {
-  useAccountContext,
-  connectAccountContext
-} from "../../../common/context/AccountContext";
-import { useGetBalance } from "./hook/useGetBalance";
+import { useAccountContext } from "../../../common/context/AccountContext";
 import toastr from "toastr";
-import { connectWalletContext } from "../../../common/context/WalletContext";
+import { useWalletContext } from "../../../common/context/WalletContext";
+import { useAccountListContext } from "../../../common/context/AccountListContext";
 import { fromEvent, combineLatest } from "rxjs";
 import {
   map,
@@ -21,6 +18,7 @@ import {
 } from "rxjs/operators";
 import * as rpcClientService from "../../../services/RpcClientService";
 import { useDebugReducer } from "../../../common/hook/useDebugReducer";
+import { useAppContext } from "../../../common/context/AppContext";
 
 const styles = theme => ({
   textField: {
@@ -38,8 +36,6 @@ const styles = theme => ({
 
 function reducer(state, action) {
   switch (action.type) {
-    case "SET_BALANCE":
-      return { ...state, balance: action.balance };
     case "CHANGE_INPUT":
       return { ...state, [action.name]: action.value };
     case "RESET":
@@ -55,11 +51,35 @@ function reducer(state, action) {
 
 const refs = { modalConfirmationRef: null }; //TODO - remove this
 
-function AccountSend(props) {
+function AccountSend({ classes, isOpen }) {
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
 
+  const { wallet } = useWalletContext();
   const account = useAccountContext();
+  const accounts = useAccountListContext();
+  const { appDispatch } = useAppContext();
+
+  let balance;
+  try {
+    balance = accounts.find(({ name }) => name === account.name).value;
+  } catch (e) {
+    console.error(e);
+    balance = -1;
+  }
+
+  React.useEffect(() => {
+    reloadBalance();
+  }, []);
+
+  async function reloadBalance() {
+    const balance = await wallet.getAccountByName(account.name).getBalance();
+    appDispatch({
+      type: "SET_ACCOUNT_BALANCE",
+      accountName: account.name,
+      balance
+    });
+  }
 
   let [state, dispatch] = useDebugReducer(
     "AccountSend",
@@ -70,7 +90,6 @@ function AccountSend(props) {
       toAddress: "",
       amount: "",
       fee: "",
-      balance: 0,
       showAlert: "",
       isAlert: false
     })
@@ -122,8 +141,6 @@ function AccountSend(props) {
     };
   }, []);
 
-  useGetBalance({ dispatch, accountName: account.name });
-
   const confirmSendCoin = () => {
     const { toAddress, amount, fee, EstimateTxSizeInKb, GOVFeePerKbTx } = state;
 
@@ -152,7 +169,7 @@ function AccountSend(props) {
       return;
     }
 
-    if (Number(amount) > Number(props.account.value)) {
+    if (Number(amount) > Number(balance)) {
       toastr.warning("Insufficient this account balance!");
       return;
     }
@@ -171,8 +188,8 @@ function AccountSend(props) {
 
     const result = await Account.sendConstant(
       [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
-      props.account,
-      props.wallet
+      account,
+      wallet
     );
 
     if (result) {
@@ -193,7 +210,7 @@ function AccountSend(props) {
         required
         id="fromAddress"
         label="From"
-        className={props.classes.textField}
+        className={classes.textField}
         margin="normal"
         variant="outlined"
         value={state.paymentAddress}
@@ -201,10 +218,7 @@ function AccountSend(props) {
       />
 
       <div className="text-right">
-        Balance:{" "}
-        {props.account.value
-          ? Math.round(props.account.value / 100).toLocaleString()
-          : 0}{" "}
+        Balance: {balance ? Math.round(balance / 100).toLocaleString() : 0}{" "}
         CONSTANT
       </div>
 
@@ -212,7 +226,7 @@ function AccountSend(props) {
         required
         id="toAddress"
         label="To"
-        className={props.classes.textField}
+        className={classes.textField}
         margin="normal"
         variant="outlined"
         value={state.toAddress}
@@ -224,7 +238,7 @@ function AccountSend(props) {
         required
         id="amount"
         label="Amount"
-        className={props.classes.textField}
+        className={classes.textField}
         margin="normal"
         variant="outlined"
         value={state.amount}
@@ -236,7 +250,7 @@ function AccountSend(props) {
         required
         id="fee"
         label="Fee"
-        className={props.classes.textField}
+        className={classes.textField}
         margin="normal"
         variant="outlined"
         value={state.fee}
@@ -247,7 +261,7 @@ function AccountSend(props) {
         variant="contained"
         size="large"
         color="primary"
-        className={props.classes.button}
+        className={classes.button}
         fullWidth
         onClick={() => confirmSendCoin()}
       >
@@ -274,6 +288,4 @@ function AccountSend(props) {
   );
 }
 
-export default withStyles(styles)(
-  connectWalletContext(connectAccountContext(AccountSend))
-);
+export default withStyles(styles)(AccountSend);

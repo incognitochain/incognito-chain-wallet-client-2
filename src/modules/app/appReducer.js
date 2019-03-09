@@ -11,8 +11,9 @@ export const initialAppState = {
 export function appReducer(state = initialAppState, action) {
   switch (action.type) {
     case "SET_ACCOUNT_BALANCE": {
+      const { accountName, balance } = action;
       const accountIndex = state.accounts.findIndex(
-        account => account.name === action.accountName
+        account => account.name === accountName
       );
       return {
         ...state,
@@ -20,7 +21,7 @@ export function appReducer(state = initialAppState, action) {
           ...state.accounts.slice(0, accountIndex),
           {
             ...state.accounts[accountIndex],
-            value: action.balance
+            value: balance
           },
           ...state.accounts.slice(accountIndex + 1)
         ]
