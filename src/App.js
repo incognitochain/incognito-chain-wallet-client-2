@@ -78,6 +78,7 @@ const App = ({ history, location }) => {
 
     let selectedAccount = {};
     if (accountList.length > 0) {
+      console.log("------- AccountList: ------- ", accountList);
       let selectedAccountIndex = parseInt(
         window.localStorage.getItem("accountIndex")
       );

@@ -114,7 +114,7 @@ class AccountList extends React.Component {
     );
   }
   formatAmount = amount => {
-    return (Number(amount) / 100).toLocaleString({ maximumFractionDigits: 2 });
+    return (Number(amount) / 100).toLocaleString(navigator.language, { minimumFractionDigits: 2 });
   };
   isSelectedAccount = account => {
     return account.name === this.props.account.name;

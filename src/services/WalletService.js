@@ -27,8 +27,9 @@ export async function loadWallet() {
   let wallet = new Wallet();
   wallet.Storage = localforage;
 
-  const result = await wallet.loadWallet(passphrase);
-  if (result && wallet.Name) {
+  await wallet.loadWallet(passphrase);
+  console.log("Load Wallet", wallet.MasterAccount.child);
+  if (wallet.Name) {
     console.timeEnd("loadWallet");
     return wallet;
   }
