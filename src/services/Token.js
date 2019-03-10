@@ -135,7 +135,7 @@ export default class Token {
     console.log("Payment address of receiver:", receiverKey);
     tokenParam.receivers[0].set(receiverKey.KeySet.PaymentAddress, submitParam.TokenReceivers.Amount * 100);
     
-    let res = await accountWallet.createAndSendCustomToken(paymentInfos, tokenParam);
+    let res = await accountWallet(paymentInfos, tokenParam);
     console.log("Res when create and send token:", res);
     return res;
 
