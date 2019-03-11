@@ -25,6 +25,7 @@ import _ from "lodash";
 import styled from "styled-components";
 import * as rpcClientService from "../../../services/RpcClientService";
 import $ from "jquery";
+import toastr from "toastr";
 
 class CreateToken extends React.Component {
   static propTypes = {
@@ -106,18 +107,25 @@ class CreateToken extends React.Component {
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
-          return rpcClientService.getEstimateFeeForSendingToken(
-            this.props.account.PaymentAddress,
-            toAddress,
-            amount,
-            this.getRequestTokenObject(),
-            this.props.account.PrivateKey
-          );
+          this.setState({ isLoadingEstimationFee: true });
+          return rpcClientService
+            .getEstimateFeeForSendingToken(
+              this.props.account.PaymentAddress,
+              toAddress,
+              amount,
+              this.getRequestTokenObject(),
+              this.props.account.PrivateKey
+            )
+            .catch(e => {
+              console.error(e);
+              toastr.error("Error on get estimation fee!");
+              return Promise.resolve(-1);
+            });
         })
       )
       .subscribe(fee => {
         console.log(" CreateToken feeeeeeeeeeeeeeeeeeeeeeeeee:", fee);
-        this.setState({ fee });
+        this.setState({ fee, isLoadingEstimationFee: false });
       }, console.error);
   };
 
@@ -380,6 +388,11 @@ class CreateToken extends React.Component {
         >
           Send
         </Button>
+        {this.state.isLoadingEstimationFee ? (
+          <div className="badge badge-pill badge-light mt-3">
+            * Loading estimation fee...
+          </div>
+        ) : null}
       </form>
     );
   }
