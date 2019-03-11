@@ -33,6 +33,7 @@ import {
 
 import { ReactComponent as CreateAccountSVG } from "../../assets/images/create-account.svg";
 import { ReactComponent as ImportAccountSVG } from "../../assets/images/import-account.svg";
+import { ReactComponent as ExitAppIcon } from "../../assets/images/exit-app-icon.svg";
 import "./Header.scss";
 
 import AccountList from "../layout/Account/AccountList";
@@ -43,6 +44,7 @@ import _ from "lodash";
 import { Subject } from "rxjs";
 import { debounceTime, switchMap } from "rxjs/operators";
 import { HeaderSelectedAccount } from "../../modules/account/HeaderSelectedAccount";
+import * as passwordService from "../../services/PasswordService";
 
 const styles = {
   grow: {
@@ -293,6 +295,10 @@ class Header extends React.Component {
       />
     );
   };
+  logout = () => {
+    passwordService.clearPassword();
+    window.location.reload();
+  };
   renderMenu = () => {
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
@@ -323,6 +329,12 @@ class Header extends React.Component {
             <ImportAccountSVG />
           </ListItemIcon>
           Import Account
+        </MenuItem>
+        <MenuItem onClick={() => this.logout()}>
+          <ListItemIcon style={{ marginLeft: "10px" }}>
+            <ExitAppIcon />
+          </ListItemIcon>
+          Log out
         </MenuItem>
       </Menu>
     );
