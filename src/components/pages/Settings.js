@@ -25,9 +25,7 @@ import {
   Warning as IconWarning,
   Add as IconAdd,
   Language as IconLanguage,
-  Album as IconCurrency,
   Computer as IconServer,
-  Archive as IconArchive,
   Ballot as IconPassPhrase
 } from "@material-ui/icons";
 import { ReactComponent as RefreshIcon } from "../../assets/images/refresh-icon.svg";
