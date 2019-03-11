@@ -118,6 +118,12 @@ export default class Token {
       paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
     }
 
+    let receiverPaymentAddrStr = new Array(1);
+    receiverPaymentAddrStr[0] = submitParam.TokenReceivers.PaymentAddress;
+    // for (let i=0; i<receiverPaymentAddrStr.length; i++){
+    //   receiverPaymentAddrStr[i] = submitParam.TokenReceivers.PaymentAddress
+    // }
+
     // param 1: token param
     // get current token to get token param
     let tokenParam = new CustomTokenParamTx();
@@ -133,6 +139,7 @@ export default class Token {
       submitParam.TokenReceivers.PaymentAddress
     );
 
+
     let receiverKey = KeyWallet.base58CheckDeserialize(
       submitParam.TokenReceivers.PaymentAddress
     );
@@ -145,11 +152,13 @@ export default class Token {
     try {
       res = await accountWallet.createAndSendCustomToken(
         paymentInfos,
-        tokenParam
+        tokenParam,
+        receiverPaymentAddrStr
       );
       console.log("Res when create and send token:", res);
     } catch (e) {
       console.log(e);
+      throw e;
     }
 
     return res;

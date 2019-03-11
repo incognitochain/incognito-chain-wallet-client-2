@@ -146,13 +146,21 @@ export default class Account {
 
     // create paymentInfos
     let paymentInfos = new Array(param.length);
+    let receiverPaymentAddrStr = new Array(param.length);
+
     for (let i=0; i<paymentInfos.length; i++){
       let keyWallet = KeyWallet.base58CheckDeserialize(param[i].paymentAddressStr);
+      receiverPaymentAddrStr[i] = param[i].paymentAddressStr
       // console.log("Payment addr:", paymentAddr);
       paymentInfos[i] = new PaymentInfo(keyWallet.KeySet.PaymentAddress, new bn(param[i].amount));
     }
 
-    let result = await accountWallet.createAndSendConstant(paymentInfos);
+    let result;
+    try{
+      result = await accountWallet.createAndSendConstant(paymentInfos, receiverPaymentAddrStr);
+    } catch(e){
+      throw e;
+    }    
 
     return result;
 
