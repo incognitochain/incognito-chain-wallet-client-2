@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { CopyableTooltip } from "common/components/copyable-tooltip";
 import { useAccountWallet } from "../../modules/tokens/hook/useAccountWallet";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import numeral from "numeral";
 
 export function TokenItem({
   tab,
@@ -13,7 +14,31 @@ export function TokenItem({
   onSendToken,
   handleUnfollow
 }) {
-  const balance = item.Amount;
+  const accountWallet = useAccountWallet();
+  const [balance, setBalance] = React.useState(null);
+
+  React.useEffect(() => {
+    loadBalance();
+  }, [item.ID]);
+
+  async function loadBalance() {
+    try {
+      if (tabName === "privacy") {
+        console.log("### load privacy balance", item.ID);
+        const balance = await accountWallet.getPrivacyCustomTokenBalance(
+          item.ID
+        );
+        setBalance(balance);
+      } else if (tabName === "custom") {
+        console.log("### load custom balance");
+        const balance = await accountWallet.getCustomTokenBalance(item.ID);
+        setBalance(balance);
+      }
+    } catch (e) {
+      console.error(e);
+      setBalance("#ERR");
+    }
+  }
 
   const handleClickButton = () => {
     onSendToken(item, tab);
@@ -30,7 +55,7 @@ export function TokenItem({
               {balance === null ? (
                 <CircularProgress size={20} />
               ) : (
-                balance / 100
+                numeral(parseFloat(balance)).format("0,0")
               )}
             </div>
           </div>

@@ -147,7 +147,7 @@ export function FollowTokenDialog({
                     <div>Name: {token.Name}</div>
                     <div>Symbol: {token["Symbol"]}</div>
                     <div>
-                      Amount:{" "}
+                      Init Amount:{" "}
                       {numeral(parseFloat(token.Amount)).format("0,0")}
                     </div>
                   </Right>

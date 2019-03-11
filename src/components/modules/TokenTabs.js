@@ -133,7 +133,7 @@ class TokenTabs extends React.Component {
             className="newTokenButton"
             onClick={this.handleCreateToken}
           >
-            Create New Token
+            Init New Token
           </Button>
 
           <Button
@@ -146,14 +146,14 @@ class TokenTabs extends React.Component {
             Add Tokens To Follow
           </Button>
 
-          <Button
+          {/* <Button
             variant="contained"
             size="medium"
             className="newTokenButton"
             onClick={() => this.setState({ isOpenTokenHistory: true })}
           >
             Show Token History
-          </Button>
+          </Button> */}
         </ButtonWrapper>
 
         <FollowTokenDialog
