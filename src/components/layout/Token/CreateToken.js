@@ -238,10 +238,10 @@ class CreateToken extends React.Component {
         this.props.account,
         this.props.wallet
       );
-    }catch(e){
+    } catch (e) {
       throw e;
     }
-    
+
     if (results.err) {
       console.log("Error", results.err);
       this.setState({
@@ -253,16 +253,16 @@ class CreateToken extends React.Component {
   };
   createSendPrivacyTokenTransaction = async params => {
     let results;
-    try{
+    try {
       results = await Token.createSendPrivacyCustomTokenTransaction(
         params,
         this.props.account,
         this.props.wallet
       );
-    } catch(e){
+    } catch (e) {
       throw e;
     }
-    
+
     console.log("Result:", results);
 
     if (results.err) {
@@ -325,8 +325,7 @@ class CreateToken extends React.Component {
     if (isCreate) return null;
     return (
       <div className="text-right">
-        Balance: {balance ? Math.round(balance / 100).toLocaleString() : 0}{" "}
-        TOKEN
+        Balance: {balance ? Math.round(balance).toLocaleString() : 0} TOKEN
       </div>
     );
   }
