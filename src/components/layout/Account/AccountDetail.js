@@ -21,6 +21,7 @@ import styled from "styled-components";
 import {connectAccountContext} from "../../../common/context/AccountContext";
 import {connectWalletContext} from "../../../common/context/WalletContext";
 import {connectAccountListContext} from "../../../common/context/AccountListContext";
+import * as passwordService from "../../../services/PasswordService";
 import _ from "lodash";
 
 const styles = theme => ({
@@ -116,31 +117,23 @@ class AccountDetail extends React.Component {
   };
 
   removeAccount = async () => {
-    let {privateKey, paymentAddress} = this.state;
     const {account} = this.props;
-    if (!privateKey) {
-      const result = await Account.getPrivateKey(paymentAddress);
-      if (result && result.PrivateKey) {
-        privateKey = result.PrivateKey;
-      }
-    }
+    let privateKey = account.PrivateKey;
 
     if (privateKey) {
       try {
-        let result = await Account.removeAccount(
+        await Account.removeAccount(
           privateKey,
           account.name,
-          "12345678",
+          passwordService.getPassphrase(),
           this.props.wallet
         );
-        if (result) {
-          this.onFinish({message: "Account is removed!"});
-        } else {
-          this.showError("Remove error!");
-        }
-      } catch (e) {
-        throw e;
+      } catch (ex) {
+        this.showError("Remove error! " + ex.toString());
+        return
       }
+      this.showAlert("Account is removed!", "info");
+      window.location.reload();
     } else {
       this.showError("Not found Private Key!");
     }
