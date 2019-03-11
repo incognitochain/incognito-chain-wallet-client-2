@@ -118,7 +118,7 @@ export default class Token {
 
     return res;
   }
-  
+
   static async createSendPrivacyCustomTokenTransaction(submitParam, account, wallet) {
     console.log("SEND PRIVACY CUSTOM TOKEN!!!!!!!");
     // get accountWallet from wallet has name
@@ -147,17 +147,9 @@ export default class Token {
     tokenParam.receivers[0] = new PaymentInfo(
       KeyWallet.base58CheckDeserialize(submitParam.TokenReceivers.PaymentAddress).KeySet.PaymentAddress, 
       new bn(submitParam.TokenReceivers.Amount * 100));
-    // console.log(
-    //   "To address seriallize: ",
-    //   submitParam.TokenReceivers.PaymentAddress
-    // );
 
-
-    
-    // for (let i = 0; i < tokenParam.receivers.length; i++) {
-    //   tokenParam.receivers[i] = new PaymentInfo(/*paymentADDR, amount*/);
-    // }
-
+    console.log("Token param when createSendPrivacyCustomTokenTransaction: ", tokenParam);
+  
     let response;
     try{
       response = await accountWallet.createAndSendPrivacyCustomToken(
