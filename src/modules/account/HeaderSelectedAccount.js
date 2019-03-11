@@ -1,17 +1,17 @@
 import React from "react";
-import { useAccountContext } from "../../common/context/AccountContext";
-import { useWalletContext } from "../../common/context/WalletContext";
-import { useAppContext } from "../../common/context/AppContext";
-import { useAccountListContext } from "../../common/context/AccountListContext";
-import { Subject } from "rxjs";
-import { debounceTime, switchMap } from "rxjs/operators";
-import { CircularProgress } from "@material-ui/core";
+import {useAccountContext} from "../../common/context/AccountContext";
+import {useWalletContext} from "../../common/context/WalletContext";
+import {useAppContext} from "../../common/context/AppContext";
+import {useAccountListContext} from "../../common/context/AccountListContext";
+import {Subject} from "rxjs";
+import {debounceTime, switchMap} from "rxjs/operators";
+import {CircularProgress} from "@material-ui/core";
 
 export const HeaderSelectedAccount = () => {
   const account = useAccountContext();
-  const { appDispatch } = useAppContext();
+  const {appDispatch} = useAppContext();
   const accounts = useAccountListContext();
-  const { wallet } = useWalletContext();
+  const {wallet} = useWalletContext();
 
   const balanceSubjectRef = React.useRef();
 
@@ -54,7 +54,7 @@ export const HeaderSelectedAccount = () => {
   }
 
   const balance = (
-    accounts.find(({ name }) => name === account.name) || { value: "..." }
+    accounts.find(({name}) => name === account.name) || {value: "..."}
   ).value;
 
   React.useEffect(() => {
@@ -65,17 +65,17 @@ export const HeaderSelectedAccount = () => {
 
   return (
     <div className="selectedAccount">
-      <span className="selectedAccountName">{account.name}</span> (
-      {renderValue(balance)} CONST)
+      <span className="selectedAccountName">{account.name}</span>
+      {/*({renderValue(balance)} CONST)*/}
     </div>
   );
 };
 
 function renderValue(value) {
-  if (value === -1) return <CircularProgress size={20} color="secondary" />;
+  if (value === -1) return <CircularProgress size={20} color="secondary"/>;
   return typeof value === "number"
     ? (Number(value) / 100).toLocaleString({
-        maximumFractionDigits: 2
-      })
+      maximumFractionDigits: 2
+    })
     : value;
 }
