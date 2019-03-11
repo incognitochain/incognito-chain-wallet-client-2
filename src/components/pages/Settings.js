@@ -198,7 +198,6 @@ class Settings extends React.Component {
   }
 
   showMnemonicWords = async () => {
-    debugger;
     const wallet = await walletService.loadWallet();
     if (wallet) {
       return (
