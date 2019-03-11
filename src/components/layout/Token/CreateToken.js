@@ -231,12 +231,17 @@ class CreateToken extends React.Component {
     this.handleAlertOpen();
   };
   createSendCustomTokenTransaction = async params => {
-    const results = await Token.createSendCustomToken(
-      params,
-      this.props.account,
-      this.props.wallet
-    );
-
+    let results;
+    try {
+      results = await Token.createSendCustomToken(
+        params,
+        this.props.account,
+        this.props.wallet
+      );
+    }catch(e){
+      throw e;
+    }
+    
     if (results.err) {
       console.log("Error", results.err);
       this.setState({
@@ -247,12 +252,17 @@ class CreateToken extends React.Component {
     }
   };
   createSendPrivacyTokenTransaction = async params => {
-    const results = await Token.createSendPrivacyCustomTokenTransaction(
-      params,
-      this.props.account,
-      this.props.wallet
-    );
-
+    let results;
+    try{
+      results = await Token.createSendPrivacyCustomTokenTransaction(
+        params,
+        this.props.account,
+        this.props.wallet
+      );
+    } catch(e){
+      throw e;
+    }
+    
     console.log("Result:", results);
 
     if (results.err) {
@@ -268,7 +278,6 @@ class CreateToken extends React.Component {
   createOrSendToken = () => {
     // isCreate = true: init token, else: send token
     const { type } = this.props;
-
     const { submitParams } = this.state;
 
     console.log("Submit param when create or send token: ", submitParams[3]);
