@@ -134,9 +134,14 @@ export default class Token {
     let receiverKey = KeyWallet.base58CheckDeserialize(submitParam.TokenReceivers.PaymentAddress);
     console.log("Payment address of receiver:", receiverKey);
     tokenParam.receivers[0].set(receiverKey.KeySet.PaymentAddress, submitParam.TokenReceivers.Amount * 100);
+    let res
+    try{
+      res = await accountWallet.createAndSendCustomToken(paymentInfos, tokenParam);
+      console.log("Res when create and send token:", res);
+    } catch(e){
+      console.log(e);
+    }
     
-    let res = await accountWallet(paymentInfos, tokenParam);
-    console.log("Res when create and send token:", res);
     return res;
 
     // param.splice(1, 0, null)

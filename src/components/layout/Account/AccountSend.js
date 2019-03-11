@@ -197,7 +197,7 @@ function AccountSend({ classes, isOpen }) {
     );
 
     if (result.txId) {
-      toastr.success("Completed");
+      toastr.success("Completed: ", result.txId);
       dispatch({ type: "RESET" });
     } else {
       toastr.error("Send failed. Please try again!");
