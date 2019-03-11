@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Tabs, Tab } from "@material-ui/core";
+import {Tabs, Tab} from "@material-ui/core";
 
-import { withStyles } from "@material-ui/core/styles";
+import {withStyles} from "@material-ui/core/styles";
 
 import PrivacyKeys from "./PrivacyKeys";
 import TokenTabs from "./TokenTabs";
 import styled from "styled-components";
-import { History } from "../../modules/history/History";
+import {History} from "../../modules/history/History";
 
 const styles = theme => ({
   indicator: {
@@ -51,7 +51,7 @@ class MainTabs extends React.Component {
   }
 
   handleChange = (event, value) => {
-    this.setState({ value });
+    this.setState({value});
   };
 
   renderPrivacyKey = () => {
@@ -59,7 +59,7 @@ class MainTabs extends React.Component {
   };
 
   renderTokenTabs = () => {
-    const { paymentAddress } = this.props;
+    const {paymentAddress} = this.props;
     const props = {
       paymentAddress: paymentAddress,
       ...this.props
@@ -75,8 +75,8 @@ class MainTabs extends React.Component {
   };
 
   render() {
-    const { value } = this.state; // TODO - use tabname for value instead of index number.
-    const { classes } = this.props;
+    const {value} = this.state; // TODO - use tabname for value instead of index number.
+    const {classes} = this.props;
     const classesTab = {
       root: "MainTabItem",
       label: classes.label,
@@ -97,14 +97,14 @@ class MainTabs extends React.Component {
           onChange={this.handleChange}
           className="tokenTabs"
         >
-          <StyledTab classes={classesTab} label="TOKENS" />
-          <StyledTab classes={classesTab} label="HISTORY" />
-          <StyledTab classes={classesTab} label="PRIVACY KEY" />
+          <StyledTab classes={classesTab} label="TOKENS"/>
+          <StyledTab classes={classesTab} label="HISTORY"/>
+          <StyledTab classes={classesTab} label="ACCOUNT DETAIL"/>
         </Tabs>
         {renderIf(value === mapTabNameToIndex["tokens"])(
           this.renderTokenTabs()
         )}
-        {renderIf(value === mapTabNameToIndex["history"])(<History />)}
+        {renderIf(value === mapTabNameToIndex["history"])(<History/>)}
         {renderIf(value === mapTabNameToIndex["privacyKey"])(
           this.renderPrivacyKey()
         )}
@@ -112,6 +112,7 @@ class MainTabs extends React.Component {
     );
   }
 }
+
 export default withStyles(styles)(MainTabs);
 
 const Wrapper = styled.div`
