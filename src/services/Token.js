@@ -10,6 +10,7 @@ import {
 } from "constant-chain-web-js/build/wallet";
 
 import bn from 'bn.js';
+import {getPassphrase} from './PasswordService';
 
 export default class Token {
   static getOption(methodName, params) {
@@ -60,11 +61,15 @@ export default class Token {
   static async createSendCustomToken(submitParam, account, wallet) {
     console.log("SEND CUSTOM TOKEN!!!!!!!");
 
+    console.log("Wallet before create and send token: ", wallet);
+
     console.log("submitParam.TokenID: ", submitParam.TokenID);
     // get accountWallet from wallet has name
-    let accountWallet = wallet.getAccountByName(account.name);
+    // let accountWallet = wallet.getAccountByName(account.name);
+    let indexAccount = wallet.getAccountIndexByName(account.name);
+    
 
-    console.log("Account Wallet sender: ", accountWallet);
+    // console.log("Account Wallet sender: ", accountWallet);
 
     // prepare param for create and send token
     // param 0: payment infos
@@ -85,7 +90,7 @@ export default class Token {
     tokenParam.propertyID = submitParam.TokenID;
     tokenParam.propertyName = submitParam.TokenName;
     tokenParam.propertySymbol = submitParam.TokenSymbol;
-    tokenParam.amount = submitParam.TokenAmount * 100;
+    tokenParam.amount = submitParam.TokenAmount;
     tokenParam.tokenTxType = submitParam.TokenTxType;
     tokenParam.receivers = new Array(1);
     tokenParam.receivers[0] = new TxTokenVout();
@@ -101,16 +106,20 @@ export default class Token {
     // console.log("Payment address of receiver:", receiverKey);
     tokenParam.receivers[0].set(
       KeyWallet.base58CheckDeserialize(submitParam.TokenReceivers.PaymentAddress).KeySet.PaymentAddress,
-      submitParam.TokenReceivers.Amount * 100
+      submitParam.TokenReceivers.Amount
     );
     let res;
     try {
-      res = await accountWallet.createAndSendCustomToken(
+      res = await wallet.MasterAccount.child[indexAccount].createAndSendCustomToken(
         paymentInfos,
         tokenParam,
         receiverPaymentAddrStr
       );
       console.log("Res when create and send token:", res);
+      await wallet.save(getPassphrase());
+
+      console.log("Wallet after create and send token: ", wallet);
+
     } catch (e) {
       console.log(e);
       throw e;
@@ -122,9 +131,10 @@ export default class Token {
   static async createSendPrivacyCustomTokenTransaction(submitParam, account, wallet) {
     console.log("SEND PRIVACY CUSTOM TOKEN!!!!!!!");
     // get accountWallet from wallet has name
-    let accountWallet = wallet.getAccountByName(account.name);
-    console.log("Account Wallet sender: ", accountWallet);
-
+    // let accountWallet = wallet.getAccountByName(account.name);
+    // console.log("Account Wallet sender: ", accountWallet);
+    let indexAccount = wallet.getAccountIndexByName(account.name);
+    
     // prepare param for create and send privacy custom token
     let paymentInfos = new Array(0);
     for (let i = 0; i < paymentInfos.length; i++) {
@@ -137,7 +147,7 @@ export default class Token {
     tokenParam.propertyID = submitParam.TokenID;
     tokenParam.propertyName = submitParam.TokenName;
     tokenParam.propertySymbol = submitParam.TokenSymbol;
-    tokenParam.amount = submitParam.TokenAmount * 100;
+    tokenParam.amount = submitParam.TokenAmount;
     tokenParam.tokenTxType = submitParam.TokenTxType;
 
     let receiverPaymentAddrStr = new Array(1);
@@ -146,17 +156,19 @@ export default class Token {
     tokenParam.receivers = new Array(1);
     tokenParam.receivers[0] = new PaymentInfo(
       KeyWallet.base58CheckDeserialize(submitParam.TokenReceivers.PaymentAddress).KeySet.PaymentAddress, 
-      new bn(submitParam.TokenReceivers.Amount * 100));
+      new bn(submitParam.TokenReceivers.Amount));
 
     console.log("Token param when createSendPrivacyCustomTokenTransaction: ", tokenParam);
   
     let response;
     try{
-      response = await accountWallet.createAndSendPrivacyCustomToken(
+      response = await wallet.MasterAccount.child[indexAccount].createAndSendPrivacyCustomToken(
         paymentInfos,
         tokenParam,
         receiverPaymentAddrStr
       );
+
+      await wallet.save(getPassphrase());
     } catch(e){
       throw e;
     }

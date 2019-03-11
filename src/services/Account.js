@@ -2,6 +2,7 @@ import axios from "axios";
 import Server from "./Server";
 import {KeyWallet, PaymentInfo} from "constant-chain-web-js/build/wallet";
 import bn from 'bn.js';
+import {getPassphrase} from './PasswordService';
 // import * as ec from 'privacy-js-lib/lib/ec';
 // import * as privacyUtils from 'privacy-js-lib/lib/privacy_utils';
 
@@ -137,9 +138,10 @@ export default class Account {
     // debugger
 
     // get accountWallet from wallet has name
-    let accountWallet = wallet.getAccountByName(account.name);
+    // let accountWallet = wallet.getAccountByName(account.name);
+    let indexAccount = wallet.getAccountIndexByName(account.name);
 
-    console.log("Account Wallet sender: ", accountWallet);
+    // console.log("Account Wallet sender: ", accountWallet);
 
     console.log("KeyWallet ", KeyWallet);
     console.log("PaymentInfo ", PaymentInfo);
@@ -157,7 +159,8 @@ export default class Account {
 
     let result;
     try{
-      result = await accountWallet.createAndSendConstant(paymentInfos, receiverPaymentAddrStr);
+      result = await wallet.MasterAccount.child[indexAccount].createAndSendConstant(paymentInfos, receiverPaymentAddrStr);
+      wallet.save(getPassphrase())
     } catch(e){
       throw e;
     }    
