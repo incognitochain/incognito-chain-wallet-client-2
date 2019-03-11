@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import {Button, Input, Grid} from "@material-ui/core";
 import * as walletService from "../../services/WalletService";
-import {CreateWalletPromptDialog} from "./CreateWalletPromptDialog";
-import {useAppContext} from "../../common/context/AppContext";
+import { CreateWalletPromptDialog } from "./CreateWalletPromptDialog";
+import { useAppContext } from "../../common/context/AppContext";
+import * as passwordService from "../../services/PasswordService";
 
 export function Password({history}) {
   const [password, setPassword] = React.useState("");
@@ -13,7 +14,7 @@ export function Password({history}) {
   async function onSubmit(e) {
     try {
       e.preventDefault();
-      walletService.savePassword(password);
+      passwordService.savePassword(password);
 
       const wallet = await walletService.loadWallet();
       if (wallet) {

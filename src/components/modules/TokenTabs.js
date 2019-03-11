@@ -27,8 +27,7 @@ const mapTabIndexToName = Object.entries(mapTabNameToIndex).reduce(
 
 class TokenTabs extends React.Component {
   static propTypes = {
-    paymentAddress: PropTypes.string.isRequired,
-    privateKey: PropTypes.string.isRequired
+    paymentAddress: PropTypes.string.isRequired
   };
   constructor(props) {
     super(props);

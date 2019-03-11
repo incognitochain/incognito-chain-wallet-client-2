@@ -6,7 +6,6 @@ import { withStyles } from "@material-ui/core/styles";
 
 import PrivacyKeys from "./PrivacyKeys";
 import TokenTabs from "./TokenTabs";
-import Account from "../../services/Account";
 import styled from "styled-components";
 import { History } from "../../modules/history/History";
 
@@ -47,46 +46,22 @@ class MainTabs extends React.Component {
     this.state = {
       value: 0,
       isExportDumpKey: false,
-      privateKey: "",
       readonlyKey: ""
     };
-  }
-  async componentDidMount() {
-    await this.getPrivateKey(this.props.paymentAddress);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.paymentAddress !== this.props.paymentAddress) {
-      this.getPrivateKey(this.props.paymentAddress);
-    }
   }
 
   handleChange = (event, value) => {
     this.setState({ value });
   };
 
-  getPrivateKey = async paymentAddress => {
-    const result = await Account.getPrivateKey(paymentAddress);
-    if (result && result.PrivateKey) {
-      this.setState({ privateKey: result.PrivateKey });
-    }
-  };
-
   renderPrivacyKey = () => {
-    const { privateKey } = this.state;
-    const props = {
-      privateKey,
-      ...this.props
-    };
-    return <PrivacyKeys {...props} />;
+    return <PrivacyKeys {...this.props} />;
   };
 
   renderTokenTabs = () => {
     const { paymentAddress } = this.props;
-    const { privateKey } = this.state;
     const props = {
       paymentAddress: paymentAddress,
-      privateKey: privateKey,
       ...this.props
     };
     return (

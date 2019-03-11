@@ -10,7 +10,7 @@ import {
 } from "@material-ui/icons";
 import Account from "../../../services/Account";
 import { connectWalletContext } from "../../../common/context/WalletContext";
-import { getPassphrase } from "../../../services/WalletService";
+import { getPassphrase } from "../../../services/PasswordService";
 import classNames from "classnames";
 import { connectAppContext } from "../../../common/context/AppContext";
 

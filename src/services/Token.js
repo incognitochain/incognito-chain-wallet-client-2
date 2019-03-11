@@ -6,7 +6,7 @@ import {
   CustomTokenParamTx,
   // TxTokenVin,
   TxTokenVout,
-  KeyWallet,
+  KeyWallet
 } from "constant-chain-web-js/build/wallet";
 
 export default class Token {
@@ -55,7 +55,6 @@ export default class Token {
     return false;
   }
   static async createSendPrivacyCustomTokenTransaction(param, account, wallet) {
-
     console.log("SEND PRIVACY CUSTOM TOKEN!!!!!!!");
     // get accountWallet from wallet has name
     let accountWallet = wallet.getAccountByName(account.name);
@@ -129,14 +128,30 @@ export default class Token {
     tokenParam.tokenTxType = submitParam.TokenTxType;
     tokenParam.receivers = new Array(1);
     tokenParam.receivers[0] = new TxTokenVout();
-    console.log("To address seriallize: ", submitParam.TokenReceivers.PaymentAddress);
+    console.log(
+      "To address seriallize: ",
+      submitParam.TokenReceivers.PaymentAddress
+    );
 
-    let receiverKey = KeyWallet.base58CheckDeserialize(submitParam.TokenReceivers.PaymentAddress);
+    let receiverKey = KeyWallet.base58CheckDeserialize(
+      submitParam.TokenReceivers.PaymentAddress
+    );
     console.log("Payment address of receiver:", receiverKey);
-    tokenParam.receivers[0].set(receiverKey.KeySet.PaymentAddress, submitParam.TokenReceivers.Amount * 100);
-    
-    let res = await accountWallet(paymentInfos, tokenParam);
-    console.log("Res when create and send token:", res);
+    tokenParam.receivers[0].set(
+      receiverKey.KeySet.PaymentAddress,
+      submitParam.TokenReceivers.Amount * 100
+    );
+    let res;
+    try {
+      res = await accountWallet.createAndSendCustomToken(
+        paymentInfos,
+        tokenParam
+      );
+      console.log("Res when create and send token:", res);
+    } catch (e) {
+      console.log(e);
+    }
+
     return res;
 
     // param.splice(1, 0, null)
