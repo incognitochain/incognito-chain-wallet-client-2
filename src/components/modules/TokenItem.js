@@ -13,7 +13,31 @@ export function TokenItem({
   onSendToken,
   handleUnfollow
 }) {
-  const balance = item.Amount;
+  const accountWallet = useAccountWallet();
+  const [balance, setBalance] = React.useState(null);
+
+  React.useEffect(() => {
+    loadBalance();
+  }, [item.ID]);
+
+  async function loadBalance() {
+    try {
+      if (tabName === "privacy") {
+        console.log("### load privacy balance", item.ID);
+        const balance = await accountWallet.getPrivacyCustomTokenBalance(
+          item.ID
+        );
+        setBalance(balance);
+      } else if (tabName === "custom") {
+        console.log("### load custom balance");
+        const balance = await accountWallet.getCustomTokenBalance(item.ID);
+        setBalance(balance);
+      }
+    } catch (e) {
+      console.error(e);
+      setBalance("#ERR");
+    }
+  }
 
   const handleClickButton = () => {
     onSendToken(item, tab);
