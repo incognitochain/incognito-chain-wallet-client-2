@@ -1,8 +1,7 @@
-
 import React from "react";
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import { Snackbar, TextField, Button } from "@material-ui/core";
+import {withStyles} from "@material-ui/core/styles";
+import {Snackbar, TextField, Button} from "@material-ui/core";
 import {
   Warning as IconWarning,
   Save as IconSave,
@@ -10,9 +9,9 @@ import {
   Error as IconError
 } from "@material-ui/icons";
 import Account from "../../../services/Account";
-import { connectWalletContext } from "../../../common/context/WalletContext";
-import { connectAppContext } from "../../../common/context/AppContext";
-import { connectAccountListContext } from "../../../common/context/AccountListContext";
+import {connectWalletContext} from "../../../common/context/WalletContext";
+import {connectAppContext} from "../../../common/context/AppContext";
+import {connectAccountListContext} from "../../../common/context/AccountListContext";
 
 import classNames from "classnames";
 
@@ -53,18 +52,18 @@ class CreateAccount extends React.Component {
       return;
     }
 
-    this.setState({ showAlert: "", isAlert: false });
+    this.setState({showAlert: "", isAlert: false});
   };
 
   showAlert = (msg, flag = "warning") => {
     let showAlert = "",
       isAlert = true,
-      icon = <IconWarning />;
+      icon = <IconWarning/>;
 
-    if (flag === "success") icon = <IconSuccess />;
-    else if (flag === "danger") icon = <IconError />;
+    if (flag === "success") icon = <IconSuccess/>;
+    else if (flag === "danger") icon = <IconError/>;
 
-    this.setState({ isAlert }, () => {
+    this.setState({isAlert}, () => {
       showAlert = (
         <Snackbar
           anchorOrigin={{
@@ -81,7 +80,7 @@ class CreateAccount extends React.Component {
         </Snackbar>
       );
 
-      this.setState({ showAlert });
+      this.setState({showAlert});
     });
   };
 
@@ -94,19 +93,19 @@ class CreateAccount extends React.Component {
   };
 
   createAccount = async () => {
-    const { accountName } = this.state;
+    const {accountName} = this.state;
 
     // check whether accountName is null or not
     if (!accountName) {
-      this.setState({ isAlert: true }, () => {
+      this.setState({isAlert: true}, () => {
         this.showAlert("Account name is required!");
       });
       return;
     }
 
     // check whether accountName is existed or not
-    for (let i=0; i<this.props.accountList.length; i++){
-      if (this.props.accountList[i].name.toLowerCase() === accountName.toLowerCase()){
+    for (let i = 0; i < this.props.accountList.length; i++) {
+      if (this.props.accountList[i].name.toLowerCase() === accountName.toLowerCase()) {
         this.showAlert("Account name is existed!");
         return;
       }
@@ -114,11 +113,10 @@ class CreateAccount extends React.Component {
 
     const result = await Account.createAccount(accountName, this.props.wallet);
     console.log("Result: ", result);
-    if(result && result.key){
+    if (result && result.key) {
       this.props.app.listAccounts(this.props.wallet);
-      this.onFinish({message:'Account is created!'});
-    }
-    else{
+      this.onFinish({message: 'Account is created!'});
+    } else {
       this.showError('Create error!');
     }
   };
@@ -128,20 +126,20 @@ class CreateAccount extends React.Component {
   };
 
   onFinish = data => {
-    const { onFinish } = this.props;
+    const {onFinish} = this.props;
     if (onFinish) {
       onFinish(data);
     }
   };
 
   render() {
-    const { classes } = this.props;
-    const { showAlert } = this.state;
+    const {classes} = this.props;
+    const {showAlert} = this.state;
 
     return (
-      <div className="">
+      <div className="" style={{textAlign: "center",}}>
         {showAlert}
-        <h1 className="mb-2">Create new account</h1>
+        <h1 className="mb-2" style={{marginTop: "15px",}}>Create new account</h1>
         <div>
           <span className="badge badge-pill badge-light">
             * This is some tips that user need to know
@@ -164,7 +162,7 @@ class CreateAccount extends React.Component {
           size="large"
           color="primary"
           className={classes.button}
-          fullWidth
+          size="medium"
           onClick={() => this.createAccount()}
         >
           <IconSave
