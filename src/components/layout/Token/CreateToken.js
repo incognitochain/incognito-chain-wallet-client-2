@@ -302,7 +302,8 @@ class CreateToken extends React.Component {
     if (isCreate) return null;
     return (
       <div className="text-right">
-        Balance: {balance ? Math.round(balance).toLocaleString() : 0} TOKEN
+        Balance: {balance ? Math.round(balance / 100).toLocaleString() : 0}{" "}
+        TOKEN
       </div>
     );
   }
