@@ -27,7 +27,6 @@ import * as rpcClientService from "../../../services/RpcClientService";
 
 class CreateToken extends React.Component {
   static propTypes = {
-    privateKey: PropTypes.string.isRequired,
     balance: PropTypes.number,
     toAddress: PropTypes.string,
     tokenName: PropTypes.string,
