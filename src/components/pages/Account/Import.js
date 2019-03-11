@@ -184,7 +184,7 @@ class ImportAccount extends React.Component {
           size="large"
           color="primary"
           className={classes.button}
-          fullWidth
+          size="medium"
           onClick={() => this.importAccount()}
         >
           <IconSave
