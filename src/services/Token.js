@@ -9,6 +9,8 @@ import {
   KeyWallet
 } from "constant-chain-web-js/build/wallet";
 
+import bn from 'bn.js';
+
 export default class Token {
   static getOption(methodName, params) {
     const server = Server.getDefault();
@@ -54,50 +56,6 @@ export default class Token {
     }
     return false;
   }
-  static async createSendPrivacyCustomTokenTransaction(param, account, wallet) {
-    console.log("SEND PRIVACY CUSTOM TOKEN!!!!!!!");
-    // get accountWallet from wallet has name
-    let accountWallet = wallet.getAccountByName(account.name);
-
-    console.log("Account Wallet sender: ", accountWallet);
-
-    // prepare param for create and send token
-    // param 0: payment infos
-    //todo:
-    // how to get paynment address, amount from submit param?
-
-    let paymentInfos = new Array(0);
-    for (let i = 0; i < paymentInfos.length; i++) {
-      paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
-    }
-
-    // param 1: token param
-    // get current token to get token param
-    let tokenParam = new CustomTokenPrivacyParamTx();
-    tokenParam.propertyID = "";
-    tokenParam.propertyName = "";
-    tokenParam.propertySymbol = "";
-    tokenParam.amount = 0;
-    tokenParam.tokenTxType = 0;
-    tokenParam.receivers = [];
-
-    for (let i = 0; i < tokenParam.receivers.length; i++) {
-      tokenParam.receivers[i] = new PaymentInfo(/*paymentADDR, amount*/);
-    }
-
-    await accountWallet.createAndSendPrivacyCustomToken(
-      paymentInfos,
-      tokenParam
-    );
-
-    // param.splice(1, 0, null)
-    // const response = await axios(Token.getOption("createandsendprivacycustomtokentransaction", param));
-    // if (response.status === 200) {
-    //   if (response.data && response.data.Result)
-    //     return response.data.Result;
-    // }
-    // return false;
-  }
 
   static async createSendCustomToken(submitParam, account, wallet) {
     console.log("SEND CUSTOM TOKEN!!!!!!!");
@@ -120,9 +78,6 @@ export default class Token {
 
     let receiverPaymentAddrStr = new Array(1);
     receiverPaymentAddrStr[0] = submitParam.TokenReceivers.PaymentAddress;
-    // for (let i=0; i<receiverPaymentAddrStr.length; i++){
-    //   receiverPaymentAddrStr[i] = submitParam.TokenReceivers.PaymentAddress
-    // }
 
     // param 1: token param
     // get current token to get token param
@@ -134,18 +89,18 @@ export default class Token {
     tokenParam.tokenTxType = submitParam.TokenTxType;
     tokenParam.receivers = new Array(1);
     tokenParam.receivers[0] = new TxTokenVout();
-    console.log(
-      "To address seriallize: ",
-      submitParam.TokenReceivers.PaymentAddress
-    );
+    // console.log(
+    //   "To address seriallize: ",
+    //   submitParam.TokenReceivers.PaymentAddress
+    // );
 
 
-    let receiverKey = KeyWallet.base58CheckDeserialize(
-      submitParam.TokenReceivers.PaymentAddress
-    );
-    console.log("Payment address of receiver:", receiverKey);
+    // let receiverKey = KeyWallet.base58CheckDeserialize(
+    //   submitParam.TokenReceivers.PaymentAddress
+    // );
+    // console.log("Payment address of receiver:", receiverKey);
     tokenParam.receivers[0].set(
-      receiverKey.KeySet.PaymentAddress,
+      KeyWallet.base58CheckDeserialize(submitParam.TokenReceivers.PaymentAddress).KeySet.PaymentAddress,
       submitParam.TokenReceivers.Amount * 100
     );
     let res;
@@ -162,13 +117,60 @@ export default class Token {
     }
 
     return res;
-
-    // param.splice(1, 0, null)
-    // const response = await axios(Token.getOption("createandsendcustomtokentransaction", param));
-    // if (response.status === 200) {
-    //   if (response.data && response.data.Result)
-    //     return response.data.Result;
-    // }
-    // return false;
   }
+  
+  static async createSendPrivacyCustomTokenTransaction(submitParam, account, wallet) {
+    console.log("SEND PRIVACY CUSTOM TOKEN!!!!!!!");
+    // get accountWallet from wallet has name
+    let accountWallet = wallet.getAccountByName(account.name);
+    console.log("Account Wallet sender: ", accountWallet);
+
+    // prepare param for create and send privacy custom token
+    let paymentInfos = new Array(0);
+    for (let i = 0; i < paymentInfos.length; i++) {
+      paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
+    }
+
+    // param 1: token param
+    // get current token to get token param
+    let tokenParam = new CustomTokenPrivacyParamTx();
+    tokenParam.propertyID = submitParam.TokenID;
+    tokenParam.propertyName = submitParam.TokenName;
+    tokenParam.propertySymbol = submitParam.TokenSymbol;
+    tokenParam.amount = submitParam.TokenAmount * 100;
+    tokenParam.tokenTxType = submitParam.TokenTxType;
+
+    let receiverPaymentAddrStr = new Array(1);
+    receiverPaymentAddrStr[0] = submitParam.TokenReceivers.PaymentAddress;
+
+    tokenParam.receivers = new Array(1);
+    tokenParam.receivers[0] = new PaymentInfo(
+      KeyWallet.base58CheckDeserialize(submitParam.TokenReceivers.PaymentAddress).KeySet.PaymentAddress, 
+      new bn(submitParam.TokenReceivers.Amount * 100));
+    // console.log(
+    //   "To address seriallize: ",
+    //   submitParam.TokenReceivers.PaymentAddress
+    // );
+
+
+    
+    // for (let i = 0; i < tokenParam.receivers.length; i++) {
+    //   tokenParam.receivers[i] = new PaymentInfo(/*paymentADDR, amount*/);
+    // }
+
+    let response;
+    try{
+      response = await accountWallet.createAndSendPrivacyCustomToken(
+        paymentInfos,
+        tokenParam,
+        receiverPaymentAddrStr
+      );
+    } catch(e){
+      throw e;
+    }
+
+    return response;
+  }
+
+  
 }
