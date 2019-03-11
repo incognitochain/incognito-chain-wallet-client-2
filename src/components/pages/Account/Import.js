@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import { Snackbar, TextField, Button } from "@material-ui/core";
+import {withStyles} from "@material-ui/core/styles";
+import {Snackbar, TextField, Button} from "@material-ui/core";
 import {
   Warning as IconWarning,
   Save as IconSave,
@@ -9,10 +9,10 @@ import {
   Error as IconError
 } from "@material-ui/icons";
 import Account from "../../../services/Account";
-import { connectWalletContext } from "../../../common/context/WalletContext";
-import { getPassphrase } from "../../../services/PasswordService";
+import {connectWalletContext} from "../../../common/context/WalletContext";
+import {getPassphrase} from "../../../services/PasswordService";
 import classNames from "classnames";
-import { connectAppContext } from "../../../common/context/AppContext";
+import {connectAppContext} from "../../../common/context/AppContext";
 
 const styles = theme => ({
   textField: {
@@ -51,18 +51,18 @@ class ImportAccount extends React.Component {
       return;
     }
 
-    this.setState({ showAlert: "", isAlert: false });
+    this.setState({showAlert: "", isAlert: false});
   };
 
   showAlert = (msg, flag = "warning") => {
     let showAlert = "",
       isAlert = true,
-      icon = <IconWarning />;
+      icon = <IconWarning/>;
 
-    if (flag === "success") icon = <IconSuccess />;
-    else if (flag === "danger") icon = <IconError />;
+    if (flag === "success") icon = <IconSuccess/>;
+    else if (flag === "danger") icon = <IconError/>;
 
-    this.setState({ isAlert }, () => {
+    this.setState({isAlert}, () => {
       showAlert = (
         <Snackbar
           anchorOrigin={{
@@ -79,7 +79,7 @@ class ImportAccount extends React.Component {
         </Snackbar>
       );
 
-      this.setState({ showAlert });
+      this.setState({showAlert});
     });
   };
 
@@ -92,16 +92,16 @@ class ImportAccount extends React.Component {
   };
 
   importAccount = async () => {
-    const { privateKey, accountName } = this.state;
+    const {privateKey, accountName} = this.state;
     if (!accountName) {
-      this.setState({ isAlert: true }, () => {
+      this.setState({isAlert: true}, () => {
         this.showAlert("Account name is required!");
       });
       return;
     }
 
     if (!privateKey) {
-      this.setState({ isAlert: true }, () => {
+      this.setState({isAlert: true}, () => {
         this.showAlert("Private key is required!");
       });
       return;
@@ -116,22 +116,22 @@ class ImportAccount extends React.Component {
     if (result) {
       console.log("import account result", result);
       this.props.app.listAccounts(this.props.wallet);
-      this.onFinish({ message: "Account is imported!" });
+      this.onFinish({message: "Account is imported!"});
     } else {
       this.showError("Import error!");
     }
   };
 
   changePrivateKey = e => {
-    this.setState({ privateKey: e.target.value });
+    this.setState({privateKey: e.target.value});
   };
 
   changeAccountName = e => {
-    this.setState({ accountName: e.target.value });
+    this.setState({accountName: e.target.value});
   };
 
   onFinish = data => {
-    const { onFinish } = this.props;
+    const {onFinish} = this.props;
 
     if (onFinish) {
       onFinish(data);
@@ -139,17 +139,17 @@ class ImportAccount extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
-    const { showAlert } = this.state;
+    const {classes} = this.props;
+    const {showAlert} = this.state;
 
     return (
-      <div className="">
+      <div className="" style={{textAlign: "center",}}>
         {showAlert}
-        <h1 className="mb-2">Import account</h1>
+        <h1 className="mb-2" style={{marginTop: "15px",}}>Import account</h1>
         <div>
           <span
             className="badge badge-pill badge-light"
-            style={{ lineHeight: "1.2rem", whiteSpace: "unset" }}
+            style={{lineHeight: "1.2rem", whiteSpace: "unset"}}
           >
             * Imported accounts will not be associated with your originally
             created Constant account seedphrase. Learn more about imported
@@ -192,6 +192,7 @@ class ImportAccount extends React.Component {
           />
           Import Account
         </Button>
+        <br/>
         <Button
           variant="contained"
           size="small"
