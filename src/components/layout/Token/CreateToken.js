@@ -57,6 +57,7 @@ class CreateToken extends React.Component {
       tokenSymbol: props.tokenSymbol || "",
       amount: "",
       fee: "",
+      balance: -1,
 
       submitParams: [],
       alertOpen: false,
@@ -75,7 +76,27 @@ class CreateToken extends React.Component {
   componentDidMount() {
     this.autoFocus();
     this.getEstimateFee();
+    if (!this.props.isCreate) {
+      this.reloadBalance();
+    }
   }
+
+  reloadBalance = async () => {
+    const accountWallet = this.props.wallet.getAccountByName(
+      this.props.account.name
+    );
+    if (this.props.tokenType === "privacy") {
+      const balance = await accountWallet.getPrivacyCustomTokenBalance(
+        this.props.tokenId
+      );
+      this.setState({ balance });
+    } else {
+      const balance = await accountWallet.getCustomTokenBalance(
+        this.props.tokenId
+      );
+      this.setState({ balance });
+    }
+  };
 
   autoFocus = () => {
     $(this.toAddressRef.current).focus(function() {
@@ -120,12 +141,11 @@ class CreateToken extends React.Component {
             .catch(e => {
               console.error(e);
               toastr.error("Error on get estimation fee!");
-              return Promise.resolve(-1);
+              return Promise.resolve(0);
             });
         })
       )
       .subscribe(fee => {
-        console.log(" CreateToken feeeeeeeeeeeeeeeeeeeeeeeeee:", fee);
         this.setState({ fee, isLoadingEstimationFee: false });
       }, console.error);
   };
@@ -232,9 +252,8 @@ class CreateToken extends React.Component {
     this.handleAlertOpen();
   };
   createSendCustomTokenTransaction = async params => {
-    let results;
     try {
-      results = await Token.createSendCustomToken(
+      await Token.createSendCustomToken(
         params,
         this.props.account,
         this.props.wallet
@@ -243,20 +262,10 @@ class CreateToken extends React.Component {
       console.error(e);
       toastr.error("Error on createSendCustomTokenTransaction()");
     }
-
-    if (results.err) {
-      console.log("Error", results.err);
-      this.setState({
-        error: results.err
-      });
-    } else {
-      this.closePage();
-    }
   };
   createSendPrivacyTokenTransaction = async params => {
-    let results;
     try {
-      results = await Token.createSendPrivacyCustomTokenTransaction(
+      await Token.createSendPrivacyCustomTokenTransaction(
         params,
         this.props.account,
         this.props.wallet
@@ -264,17 +273,6 @@ class CreateToken extends React.Component {
     } catch (e) {
       console.error(e);
       toastr.error("Error on createSendPrivacyCustomTokenTransaction()");
-    }
-
-    console.log("Result:", results);
-
-    if (results.err) {
-      console.log("Error", results.err);
-      this.setState({
-        error: results.err
-      });
-    } else {
-      this.closePage();
     }
   };
 
@@ -293,6 +291,8 @@ class CreateToken extends React.Component {
       } else {
         await this.createSendCustomTokenTransaction(submitParams[3]);
       }
+      this.props.onRefreshTokenList();
+      this.closePage();
     } catch (e) {
       console.error(e);
     } finally {
@@ -331,11 +331,13 @@ class CreateToken extends React.Component {
     );
   }
   renderBalance() {
-    const { isCreate, balance } = this.props;
+    const { isCreate } = this.props;
+    const { balance } = this.state;
     if (isCreate) return null;
     return (
       <div className="text-right">
-        Balance: {balance ? Math.round(balance).toLocaleString() : 0} TOKEN
+        Balance: {balance > 0 ? Math.round(balance).toLocaleString() : balance}{" "}
+        TOKEN
       </div>
     );
   }

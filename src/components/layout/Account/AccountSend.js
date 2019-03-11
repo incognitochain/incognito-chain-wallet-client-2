@@ -120,17 +120,22 @@ function AccountSend({ classes, isOpen }) {
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
-          return rpcClientService.getEstimateFee(
-            account.PaymentAddress,
-            toAddress,
-            amount,
-            account.PrivateKey
-          );
+          return rpcClientService
+            .getEstimateFee(
+              account.PaymentAddress,
+              toAddress,
+              amount,
+              account.PrivateKey
+            )
+            .catch(e => {
+              console.error(e);
+              toastr.error("Error on get estimation fee!");
+              return Promise.resolve(0);
+            });
         })
       )
       .subscribe(
         fee => {
-          console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", fee);
           dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee });
         },
         error => {

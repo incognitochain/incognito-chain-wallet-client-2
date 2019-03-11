@@ -24,7 +24,6 @@ export function TokenItem({
   async function loadBalance() {
     try {
       if (tabName === "privacy") {
-        console.log("### load privacy balance", item.ID);
         const balance = await accountWallet.getPrivacyCustomTokenBalance(
           item.ID
         );

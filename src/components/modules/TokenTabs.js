@@ -11,6 +11,7 @@ import { connectWalletContext } from "../../common/context/WalletContext";
 import { connectAccountContext } from "../../common/context/AccountContext";
 import _ from "lodash";
 import { TokenHistoryDialog } from "../../modules/tokens/TokenHistoryDialog";
+import * as passwordService from "../../services/PasswordService";
 
 const mapTabNameToIndex = {
   privacy: 0,
@@ -38,6 +39,8 @@ class TokenTabs extends React.Component {
       listCustomTokenBalance: [],
       listPrivacyTokenBalance: []
     };
+
+    props.tokenListRef.current = this;
   }
 
   componentDidMount() {
@@ -87,6 +90,7 @@ class TokenTabs extends React.Component {
     const { wallet, account } = this.props;
     const accountWallet = wallet.getAccountByName(account.name);
     accountWallet.removeFollowingToken(ID);
+    wallet.save(passwordService.getPassphrase());
     this.onRefresh();
   };
 

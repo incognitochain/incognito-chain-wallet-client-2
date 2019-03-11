@@ -70,6 +70,7 @@ class MainTabs extends React.Component {
           this.tokenTabsRef = component;
         }}
         {...props}
+        tokenListRef={this.props.tokenListRef}
       />
     );
   };
