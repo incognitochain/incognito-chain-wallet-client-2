@@ -1,16 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {Tabs, Tab} from "@material-ui/core";
+import { Tabs, Tab } from "@material-ui/core";
 import TokenList from "./TokenList";
-import {Button} from "@material-ui/core";
+import { Button } from "@material-ui/core";
 
 import "./TokenTabs.scss";
 import styled from "styled-components";
-import {FollowTokenDialog} from "../../modules/tokens/FollowTokenDialog";
-import {connectWalletContext} from "../../common/context/WalletContext";
-import {connectAccountContext} from "../../common/context/AccountContext";
+import { FollowTokenDialog } from "../../modules/tokens/FollowTokenDialog";
+import { connectWalletContext } from "../../common/context/WalletContext";
+import { connectAccountContext } from "../../common/context/AccountContext";
 import _ from "lodash";
-import {TokenHistoryDialog} from "../../modules/tokens/TokenHistoryDialog";
+import { TokenHistoryDialog } from "../../modules/tokens/TokenHistoryDialog";
 
 const mapTabNameToIndex = {
   privacy: 0,
@@ -45,14 +45,18 @@ class TokenTabs extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.account.name !== prevProps.account.name) {
+    if (this.shouldRefreshListToken(prevProps)) {
       this.onRefresh();
     }
   }
 
+  shouldRefreshListToken = prevProps => {
+    return this.props.account.name !== prevProps.account.name;
+  };
+
   onRefresh = () => {
     try {
-      const {wallet, account} = this.props;
+      const { wallet, account } = this.props;
       const accountWallet = wallet.getAccountByName(account.name);
       const followingTokens = accountWallet.listFollowingTokens();
 
@@ -69,18 +73,18 @@ class TokenTabs extends React.Component {
     }
   };
   handleChange = (event, value) => {
-    this.setState({value});
+    this.setState({ value });
   };
 
   handleCreateToken = () => {
-    const {value} = this.state;
+    const { value } = this.state;
     this.props.onCreateToken(value);
   };
   handleAddFollowingToken = () => {
-    this.setState({isOpenSearchTokenDialog: true});
+    this.setState({ isOpenSearchTokenDialog: true });
   };
-  handleUnfollow = ({ID}) => {
-    const {wallet, account} = this.props;
+  handleUnfollow = ({ ID }) => {
+    const { wallet, account } = this.props;
     const accountWallet = wallet.getAccountByName(account.name);
     accountWallet.removeFollowingToken(ID);
     this.onRefresh();
@@ -109,8 +113,8 @@ class TokenTabs extends React.Component {
           onChange={this.handleChange}
           className="tokenTabs"
         >
-          <Tab label="Privacy"/>
-          <Tab label="Custom"/>
+          <Tab label="Privacy" />
+          <Tab label="Custom" />
         </Tabs>
         <TokenList {...props} />
       </>
@@ -137,7 +141,7 @@ class TokenTabs extends React.Component {
             size="medium"
             className="newTokenButton"
             onClick={this.handleAddFollowingToken}
-            style={{lineHeight: "15px"}}
+            style={{ lineHeight: "15px" }}
           >
             Add Tokens To Follow
           </Button>
@@ -146,7 +150,7 @@ class TokenTabs extends React.Component {
             variant="contained"
             size="medium"
             className="newTokenButton"
-            onClick={() => this.setState({isOpenTokenHistory: true})}
+            onClick={() => this.setState({ isOpenTokenHistory: true })}
           >
             Show Token History
           </Button>
@@ -154,7 +158,7 @@ class TokenTabs extends React.Component {
 
         <FollowTokenDialog
           isOpen={this.state.isOpenSearchTokenDialog}
-          onClose={() => this.setState({isOpenSearchTokenDialog: false})}
+          onClose={() => this.setState({ isOpenSearchTokenDialog: false })}
           tabName={mapTabIndexToName[this.state.value]}
           refreshTokenList={this.onRefresh}
           followedTokens={
@@ -167,7 +171,7 @@ class TokenTabs extends React.Component {
         <TokenHistoryDialog
           tabName={mapTabIndexToName[this.state.value]}
           isOpen={this.state.isOpenTokenHistory}
-          onClose={() => this.setState({isOpenTokenHistory: false})}
+          onClose={() => this.setState({ isOpenTokenHistory: false })}
         />
       </Wrapper>
     );

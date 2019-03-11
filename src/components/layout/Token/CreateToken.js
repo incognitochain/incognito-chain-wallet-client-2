@@ -24,6 +24,8 @@ import { connectWalletContext } from "common/context/WalletContext";
 import _ from "lodash";
 import styled from "styled-components";
 import * as rpcClientService from "../../../services/RpcClientService";
+import $ from "jquery";
+import toastr from "toastr";
 
 class CreateToken extends React.Component {
   static propTypes = {
@@ -47,7 +49,9 @@ class CreateToken extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      toAddress: props.toAddress || "",
+      toAddress: props.isCreate
+        ? props.account.PaymentAddress
+        : props.toAddress || "",
       tokenName: props.tokenName || "",
       tokenSymbol: props.tokenSymbol || "",
       amount: "",
@@ -73,6 +77,9 @@ class CreateToken extends React.Component {
   }
 
   autoFocus = () => {
+    $(this.toAddressRef.current).focus(function() {
+      $(this).select();
+    });
     this.toAddressRef.current.focus();
   };
 
@@ -100,18 +107,25 @@ class CreateToken extends React.Component {
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
-          return rpcClientService.getEstimateFeeForSendingToken(
-            this.props.account.PaymentAddress,
-            toAddress,
-            amount,
-            this.getRequestTokenObject(),
-            this.props.account.PrivateKey
-          );
+          this.setState({ isLoadingEstimationFee: true });
+          return rpcClientService
+            .getEstimateFeeForSendingToken(
+              this.props.account.PaymentAddress,
+              toAddress,
+              amount,
+              this.getRequestTokenObject(),
+              this.props.account.PrivateKey
+            )
+            .catch(e => {
+              console.error(e);
+              toastr.error("Error on get estimation fee!");
+              return Promise.resolve(-1);
+            });
         })
       )
       .subscribe(fee => {
         console.log(" CreateToken feeeeeeeeeeeeeeeeeeeeeeeeee:", fee);
-        this.setState({ fee });
+        this.setState({ fee, isLoadingEstimationFee: false });
       }, console.error);
   };
 
@@ -217,12 +231,17 @@ class CreateToken extends React.Component {
     this.handleAlertOpen();
   };
   createSendCustomTokenTransaction = async params => {
-    const results = await Token.createSendCustomToken(
-      params,
-      this.props.account,
-      this.props.wallet
-    );
-
+    let results;
+    try {
+      results = await Token.createSendCustomToken(
+        params,
+        this.props.account,
+        this.props.wallet
+      );
+    }catch(e){
+      throw e;
+    }
+    
     if (results.err) {
       console.log("Error", results.err);
       this.setState({
@@ -233,12 +252,17 @@ class CreateToken extends React.Component {
     }
   };
   createSendPrivacyTokenTransaction = async params => {
-    const results = await Token.createSendPrivacyCustomTokenTransaction(
-      params,
-      this.props.account,
-      this.props.wallet
-    );
-
+    let results;
+    try{
+      results = await Token.createSendPrivacyCustomTokenTransaction(
+        params,
+        this.props.account,
+        this.props.wallet
+      );
+    } catch(e){
+      throw e;
+    }
+    
     console.log("Result:", results);
 
     if (results.err) {
@@ -254,7 +278,6 @@ class CreateToken extends React.Component {
   createOrSendToken = () => {
     // isCreate = true: init token, else: send token
     const { type } = this.props;
-
     const { submitParams } = this.state;
 
     console.log("Submit param when create or send token: ", submitParams[3]);
@@ -374,6 +397,11 @@ class CreateToken extends React.Component {
         >
           Send
         </Button>
+        {this.state.isLoadingEstimationFee ? (
+          <div className="badge badge-pill badge-light mt-3">
+            * Loading estimation fee...
+          </div>
+        ) : null}
       </form>
     );
   }

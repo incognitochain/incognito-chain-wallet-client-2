@@ -144,23 +144,21 @@ class AccountList extends React.Component {
                 onClick={() => this.chooseAccount(a)}
                 className={cls({ isSelected: this.isSelectedAccount(a) })}
               >
-                <ListItemIcon>
+                <StyledListItemIcon>
                   <Icon
                     className={cls({ isSelected: this.isSelectedAccount(a) })}
                   />
-                </ListItemIcon>
+                </StyledListItemIcon>
                 <div className="accountName" style={{ paddingRight: 10 }}>
-                  {a.name}
-                </div>
-                <ListItemSecondaryAction style={{ marginRight: "10px" }}>
-                  <div className="accountAmount">
+                  <div>{a.name}</div>
+                  <Balance>
                     {a.value === -1 ? (
                       <CircularProgress size={20} />
                     ) : (
                       this.formatAmount(a.value)
                     )}
-                  </div>
-                </ListItemSecondaryAction>
+                  </Balance>
+                </div>
               </StyledListItem>
             );
           })}
@@ -226,4 +224,15 @@ const Icon = styled.div`
   height: 10px;
   width: 10px;
   border-radius: 5px;
+`;
+
+const Balance = styled.div`
+  color: #838aa7;
+  font-size: 16px;
+  font-weight: 400;
+`;
+
+const StyledListItemIcon = styled(ListItemIcon)`
+  align-self: flex-start;
+  padding-top: 10px;
 `;

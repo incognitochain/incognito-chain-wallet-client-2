@@ -2,9 +2,9 @@ import CryptoJS from "crypto-js";
 const PASSWORD_DURATION_IN_MS = 7 * 24 * 3600 * 1000; // 7 days
 const PASSWORD_SECRET_KEY = "FJexuTITEw";
 
-window.clearPassword = () => {
+export function clearPassword() {
   window.localStorage.removeItem("passphrase");
-};
+}
 
 export function getPassphrase() {
   let pass = window.localStorage.getItem("passphrase");
