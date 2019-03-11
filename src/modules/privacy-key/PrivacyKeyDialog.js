@@ -11,7 +11,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
     toastr.success("Copied!");
   };
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Privacy Key">
+    <Modal isOpen={isOpen} onClose={onClose} title="Account Detail">
       <Wrapper>
         <CopyToClipboard text={ReadonlyKey} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">

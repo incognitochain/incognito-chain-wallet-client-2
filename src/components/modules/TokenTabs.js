@@ -133,7 +133,7 @@ class TokenTabs extends React.Component {
             className="newTokenButton"
             onClick={this.handleCreateToken}
           >
-            Create New Token
+            Init New Token
           </Button>
 
           <Button

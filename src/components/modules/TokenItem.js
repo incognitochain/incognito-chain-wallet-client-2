@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { CopyableTooltip } from "common/components/copyable-tooltip";
 import { useAccountWallet } from "../../modules/tokens/hook/useAccountWallet";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import numeral from "numeral";
 
 export function TokenItem({
   tab,
@@ -51,7 +52,11 @@ export function TokenItem({
           <div className="wrapperTokenDetail">
             <div className="tokenName">{item.Name}</div>
             <div className="tokenAmount">
-              {balance === null ? <CircularProgress size={20} /> : balance}
+              {balance === null ? (
+                <CircularProgress size={20} />
+              ) : (
+                numeral(parseFloat(balance)).format("0,0")
+              )}
             </div>
           </div>
         </CopyableTooltip>

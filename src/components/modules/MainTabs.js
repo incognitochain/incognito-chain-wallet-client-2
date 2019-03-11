@@ -99,7 +99,7 @@ class MainTabs extends React.Component {
         >
           <StyledTab classes={classesTab} label="TOKENS" />
           <StyledTab classes={classesTab} label="HISTORY" />
-          <StyledTab classes={classesTab} label="PRIVACY KEY" />
+          <StyledTab classes={classesTab} label="ACCOUNT DETAIL" />
         </Tabs>
         {renderIf(value === mapTabNameToIndex["tokens"])(
           this.renderTokenTabs()
@@ -112,6 +112,7 @@ class MainTabs extends React.Component {
     );
   }
 }
+
 export default withStyles(styles)(MainTabs);
 
 const Wrapper = styled.div`
