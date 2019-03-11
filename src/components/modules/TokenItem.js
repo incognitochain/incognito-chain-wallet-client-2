@@ -52,7 +52,11 @@ export function TokenItem({
           <div className="wrapperTokenDetail">
             <div className="tokenName">{item.Name}</div>
             <div className="tokenAmount">
-              {balance === null ? <CircularProgress size={20} /> : balance}
+              {balance === null ? (
+                <CircularProgress size={20} />
+              ) : (
+                balance / 100
+              )}
             </div>
           </div>
         </CopyableTooltip>
