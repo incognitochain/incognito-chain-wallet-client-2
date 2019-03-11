@@ -1,19 +1,19 @@
 import React from "react";
-import {Button} from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import styled from "styled-components";
-import {CopyableTooltip} from "common/components/copyable-tooltip";
-import {useAccountWallet} from "../../modules/tokens/hook/useAccountWallet";
+import { CopyableTooltip } from "common/components/copyable-tooltip";
+import { useAccountWallet } from "../../modules/tokens/hook/useAccountWallet";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import numeral from "numeral";
 
 export function TokenItem({
-                            tab,
-                            tabName,
-                            item = {},
-                            onSendToken,
-                            handleUnfollow
-                          }) {
+  tab,
+  tabName,
+  item = {},
+  onSendToken,
+  handleUnfollow
+}) {
   const accountWallet = useAccountWallet();
   const [balance, setBalance] = React.useState(null);
 
@@ -46,14 +46,14 @@ export function TokenItem({
 
   return (
     <Wrapper className="wrapperToken">
-      <Avatar alt="avatar" src={item.Image}/>
+      <Avatar alt="avatar" src={item.Image} />
       <Details>
         <CopyableTooltip title={item.ID}>
           <div className="wrapperTokenDetail">
             <div className="tokenName">{item.Name}</div>
             <div className="tokenAmount">
               {balance === null ? (
-                <CircularProgress size={20}/>
+                <CircularProgress size={20} />
               ) : (
                 numeral(parseFloat(balance)).format("0,0")
               )}
@@ -71,7 +71,7 @@ export function TokenItem({
         >
           Send
         </StyledButton>
-        <div style={{height: 3}}/>
+        <div style={{ height: 3 }} />
 
         <StyledButton
           variant="contained"

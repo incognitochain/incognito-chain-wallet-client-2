@@ -5,7 +5,6 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemSecondaryAction,
   Button,
   Tooltip,
   CircularProgress

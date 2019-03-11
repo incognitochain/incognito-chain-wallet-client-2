@@ -24,6 +24,7 @@ import { WalletContext } from "./common/context/WalletContext";
 import { appReducer, initialAppState } from "./modules/app/appReducer";
 import { useDebugReducer } from "./common/hook/useDebugReducer";
 import * as passwordService from "./services/PasswordService";
+import Server from "./services/Server";
 
 toastr.options.positionClass = "toast-bottom-center";
 toastr.options.preventDuplicates = true;
@@ -36,6 +37,8 @@ const App = ({ history, location }) => {
   }, []);
 
   async function onInit() {
+    initServer();
+
     if (passwordService.hasPassword()) {
       const wallet = await walletService.loadWallet();
 
@@ -48,6 +51,10 @@ const App = ({ history, location }) => {
     } else {
       promptPassword();
     }
+  }
+
+  function initServer() {
+    if (!Server.get()) Server.setDefault();
   }
 
   function promptPassword() {

@@ -239,6 +239,8 @@ class ServerList extends React.Component {
               </List>
             );
           })}
+
+        <Button>Reload App</Button>
         {!loading && !servers.length && (
           <div className="text-center">
             {/* <img src={img1} alt="" /> */}
