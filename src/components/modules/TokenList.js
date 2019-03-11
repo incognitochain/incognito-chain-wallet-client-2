@@ -8,7 +8,7 @@ function TokenList(props) {
     <Wrapper className="wrapperTokenList TokenList">
       {list.length ? (
         list.map((item, index) => (
-          <TokenItem key={index} item={item} {...props} />
+          <TokenItem key={item.ID} item={item} {...props} />
         ))
       ) : (
         <div className="wrapperTokenEmpty">

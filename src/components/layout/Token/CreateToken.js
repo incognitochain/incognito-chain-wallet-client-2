@@ -93,7 +93,7 @@ class CreateToken extends React.Component {
       filter(Boolean),
       debounceTime(750),
       distinctUntilChanged(),
-      startWith("")
+      startWith(this.state.toAddress)
     );
 
     const amountObservable = fromEvent(this.amountRef.current, "keyup").pipe(
@@ -240,7 +240,7 @@ class CreateToken extends React.Component {
         this.props.wallet
       );
     } catch (e) {
-      console.erro(e);
+      console.error(e);
       toastr.error("Error on createSendCustomTokenTransaction()");
     }
 
@@ -262,7 +262,7 @@ class CreateToken extends React.Component {
         this.props.wallet
       );
     } catch (e) {
-      console.eror(e);
+      console.error(e);
       toastr.error("Error on createSendPrivacyCustomTokenTransaction()");
     }
 
