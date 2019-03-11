@@ -103,12 +103,13 @@ class MainTabs extends React.Component {
     const { value } = this.state; // TODO - use tabname for value instead of index number.
     const { classes } = this.props;
     const classesTab = {
+      root: "MainTabItem",
       label: classes.label,
       selected: classes.selected,
       labelContainer: classes.labelContainer
     };
     return (
-      <Wrapper>
+      <Wrapper className="MainTabs">
         <Tabs
           classes={{
             root: classes.tabs,
@@ -146,4 +147,7 @@ const Wrapper = styled.div`
 
 const StyledTab = styled(Tab)`
   flex: 1;
+  &.MainTabItem {
+    min-width: initial;
+  }
 `;

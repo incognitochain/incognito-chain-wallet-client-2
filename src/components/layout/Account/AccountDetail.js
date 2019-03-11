@@ -331,7 +331,7 @@ class AccountDetail extends React.Component {
     const { showAlert } = this.state;
 
     return (
-      <Wrapper>
+      <Wrapper className="AccountDetail">
         {showAlert}
         {this.renderAccountInfo()}
         {this.renderTabs()}
@@ -359,6 +359,7 @@ const Wrapper = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+  overflow: auto;
 `;
 
 const AccountInfoWrapper = styled.div`

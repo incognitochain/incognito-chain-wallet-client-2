@@ -25,6 +25,7 @@ import { appReducer, initialAppState } from "./modules/app/appReducer";
 import { useDebugReducer } from "./common/hook/useDebugReducer";
 
 toastr.options.positionClass = "toast-bottom-center";
+toastr.options.preventDuplicates = true;
 
 const App = ({ history, location }) => {
   let [state, dispatch] = useDebugReducer("App", appReducer, initialAppState);
