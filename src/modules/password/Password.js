@@ -1,14 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-import { Button, TextField } from "@material-ui/core";
+import {Button, Input, Grid} from "@material-ui/core";
 import * as walletService from "../../services/WalletService";
-import { CreateWalletPromptDialog } from "./CreateWalletPromptDialog";
-import { useAppContext } from "../../common/context/AppContext";
+import {CreateWalletPromptDialog} from "./CreateWalletPromptDialog";
+import {useAppContext} from "../../common/context/AppContext";
 
-export function Password({ history }) {
+export function Password({history}) {
   const [password, setPassword] = React.useState("");
   const [isOpenCreateDialog, setIsOpenCreateDialog] = React.useState(false);
-  const { listAccounts, appDispatch } = useAppContext();
+  const {listAccounts, appDispatch} = useAppContext();
 
   async function onSubmit(e) {
     try {
@@ -19,7 +19,7 @@ export function Password({ history }) {
       if (wallet) {
         history.push("/");
         listAccounts(wallet);
-        appDispatch({ type: "SET_WALLET", wallet });
+        appDispatch({type: "SET_WALLET", wallet});
       } else {
         setIsOpenCreateDialog(true);
       }
@@ -32,7 +32,7 @@ export function Password({ history }) {
     try {
       const wallet = await walletService.initWallet();
       listAccounts(wallet);
-      appDispatch({ type: "SET_WALLET", wallet });
+      appDispatch({type: "SET_WALLET", wallet});
       setIsOpenCreateDialog(false);
       history.push("/");
     } catch (e) {
@@ -41,35 +41,62 @@ export function Password({ history }) {
   }
 
   return (
-    <Form onSubmit={onSubmit} noValidate>
-      <TextField
-        required
-        type="password"
-        label="Password"
-        margin="normal"
-        variant="outlined"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
-      <ButtonWrapper>
-        <Button
-          disabled={!password}
-          variant="contained"
-          color="primary"
-          type="submit"
-        >
-          Go
-        </Button>
-      </ButtonWrapper>
-
-      <CreateWalletPromptDialog
-        isOpen={isOpenCreateDialog}
-        onClose={() => setIsOpenCreateDialog(false)}
-        onCreate={onCreate}
-      />
-    </Form>
+    <UnlockPage style={{flexGrow: "1"}}>
+      <Grid container justify={"center"} alignItems={"center"} direction={"row"}>
+        <Grid item xs={12}>
+          <Logo>
+            <img src="https://constant.money/public/assets/logo-5321c8fe.svg" alt=""/>
+          </Logo>
+        </Grid>
+        <Grid item xs={12}>
+          <Title>Welcome Back!</Title>
+        </Grid>
+        <Grid item xs={12}>
+          <SubTitle>The decentralized web awaits</SubTitle>
+        </Grid>
+        <Grid item xs={12} style={{textAlign: "center"}}>
+          <Form onSubmit={onSubmit} noValidate>
+            <Grid container>
+              <Grid item xs={12} style={{marginBottom: "10px"}}>
+                <Input
+                  required
+                  type="password"
+                  label="Password"
+                  margin="normal"
+                  variant="outlined"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder={"Password"}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <ButtonWrapper>
+                  <Button
+                    disabled={!password}
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                  >
+                    LOG IN
+                  </Button>
+                </ButtonWrapper>
+              </Grid>
+            </Grid>
+            <CreateWalletPromptDialog
+              isOpen={isOpenCreateDialog}
+              onClose={() => setIsOpenCreateDialog(false)}
+              onCreate={onCreate}
+            />
+          </Form>
+        </Grid>
+      </Grid>
+    </UnlockPage>
   );
 }
+
+const UnlockPage = styled.div`
+  padding: 30px;
+`
 
 const Form = styled.form`
   flex: 1;
@@ -77,7 +104,12 @@ const Form = styled.form`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  margin-top: 50px;
 `;
+
+const Logo = styled.div`
+  text-align: center;
+`
 
 const ButtonWrapper = styled.div`
   height: 56px;
@@ -86,3 +118,22 @@ const ButtonWrapper = styled.div`
     height: 56px;
   }
 `;
+
+const Title = styled.div`
+  margin-top: 5px;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #4d4d4d;
+  text-align: center;
+`
+
+const SubTitle = styled.div`
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    color: #aeaeae;
+    text-align: center;
+`
