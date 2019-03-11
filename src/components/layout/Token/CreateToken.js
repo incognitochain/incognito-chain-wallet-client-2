@@ -26,6 +26,7 @@ import styled from "styled-components";
 import * as rpcClientService from "../../../services/RpcClientService";
 import $ from "jquery";
 import toastr from "toastr";
+import { Loading } from "../../../common/components/loading/Loading";
 
 class CreateToken extends React.Component {
   static propTypes = {
@@ -239,7 +240,8 @@ class CreateToken extends React.Component {
         this.props.wallet
       );
     } catch (e) {
-      throw e;
+      console.erro(e);
+      toastr.error("Error on createSendCustomTokenTransaction()");
     }
 
     if (results.err) {
@@ -260,7 +262,8 @@ class CreateToken extends React.Component {
         this.props.wallet
       );
     } catch (e) {
-      throw e;
+      console.eror(e);
+      toastr.error("Error on createSendPrivacyCustomTokenTransaction()");
     }
 
     console.log("Result:", results);
@@ -275,18 +278,25 @@ class CreateToken extends React.Component {
     }
   };
 
-  createOrSendToken = () => {
-    // isCreate = true: init token, else: send token
-    const { type } = this.props;
-    const { submitParams } = this.state;
+  createOrSendToken = async () => {
+    this.setState({ isLoading: true });
+    try {
+      // isCreate = true: init token, else: send token
+      const { type } = this.props;
+      const { submitParams } = this.state;
 
-    console.log("Submit param when create or send token: ", submitParams[3]);
+      console.log("Submit param when create or send token: ", submitParams[3]);
 
-    //  if type = 0: privacy custom token, else: custom token
-    if (type === 0) {
-      this.createSendPrivacyTokenTransaction(submitParams[3]);
-    } else {
-      this.createSendCustomTokenTransaction(submitParams[3]);
+      //  if type = 0: privacy custom token, else: custom token
+      if (type === 0) {
+        await this.createSendPrivacyTokenTransaction(submitParams[3]);
+      } else {
+        await this.createSendCustomTokenTransaction(submitParams[3]);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.setState({ isLoading: false });
     }
   };
   renderTokenName() {
@@ -424,6 +434,8 @@ class CreateToken extends React.Component {
         {this.renderError()}
         {this.renderConfirmDialog()}
         {this.renderAlert()}
+
+        <Loading fullscreen isShow={this.state.isLoading} />
       </Wrapper>
     );
   }
