@@ -19,6 +19,7 @@ import {
 import * as rpcClientService from "../../../services/RpcClientService";
 import { useDebugReducer } from "../../../common/hook/useDebugReducer";
 import { useAppContext } from "../../../common/context/AppContext";
+import { Loading } from "../../../common/components/loading/Loading";
 
 const styles = theme => ({
   textField: {
@@ -44,6 +45,8 @@ function reducer(state, action) {
       return { ...state, isLoadingEstimationFee: true };
     case "LOAD_ESTIMATION_FEE_SUCCESS":
       return { ...state, isLoadingEstimationFee: false, fee: action.fee };
+    case "SHOW_LOADING":
+      return { ...state, isLoading: action.isShow };
     default:
       return state;
   }
@@ -184,6 +187,7 @@ function AccountSend({ classes, isOpen }) {
   };
 
   async function sendCoin() {
+    dispatch({ type: "SHOW_LOADING", isShow: true });
     let { toAddress, amount } = state;
 
     const result = await Account.sendConstant(
@@ -198,6 +202,7 @@ function AccountSend({ classes, isOpen }) {
     } else {
       toastr.error("Send failed. Please try again!");
     }
+    dispatch({ type: "SHOW_LOADING", isShow: false });
   }
 
   const onChangeInput = name => e =>
@@ -284,6 +289,8 @@ function AccountSend({ classes, isOpen }) {
       >
         <div>Are you sure to transfer out {state.amount} CONSTANT?</div>
       </ConfirmDialog>
+
+      <Loading fullscreen isShow={state.isLoading} />
     </div>
   );
 }
