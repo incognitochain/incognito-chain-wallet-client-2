@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {withStyles} from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 
 import Dialog from "../core/Dialog";
 import ServerList from "../layout/Setting/ServerList";
@@ -30,6 +30,7 @@ import {
   Archive as IconArchive,
   Ballot as IconPassPhrase
 } from "@material-ui/icons";
+import { ReactComponent as RefreshIcon } from "../../assets/images/refresh-icon.svg";
 
 const styles = theme => ({
   root: {
@@ -62,7 +63,7 @@ class Settings extends React.Component {
 
   getDefaultServer() {
     let server = Server.getDefault();
-    this.setState({server});
+    this.setState({ server });
   }
 
   handleClose = (event, reason) => {
@@ -70,22 +71,22 @@ class Settings extends React.Component {
       return;
     }
 
-    this.setState({showAlert: "", isAlert: false});
+    this.setState({ showAlert: "", isAlert: false });
   };
 
   showAlert = (
     msg,
-    {flag = "warning", html = false, duration = 2000, hideIcon = false}
+    { flag = "warning", html = false, duration = 2000, hideIcon = false }
   ) => {
     let showAlert = "",
       isAlert = true,
       icon = "";
 
-    if (flag === "success") icon = <IconSuccess/>;
-    else if (flag === "danger") icon = <IconError/>;
-    else if (flag === "warning") icon = <IconWarning/>;
+    if (flag === "success") icon = <IconSuccess />;
+    else if (flag === "danger") icon = <IconError />;
+    else if (flag === "warning") icon = <IconWarning />;
 
-    this.setState({isAlert}, () => {
+    this.setState({ isAlert }, () => {
       showAlert = (
         <Snackbar
           anchorOrigin={{
@@ -102,36 +103,36 @@ class Settings extends React.Component {
         </Snackbar>
       );
 
-      this.setState({showAlert});
+      this.setState({ showAlert });
     });
   };
 
   showSuccess = msg => {
-    this.showAlert(msg, {flag: "success", duration: 3000, hideIcon: true});
+    this.showAlert(msg, { flag: "success", duration: 3000, hideIcon: true });
   };
 
   showInfo = msg => {
-    this.showAlert(msg, {flag: "info"});
+    this.showAlert(msg, { flag: "info" });
   };
 
   showWarning = msg => {
-    this.showAlert(msg, {flag: "warning"});
+    this.showAlert(msg, { flag: "warning" });
   };
 
   showError = msg => {
-    this.showAlert(msg, {flag: "danger"});
+    this.showAlert(msg, { flag: "danger" });
   };
 
   handleClick = () => {
-    this.setState(state => ({open: !state.open}));
+    this.setState(state => ({ open: !state.open }));
   };
 
   changeAccountName = e => {
-    this.setState({accountName: e.target.value});
+    this.setState({ accountName: e.target.value });
   };
 
   onFinish = data => {
-    const {onFinish} = this.props;
+    const { onFinish } = this.props;
 
     if (onFinish) {
       onFinish(data);
@@ -156,26 +157,34 @@ class Settings extends React.Component {
     this.modalServerListRef.close();
     this.setState({
       modalServerList: "",
-      modalServerAdd: <ServerAddOrEdit onFinish={() => this.closeServerAdd()}/>
+      modalServerAdd: <ServerAddOrEdit onFinish={() => this.closeServerAdd()} />
     });
     this.modalServerAddRef.open();
   };
 
   get serverButtonAction() {
-    const {classes} = this.props;
+    const { classes } = this.props;
 
     return (
       <div>
         <Tooltip title="Add Server">
           <Button
             mini
-            variant="fab"
             color="secondary"
             className={classes.button}
             aria-label="Add Server"
             onClick={() => this.openServerAdd()}
           >
-            <IconAdd/>
+            <IconAdd />
+          </Button>
+        </Tooltip>
+        <Tooltip title="Refresh App">
+          <Button
+            mini
+            color="secondary"
+            onClick={() => window.location.reload()}
+          >
+            <RefreshIcon />
           </Button>
         </Tooltip>
       </div>
@@ -184,7 +193,7 @@ class Settings extends React.Component {
 
   openServerList = () => {
     this.setState({
-      modalServerList: <ServerList/>
+      modalServerList: <ServerList />
     });
     this.modalServerListRef.open();
   };
@@ -192,27 +201,29 @@ class Settings extends React.Component {
   openMnemonic = async () => {
     let mnemonic = await this.showMnemonicWords();
     this.setState({
-      modalMnemonic: mnemonic,
-    })
+      modalMnemonic: mnemonic
+    });
     this.modalMnemonicRef.open();
-  }
+  };
 
   showMnemonicWords = async () => {
     const wallet = await walletService.loadWallet();
     if (wallet) {
-      return (
-        <div style={{padding: "20px"}}>{wallet.Mnemonic}</div>
-      )
+      return <div style={{ padding: "20px" }}>{wallet.Mnemonic}</div>;
     } else {
-      return (
-        <></>
-      );
+      return <></>;
     }
-  }
+  };
 
   render() {
-    const {classes} = this.props;
-    const {showAlert, modalServerList, modalServerAdd, server, modalMnemonic} = this.state;
+    const { classes } = this.props;
+    const {
+      showAlert,
+      modalServerList,
+      modalServerAdd,
+      server,
+      modalMnemonic
+    } = this.state;
 
     return (
       <div className={classes.root}>
@@ -223,7 +234,7 @@ class Settings extends React.Component {
         >
           <ListItem button onClick={() => this.openServerList()}>
             <ListItemIcon>
-              <IconServer/>
+              <IconServer />
             </ListItemIcon>
             <ListItemText
               inset
@@ -244,9 +255,9 @@ class Settings extends React.Component {
         >
           <ListItem button onClick={() => this.showInfo("Not finish")}>
             <ListItemIcon>
-              <IconLanguage/>
+              <IconLanguage />
             </ListItemIcon>
-            <ListItemText inset primary="Language" secondary="English"/>
+            <ListItemText inset primary="Language" secondary="English" />
           </ListItem>
           {/*<ListItem button onClick={() => this.showInfo("Not finish")}>
             <ListItemIcon>
@@ -271,7 +282,7 @@ class Settings extends React.Component {
           </ListItem>*/}
           <ListItem button onClick={() => this.openMnemonic()}>
             <ListItemIcon>
-              <IconPassPhrase/>
+              <IconPassPhrase />
             </ListItemIcon>
             <ListItemText
               inset
@@ -285,7 +296,7 @@ class Settings extends React.Component {
           title="RPC Servers"
           onRef={modal => (this.modalServerListRef = modal)}
           onClose={() => this.getDefaultServer()}
-          className={{margin: 0}}
+          className={{ margin: 0 }}
           buttonAction={this.serverButtonAction}
         >
           {modalServerList}
@@ -294,11 +305,14 @@ class Settings extends React.Component {
         <Dialog
           title="Add RPC Server"
           onRef={modal => (this.modalServerAddRef = modal)}
-          className={{margin: 0}}
+          className={{ margin: 0 }}
         >
           {modalServerAdd}
         </Dialog>
-        <Dialog title="Mnemonic - 12 words" onRef={modal => (this.modalMnemonicRef = modal)}>
+        <Dialog
+          title="Mnemonic - 12 words"
+          onRef={modal => (this.modalMnemonicRef = modal)}
+        >
           {modalMnemonic}
         </Dialog>
       </div>
