@@ -26,6 +26,6 @@ export default TokenList;
 
 const Wrapper = styled.div`
   flex: 1;
-  overflow: scroll;
+  overflow: auto;
   padding-right: 2px;
 `;

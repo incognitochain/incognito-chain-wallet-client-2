@@ -24,6 +24,7 @@ import { connectWalletContext } from "common/context/WalletContext";
 import _ from "lodash";
 import styled from "styled-components";
 import * as rpcClientService from "../../../services/RpcClientService";
+import $ from "jquery";
 
 class CreateToken extends React.Component {
   static propTypes = {
@@ -47,7 +48,9 @@ class CreateToken extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      toAddress: props.toAddress || "",
+      toAddress: props.isCreate
+        ? props.account.PaymentAddress
+        : props.toAddress || "",
       tokenName: props.tokenName || "",
       tokenSymbol: props.tokenSymbol || "",
       amount: "",
@@ -73,6 +76,9 @@ class CreateToken extends React.Component {
   }
 
   autoFocus = () => {
+    $(this.toAddressRef.current).focus(function() {
+      $(this).select();
+    });
     this.toAddressRef.current.focus();
   };
 
