@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import { Divider, Snackbar, Button, CircularProgress } from "@material-ui/core";
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import {withStyles} from "@material-ui/core/styles";
+import {Divider, Snackbar, Button, CircularProgress} from "@material-ui/core";
+import {CopyToClipboard} from "react-copy-to-clipboard";
 import QRCode from "qrcode.react";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Dialog from "../../core/Dialog";
@@ -15,12 +15,12 @@ import {
   CheckCircle as IconSuccess,
   Warning as IconWarning
 } from "@material-ui/icons";
-import { ReactComponent as CopyPasteSVG } from "assets/images/copy-paste.svg";
+import {ReactComponent as CopyPasteSVG} from "assets/images/copy-paste.svg";
 import toastr from "toastr";
 import styled from "styled-components";
-import { connectAccountContext } from "../../../common/context/AccountContext";
-import { connectWalletContext } from "../../../common/context/WalletContext";
-import { connectAccountListContext } from "../../../common/context/AccountListContext";
+import {connectAccountContext} from "../../../common/context/AccountContext";
+import {connectWalletContext} from "../../../common/context/WalletContext";
+import {connectAccountListContext} from "../../../common/context/AccountListContext";
 import _ from "lodash";
 
 const styles = theme => ({
@@ -62,7 +62,7 @@ class AccountDetail extends React.Component {
   }
 
   onFinish = data => {
-    const { onFinish } = this.props;
+    const {onFinish} = this.props;
 
     if (onFinish) {
       onFinish(data);
@@ -74,7 +74,7 @@ class AccountDetail extends React.Component {
       return;
     }
 
-    this.setState({ showAlert: "", isAlert: false });
+    this.setState({showAlert: "", isAlert: false});
   };
 
   copyToClipBoard = () => {
@@ -84,13 +84,13 @@ class AccountDetail extends React.Component {
   showAlert = (msg, flag = "warning") => {
     let showAlert = "",
       isAlert = true,
-      icon = <IconWarning />;
+      icon = <IconWarning/>;
 
-    if (flag === "success") icon = <IconSuccess />;
-    else if (flag === "danger") icon = <IconError />;
+    if (flag === "success") icon = <IconSuccess/>;
+    else if (flag === "danger") icon = <IconError/>;
     else icon = "";
 
-    this.setState({ isAlert }, () => {
+    this.setState({isAlert}, () => {
       showAlert = (
         <Snackbar
           anchorOrigin={{
@@ -107,7 +107,7 @@ class AccountDetail extends React.Component {
         </Snackbar>
       );
 
-      this.setState({ showAlert });
+      this.setState({showAlert});
     });
   };
 
@@ -116,8 +116,8 @@ class AccountDetail extends React.Component {
   };
 
   removeAccount = async () => {
-    let { privateKey, paymentAddress } = this.state;
-    const { account } = this.props;
+    let {privateKey, paymentAddress} = this.state;
+    const {account} = this.props;
     if (!privateKey) {
       const result = await Account.getPrivateKey(paymentAddress);
       if (result && result.PrivateKey) {
@@ -134,7 +134,7 @@ class AccountDetail extends React.Component {
           this.props.wallet
         );
         if (result) {
-          this.onFinish({ message: "Account is removed!" });
+          this.onFinish({message: "Account is removed!"});
         } else {
           this.showError("Remove error!");
         }
@@ -147,7 +147,7 @@ class AccountDetail extends React.Component {
   };
 
   handleSendToken = (item, tab) => {
-    const { paymentAddress, privateKey } = this.state;
+    const {paymentAddress, privateKey} = this.state;
     const props = {
       paymentAddress,
       privateKey,
@@ -167,7 +167,7 @@ class AccountDetail extends React.Component {
     this.modalTokenCreateRef.open();
   };
   handleCreateToken = tab => {
-    const { paymentAddress, privateKey } = this.state;
+    const {paymentAddress, privateKey} = this.state;
     const props = {
       paymentAddress,
       privateKey,
@@ -194,12 +194,12 @@ class AccountDetail extends React.Component {
   };
 
   renderTokenCreate() {
-    const { isSendToken, modalCreateToken } = this.state;
+    const {isSendToken, modalCreateToken} = this.state;
     return (
       <Dialog
         title={(isSendToken ? "Send " : "Create") + " Token"}
         onRef={modal => (this.modalTokenCreateRef = modal)}
-        className={{ margin: 0 }}
+        className={{margin: 0}}
       >
         {modalCreateToken}
       </Dialog>
@@ -212,7 +212,7 @@ class AccountDetail extends React.Component {
         title="Delete Account"
         onRef={modal => (this.modalDeleteAccountRef = modal)}
         onOK={() => this.removeAccount()}
-        className={{ margin: 0 }}
+        className={{margin: 0}}
       >
         <div>Are you sure to delete?</div>
       </ConfirmDialog>
@@ -220,12 +220,12 @@ class AccountDetail extends React.Component {
   }
 
   renderSendConstant() {
-    const { modalAccountSend } = this.state;
+    const {modalAccountSend} = this.state;
     return (
       <Dialog
         title="Send Coin"
         onRef={modal => (this.modalAccountSendRef = modal)}
-        className={{ margin: 0 }}
+        className={{margin: 0}}
       >
         {modalAccountSend}
       </Dialog>
@@ -236,13 +236,14 @@ class AccountDetail extends React.Component {
     // this.modalAccountDetailRef.close();
     this.setState({
       modalAccountDetail: "",
-      modalAccountSend: <AccountSend />
+      modalAccountSend: <AccountSend/>
     });
     this.modalAccountSendRef.open();
   };
+
   getAccountBalance(accountName) {
     try {
-      return this.props.accountList.find(({ name }) => name === accountName)
+      return this.props.accountList.find(({name}) => name === accountName)
         .value;
     } catch (e) {
       console.error(e);
@@ -251,7 +252,7 @@ class AccountDetail extends React.Component {
   }
 
   renderAccountInfo = () => {
-    const { account } = this.props;
+    const {account} = this.props;
 
     const balance = this.getAccountBalance(account.name);
 
@@ -278,10 +279,10 @@ class AccountDetail extends React.Component {
                 readOnly
                 className="form-control"
                 id="paymentAddress"
-                value={account.PaymentAddress}
+                value={account.PaymentAddress.substring(0, 15) + "..." + account.PaymentAddress.substring(90)}
               />
               <IconPasteWrapper>
-                <CopyPasteSVG />
+                <CopyPasteSVG/>
               </IconPasteWrapper>
             </PaymentInput>
           </CopyToClipboard>
@@ -301,14 +302,14 @@ class AccountDetail extends React.Component {
 
   renderBalance(balance) {
     if (balance === -1) {
-      return <CircularProgress size={60} color="secondary" />;
+      return <CircularProgress size={60} color="secondary"/>;
     }
     return (
       <>
         {typeof balance === "number"
           ? (balance / 100).toLocaleString(navigator.language, {
-              minimumFractionDigits: 2
-            })
+            minimumFractionDigits: 2
+          })
           : 0}{" "}
         <span className="constant">Constant</span>
       </>
@@ -316,7 +317,7 @@ class AccountDetail extends React.Component {
   }
 
   renderTabs() {
-    const { paymentAddress, readonlyKey } = this.state;
+    const {paymentAddress, readonlyKey} = this.state;
     const props = {
       paymentAddress,
       readonlyKey,
@@ -328,14 +329,14 @@ class AccountDetail extends React.Component {
   }
 
   render() {
-    const { showAlert } = this.state;
+    const {showAlert} = this.state;
 
     return (
       <Wrapper className="AccountDetail">
         {showAlert}
         {this.renderAccountInfo()}
         {this.renderTabs()}
-        <Divider />
+        <Divider/>
         {this.renderConfirmRemove()}
         {this.renderTokenCreate()}
         {this.renderSendConstant()}
