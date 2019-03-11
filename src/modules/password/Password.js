@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import {Button, Input, Grid} from "@material-ui/core";
 import * as walletService from "../../services/WalletService";
-import { CreateWalletPromptDialog } from "./CreateWalletPromptDialog";
-import { useAppContext } from "../../common/context/AppContext";
+import {CreateWalletPromptDialog} from "./CreateWalletPromptDialog";
+import {useAppContext} from "../../common/context/AppContext";
 import * as passwordService from "../../services/PasswordService";
 
 export function Password({history}) {
@@ -72,11 +72,11 @@ export function Password({history}) {
               </Grid>
               <Grid item xs={12}>
                 <ButtonWrapper>
-                  <Button
-                    disabled={!password}
-                    variant="contained"
-                    color="primary"
-                    type="submit"
+                  <Button style={{color: "#fff", backgroundColor: "#4254A4"}} className={"loginButton"}
+                          disabled={!password}
+                          variant="contained"
+                          color="primary"
+                          type="submit"
                   >
                     LOG IN
                   </Button>

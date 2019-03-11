@@ -83,3 +83,7 @@ h3 {
 button:focus {
   outline: none;
 }
+
+button[disabled] {
+  opacity: .5;
+}
