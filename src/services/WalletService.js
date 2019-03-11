@@ -1,24 +1,9 @@
 import { Wallet } from "constant-chain-web-js/build/wallet";
 import localforage from "localforage";
+import { getPassphrase } from "./PasswordService";
 
 const numOfAccount = 1;
 const walletName = "wallet1";
-
-window.clearPassword = () => {
-  window.localStorage.removeItem("passphrase");
-};
-
-export function getPassphrase() {
-  return window.localStorage.getItem("passphrase");
-}
-
-export function hasPassword() {
-  return !!getPassphrase();
-}
-
-export function savePassword(pass) {
-  window.localStorage.setItem("passphrase", pass);
-}
 
 export async function loadWallet() {
   console.log("Wallet when load wallet:", Wallet);
