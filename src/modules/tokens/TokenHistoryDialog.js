@@ -61,7 +61,7 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
         <Scrollable>
           {state.history.length ? (
             state.history.map(
-              ({ txID, receivers = [], amount, tokenName, fee }) => {
+              ({ txID, receivers = [], amount, tokenName, fee, isIn }) => {
                 return (
                   <HistoryItem key={txID}>
                     <TxID>TxID: {truncateMiddle(txID)}</TxID>
@@ -76,7 +76,8 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
                         })}
                       </Left>
                       <Right>
-                        -{amount} {tokenName}
+                        {isIn ? "+" : "-"}
+                        {amount} {tokenName}
                       </Right>
                     </Div>
                     <Fee>Fee: {fee}</Fee>
