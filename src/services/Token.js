@@ -9,8 +9,8 @@ import {
   KeyWallet
 } from "constant-chain-web-js/build/wallet";
 
-import bn from 'bn.js';
-import {getPassphrase} from './PasswordService';
+import bn from "bn.js";
+import { getPassphrase } from "./PasswordService";
 
 export default class Token {
   static getOption(methodName, params) {
@@ -67,7 +67,6 @@ export default class Token {
     // get accountWallet from wallet has name
     // let accountWallet = wallet.getAccountByName(account.name);
     let indexAccount = wallet.getAccountIndexByName(account.name);
-    
 
     // console.log("Account Wallet sender: ", accountWallet);
 
@@ -99,18 +98,21 @@ export default class Token {
     //   submitParam.TokenReceivers.PaymentAddress
     // );
 
-
     // let receiverKey = KeyWallet.base58CheckDeserialize(
     //   submitParam.TokenReceivers.PaymentAddress
     // );
     // console.log("Payment address of receiver:", receiverKey);
     tokenParam.receivers[0].set(
-      KeyWallet.base58CheckDeserialize(submitParam.TokenReceivers.PaymentAddress).KeySet.PaymentAddress,
+      KeyWallet.base58CheckDeserialize(
+        submitParam.TokenReceivers.PaymentAddress
+      ).KeySet.PaymentAddress,
       submitParam.TokenReceivers.Amount
     );
     let res;
     try {
-      res = await wallet.MasterAccount.child[indexAccount].createAndSendCustomToken(
+      res = await wallet.MasterAccount.child[
+        indexAccount
+      ].createAndSendCustomToken(
         paymentInfos,
         tokenParam,
         receiverPaymentAddrStr
@@ -119,7 +121,6 @@ export default class Token {
       await wallet.save(getPassphrase());
 
       console.log("Wallet after create and send token: ", wallet);
-
     } catch (e) {
       console.log(e);
       throw e;
@@ -128,13 +129,17 @@ export default class Token {
     return res;
   }
 
-  static async createSendPrivacyCustomTokenTransaction(submitParam, account, wallet) {
+  static async createSendPrivacyCustomTokenTransaction(
+    submitParam,
+    account,
+    wallet
+  ) {
     console.log("SEND PRIVACY CUSTOM TOKEN!!!!!!!");
     // get accountWallet from wallet has name
     // let accountWallet = wallet.getAccountByName(account.name);
     // console.log("Account Wallet sender: ", accountWallet);
     let indexAccount = wallet.getAccountIndexByName(account.name);
-    
+
     // prepare param for create and send privacy custom token
     let paymentInfos = new Array(0);
     for (let i = 0; i < paymentInfos.length; i++) {
@@ -155,26 +160,32 @@ export default class Token {
 
     tokenParam.receivers = new Array(1);
     tokenParam.receivers[0] = new PaymentInfo(
-      KeyWallet.base58CheckDeserialize(submitParam.TokenReceivers.PaymentAddress).KeySet.PaymentAddress, 
-      new bn(submitParam.TokenReceivers.Amount));
+      KeyWallet.base58CheckDeserialize(
+        submitParam.TokenReceivers.PaymentAddress
+      ).KeySet.PaymentAddress,
+      new bn(submitParam.TokenReceivers.Amount)
+    );
 
-    console.log("Token param when createSendPrivacyCustomTokenTransaction: ", tokenParam);
-  
+    console.log(
+      "Token param when createSendPrivacyCustomTokenTransaction: ",
+      tokenParam
+    );
+
     let response;
-    try{
-      response = await wallet.MasterAccount.child[indexAccount].createAndSendPrivacyCustomToken(
+    try {
+      response = await wallet.MasterAccount.child[
+        indexAccount
+      ].createAndSendPrivacyCustomToken(
         paymentInfos,
         tokenParam,
         receiverPaymentAddrStr
       );
 
       await wallet.save(getPassphrase());
-    } catch(e){
+    } catch (e) {
       throw e;
     }
 
     return response;
   }
-
-  
 }
