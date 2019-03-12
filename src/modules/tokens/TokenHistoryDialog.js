@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Modal } from "../../common/components/modal";
 import _ from "lodash";
 import { useAccountWallet } from "./hook/useAccountWallet";
+import { useDebugReducer } from "../../common/hook/useDebugReducer";
 
 function truncateMiddle(str = "") {
   return _.truncate(str, { length: 15 }) + str.slice(-4);
@@ -26,8 +27,12 @@ function reducer(state, action) {
   }
 }
 
-export function TokenHistoryDialog({ tabName, isOpen, onClose }) {
-  const [state, dispatch] = React.useReducer(reducer, initialState);
+export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
+  const [state, dispatch] = useDebugReducer(
+    TokenHistoryDialog.name,
+    reducer,
+    initialState
+  );
 
   const accountWallet = useAccountWallet();
 
@@ -38,10 +43,10 @@ export function TokenHistoryDialog({ tabName, isOpen, onClose }) {
   function onInit() {
     dispatch({ type: "RESET" });
     if (tabName === "privacy") {
-      const history = accountWallet.getPrivacyCustomTokenTrx();
+      const history = accountWallet.getPrivacyCustomTokenTrxByTokenID();
       dispatch({ type: "SET_HISTORY", history });
     } else if (tabName === "custom") {
-      const history = accountWallet.getCustomTokenTrx();
+      const history = accountWallet.getCustomTokenTrxByTokenID(tokenId);
       dispatch({ type: "SET_HISTORY", history });
     }
   }

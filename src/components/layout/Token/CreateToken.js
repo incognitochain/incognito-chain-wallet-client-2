@@ -268,6 +268,7 @@ class CreateToken extends React.Component {
       } else {
         await this.createSendCustomTokenTransaction(submitParams[3]);
       }
+      this.handleAlertOpen();
       this.props.onRefreshTokenList();
       this.props.onClose();
     } catch (e) {

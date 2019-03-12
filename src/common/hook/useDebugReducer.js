@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * Use just as the same as React.useReducer, but state and action is be logged to the console.
+ * Use just as the same as React.useReducer, but state and action are logged to the console.
  * Example usage:
  * ```
  *   const [state, dispatch] = useDebugReducer('MyComponent', reducer, initialState)

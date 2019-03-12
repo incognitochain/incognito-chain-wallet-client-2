@@ -95,7 +95,7 @@ class TokenTabs extends React.Component {
     this.onRefresh();
   };
   onClickHistory = ({ ID }) => {
-    this.setState({ isOpenTokenHistory: true });
+    this.setState({ isOpenTokenHistory: true, historyTokenId: ID });
   };
   renderTabs() {
     const {
@@ -168,6 +168,7 @@ class TokenTabs extends React.Component {
         />
 
         <TokenHistoryDialog
+          tokenId={this.state.historyTokenId}
           tabName={mapTabIndexToName[this.state.value]}
           isOpen={this.state.isOpenTokenHistory}
           onClose={() => this.setState({ isOpenTokenHistory: false })}

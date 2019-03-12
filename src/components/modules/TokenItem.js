@@ -1,5 +1,4 @@
 import React from "react";
-// import { Button } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import styled from "styled-components";
 import { CopyableTooltip } from "common/components/copyable-tooltip";
@@ -7,6 +6,8 @@ import { useAccountWallet } from "../../modules/tokens/hook/useAccountWallet";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import numeral from "numeral";
 import { PopoverMenu } from "../../common/components/popover-menu/PopoverMenu";
+import { getPassphrase } from "../../services/PasswordService";
+import { useWalletContext } from "../../common/context/WalletContext";
 
 export function TokenItem({
   tab,
@@ -16,28 +17,48 @@ export function TokenItem({
   handleUnfollow,
   onClickHistory
 }) {
+  const { wallet } = useWalletContext();
   const accountWallet = useAccountWallet();
   const [balance, setBalance] = React.useState(null);
 
   React.useEffect(() => {
-    loadBalance();
+    loadBalance(item.isInit);
   }, [item.ID]);
 
-  async function loadBalance() {
-    try {
-      if (tabName === "privacy") {
-        const balance = await accountWallet.getPrivacyCustomTokenBalance(
-          item.ID
-        );
+  async function loadBalance(isInit) {
+    if (isInit) {
+      setTimeout(async () => {
+        try {
+          let balance = null;
+          if (tabName === "privacy") {
+            balance = await accountWallet.getPrivacyCustomTokenBalance(item.ID);
+          } else if (tabName === "custom") {
+            balance = await accountWallet.getCustomTokenBalance(item.ID);
+          }
+          console.log(`TokenItem ${item.ID} load balance after 10s`, balance);
+          //DANGEROUSLY MUTATE DATA IN HERE !!!!!!
+          item.isInit = false;
+          wallet.save(getPassphrase());
+
+          setBalance(balance);
+        } catch (e) {
+          console.error(e);
+          setBalance("#ERR");
+        }
+      }, 10000);
+    } else {
+      try {
+        let balance = null;
+        if (tabName === "privacy") {
+          balance = await accountWallet.getPrivacyCustomTokenBalance(item.ID);
+        } else if (tabName === "custom") {
+          balance = await accountWallet.getCustomTokenBalance(item.ID);
+        }
         setBalance(balance);
-      } else if (tabName === "custom") {
-        console.log("### load custom balance");
-        const balance = await accountWallet.getCustomTokenBalance(item.ID);
-        setBalance(balance);
+      } catch (e) {
+        console.error(e);
+        setBalance("#ERR");
       }
-    } catch (e) {
-      console.error(e);
-      setBalance("#ERR");
     }
   }
 
@@ -66,11 +87,7 @@ export function TokenItem({
           <div className="wrapperTokenDetail">
             <div className="tokenName">{Name}</div>
             <div className="tokenAmount">
-              {balance === null ? (
-                <CircularProgress size={20} />
-              ) : (
-                numeral(parseFloat(balance)).format("0,0")
-              )}
+              {renderBalance(balance, item.isInit)}
             </div>
           </div>
         </CopyableTooltip>
@@ -80,51 +97,30 @@ export function TokenItem({
         <PopoverMenu
           renderItems={closeMenu => {
             const { MenuItem } = PopoverMenu;
-            return (
-              <>
-                <MenuItem onClick={onClickSendMenuItem(closeMenu)}>
-                  Send
-                </MenuItem>
-                <MenuItem onClick={onClickUnfollowMenuItem(closeMenu)}>
-                  Unfollow
-                </MenuItem>
-                <MenuItem onClick={onClickHistoryMenuItem(closeMenu)}>
-                  History
-                </MenuItem>
-              </>
-            );
+            return [
+              <MenuItem key={1} onClick={onClickSendMenuItem(closeMenu)}>
+                Send
+              </MenuItem>,
+              <MenuItem key={2} onClick={onClickUnfollowMenuItem(closeMenu)}>
+                Unfollow
+              </MenuItem>,
+              <MenuItem key={3} onClick={onClickHistoryMenuItem(closeMenu)}>
+                History
+              </MenuItem>
+            ];
           }}
         />
-        {/* <StyledButton
-          // variant="contained"
-          size="small"
-          onClick={handleClickButton}
-        >
-          Send
-        </StyledButton>
-        <div style={{ height: 3 }} />
-
-        <StyledButton
-          // variant="contained"
-          size="small"
-          onClick={() => handleUnfollow(item)}
-        >
-          Unfollow
-        </StyledButton>
-
-        <StyledButton size="small" onClick={() => onClickHistory(item)}>
-          History
-        </StyledButton> */}
       </Buttons>
     </Wrapper>
   );
 }
 
-// const StyledButton = styled(Button)`
-//   &.copy {
-//     font-size: 9px;
-//   }
-// `;
+function renderBalance(balance, isInit) {
+  if (typeof balance !== "number" || isInit) {
+    return <CircularProgress size={20} />;
+  }
+  return numeral(parseFloat(balance)).format("0,0");
+}
 
 const Wrapper = styled.div`
   border-bottom: solid 1px #e4e7f2;
