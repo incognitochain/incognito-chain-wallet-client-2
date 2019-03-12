@@ -1,7 +1,6 @@
 {
   "manifest_version": 2,
-
-  "name": "Wallet Extension Costant - client",
+  "name": "Wallet Extension Constant - client",
   "description": "Constant - Untraceable, stable, digital cash.",
   "version": "0.0.1",
   "author": "Constant Team",
@@ -14,6 +13,10 @@
     "default_popup": "index.html",
     "default_title": "Constant Wallet Extension - client"
   },
-  "permissions": [ "contextMenus", "tabs", "storage"],
+  "permissions": [
+    "contextMenus",
+    "tabs",
+    "storage"
+  ],
   "content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'"
 }

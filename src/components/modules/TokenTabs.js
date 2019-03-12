@@ -117,8 +117,8 @@ class TokenTabs extends React.Component {
           onChange={this.handleChange}
           className="tokenTabs"
         >
-          <Tab label="Privacy" />
-          <Tab label="Custom" />
+          <Tab label="PRIVACY" />
+          <Tab label="NORMAL" />
         </Tabs>
         <TokenList {...props} />
       </>

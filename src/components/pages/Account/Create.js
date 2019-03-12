@@ -1,4 +1,3 @@
-
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
@@ -105,8 +104,11 @@ class CreateAccount extends React.Component {
     }
 
     // check whether accountName is existed or not
-    for (let i=0; i<this.props.accountList.length; i++){
-      if (this.props.accountList[i].name.toLowerCase() === accountName.toLowerCase()){
+    for (let i = 0; i < this.props.accountList.length; i++) {
+      if (
+        this.props.accountList[i].name.toLowerCase() ===
+        accountName.toLowerCase()
+      ) {
         this.showAlert("Account name is existed!");
         return;
       }
@@ -114,17 +116,16 @@ class CreateAccount extends React.Component {
 
     const result = await Account.createAccount(accountName, this.props.wallet);
     console.log("Result: ", result);
-    if(result && result.key){
+    if (result && result.key) {
       this.props.app.listAccounts(this.props.wallet);
-      this.onFinish({message:'Account is created!'});
-    }
-    else{
-      this.showError('Create error!');
+      this.onFinish({ message: "Account is created!" });
+    } else {
+      this.showError("Create error!");
     }
   };
 
   changeAccountName = e => {
-    this.setState({accountName: e.target.value});
+    this.setState({ accountName: e.target.value });
   };
 
   onFinish = data => {
@@ -139,9 +140,11 @@ class CreateAccount extends React.Component {
     const { showAlert } = this.state;
 
     return (
-      <div className="">
+      <div className="" style={{ textAlign: "center" }}>
         {showAlert}
-        <h1 className="mb-2">Create new account</h1>
+        <h1 className="mb-2" style={{ marginTop: "15px" }}>
+          Create new account
+        </h1>
         <div>
           <span className="badge badge-pill badge-light">
             * This is some tips that user need to know
@@ -161,10 +164,9 @@ class CreateAccount extends React.Component {
 
         <Button
           variant="contained"
-          size="large"
           color="primary"
           className={classes.button}
-          fullWidth
+          size="medium"
           onClick={() => this.createAccount()}
         >
           <IconSave
@@ -172,6 +174,7 @@ class CreateAccount extends React.Component {
           />
           Create Account
         </Button>
+        <br />
         <Button
           variant="contained"
           size="small"
@@ -190,4 +193,8 @@ CreateAccount.propTypes = {
   classes: PropTypes.object.isRequired
 };
 // higher-order component
-export default withStyles(styles)(connectAccountListContext(connectWalletContext(connectAppContext(CreateAccount))));
+export default withStyles(styles)(
+  connectAccountListContext(
+    connectWalletContext(connectAppContext(CreateAccount))
+  )
+);

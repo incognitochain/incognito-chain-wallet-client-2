@@ -143,9 +143,11 @@ class ImportAccount extends React.Component {
     const { showAlert } = this.state;
 
     return (
-      <div className="">
+      <div className="" style={{ textAlign: "center" }}>
         {showAlert}
-        <h1 className="mb-2">Import account</h1>
+        <h1 className="mb-2" style={{ marginTop: "15px" }}>
+          Import account
+        </h1>
         <div>
           <span
             className="badge badge-pill badge-light"
@@ -181,10 +183,9 @@ class ImportAccount extends React.Component {
 
         <Button
           variant="contained"
-          size="large"
           color="primary"
           className={classes.button}
-          fullWidth
+          size="medium"
           onClick={() => this.importAccount()}
         >
           <IconSave
@@ -192,6 +193,7 @@ class ImportAccount extends React.Component {
           />
           Import Account
         </Button>
+        <br />
         <Button
           variant="contained"
           size="small"
