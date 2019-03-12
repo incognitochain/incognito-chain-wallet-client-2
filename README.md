@@ -5,7 +5,7 @@
 
 ### Run as web app or Chrome extension
 #### Prepare
--   Refer https://github.com/ninjadotorg/constant
+-   Refer https://github.com/constant-money/constant-chain
 -   Install a constant Node
 #### Run dev
 In the project directory, you can run:
