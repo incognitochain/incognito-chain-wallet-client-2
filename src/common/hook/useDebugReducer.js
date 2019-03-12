@@ -2,17 +2,33 @@ import React from "react";
 
 /**
  * Use just as the same as React.useReducer, but state and action is be logged to the console.
- * @param  {...any} params The same params passed to React.useReducer()
+ * Example usage:
+ * ```
+ *   const [state, dispatch] = useDebugReducer('MyComponent', reducer, initialState)
+ *   // Console:
+ *   // MyComponent dispatch: {...}
+ *   // \t MyComponent state: {...}
+ * ```
+ * or
+ * ```
+ *   const [state, dispatch] = useDebugReducer(reducer, initialState)
+ *   // log nothing
+ * ```
+ * @param {string} name - A name to identify between each useDebugReducer call, can be ignored
  */
 export function useDebugReducer(name, ...params) {
-  const [state, originDispatch] = React.useReducer(...params);
+  if (typeof name === "function") {
+    return React.useReducer(name, ...params);
+  } else {
+    const [state, originDispatch] = React.useReducer(...params);
 
-  const dispatch = action => {
-    originDispatch(action);
-    console.log(name + " dispatched:", action);
-  };
+    const dispatch = action => {
+      originDispatch(action);
+      console.log(name + " dispatched:", action);
+    };
 
-  console.log(`\t ${name} state`, state);
+    console.log(`\t ${name} state`, state);
 
-  return [state, dispatch];
+    return [state, dispatch];
+  }
 }

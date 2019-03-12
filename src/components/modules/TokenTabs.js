@@ -58,6 +58,7 @@ class TokenTabs extends React.Component {
   };
 
   onRefresh = () => {
+    console.log("TokenTabs onRefresh");
     try {
       const { wallet, account } = this.props;
       const accountWallet = wallet.getAccountByName(account.name);
@@ -65,10 +66,10 @@ class TokenTabs extends React.Component {
 
       this.setState({
         listCustomTokenBalance: followingTokens.filter(
-          token => token.type === "custom"
+          token => !token.IsPrivacy
         ),
         listPrivacyTokenBalance: followingTokens.filter(
-          token => token.type === "privacy"
+          token => token.IsPrivacy
         )
       });
     } catch (e) {
@@ -93,7 +94,9 @@ class TokenTabs extends React.Component {
     wallet.save(passwordService.getPassphrase());
     this.onRefresh();
   };
-
+  onClickHistory = ({ ID }) => {
+    this.setState({ isOpenTokenHistory: true });
+  };
   renderTabs() {
     const {
       value,
@@ -105,6 +108,7 @@ class TokenTabs extends React.Component {
       tab: value, // depricated
       tabName: mapTabIndexToName[value],
       handleUnfollow: this.handleUnfollow,
+      onClickHistory: this.onClickHistory,
       ...this.props
     };
 
@@ -149,15 +153,6 @@ class TokenTabs extends React.Component {
           >
             Add Tokens To Follow
           </Button>
-
-          {/* <Button
-            variant="contained"
-            size="medium"
-            className="newTokenButton"
-            onClick={() => this.setState({ isOpenTokenHistory: true })}
-          >
-            Show Token History
-          </Button> */}
         </ButtonWrapper>
 
         <FollowTokenDialog

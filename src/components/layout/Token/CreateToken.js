@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { TextField, Button } from "@material-ui/core";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Dialog from "@material-ui/core/Dialog";
@@ -29,24 +28,6 @@ import toastr from "toastr";
 import { Loading } from "../../../common/components/loading/Loading";
 
 class CreateToken extends React.Component {
-  static propTypes = {
-    balance: PropTypes.number,
-    toAddress: PropTypes.string,
-    tokenName: PropTypes.string,
-    tokenId: PropTypes.string,
-    tokenSymbol: PropTypes.string.isRequired,
-    type: PropTypes.number.isRequired,
-    isCreate: PropTypes.bool.isRequired,
-    onClose: PropTypes.func
-  };
-  static defaultProps = {
-    tokenId: "",
-    tokenName: "",
-    tokenSymbol: "",
-    balance: 0,
-    toAddress: ""
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -207,9 +188,6 @@ class CreateToken extends React.Component {
       });
     }
   };
-  closePage = () => {
-    this.showSuccess();
-  };
   handleAlertOpen = () => {
     this.setState({ alertOpen: true });
   };
@@ -259,8 +237,7 @@ class CreateToken extends React.Component {
         this.props.wallet
       );
     } catch (e) {
-      console.error(e);
-      toastr.error("Error on createSendCustomTokenTransaction()");
+      throw e;
     }
   };
   createSendPrivacyTokenTransaction = async params => {
@@ -271,8 +248,7 @@ class CreateToken extends React.Component {
         this.props.wallet
       );
     } catch (e) {
-      console.error(e);
-      toastr.error("Error on createSendPrivacyCustomTokenTransaction()");
+      throw e;
     }
   };
 
@@ -292,9 +268,13 @@ class CreateToken extends React.Component {
         await this.createSendCustomTokenTransaction(submitParams[3]);
       }
       this.props.onRefreshTokenList();
-      this.closePage();
+      this.props.onClose();
     } catch (e) {
       console.error(e);
+      toastr.error(
+        (this.props.isCreate ? "Create" : "Send") +
+          " Token fail. Please try again later!"
+      );
     } finally {
       this.setState({ isLoading: false });
     }
