@@ -169,8 +169,9 @@ class CreateToken extends React.Component {
 
   getRequestTokenObject = () => {
     const amount = Number(this.state.amount);
+
     return {
-      Privacy: this.props.tokenType === "privacy",
+      Privacy: this.props.type === 0,
       TokenID: this.props.tokenId || "",
       TokenName: this.state.tokenName,
       TokenSymbol: this.state.tokenSymbol,
