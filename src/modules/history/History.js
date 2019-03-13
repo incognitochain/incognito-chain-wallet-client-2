@@ -49,7 +49,7 @@ export function History() {
         {state.history.map(item => {
           return (
             <HistoryItem key={item.txID}>
-              <TxID>{truncateMiddle(item.txID)}</TxID>
+              <TxID>TxID: {truncateMiddle(item.txID)}</TxID>
               <Div>
                 <Left>
                   {(item.receivers || []).map((receiverItem, i) => {
