@@ -113,8 +113,8 @@ class ImportAccount extends React.Component {
       getPassphrase(),
       this.props.wallet
     );
+
     if (result) {
-      console.log("import account result", result);
       this.props.app.listAccounts(this.props.wallet);
       this.onFinish({ message: "Account is imported!" });
     } else {

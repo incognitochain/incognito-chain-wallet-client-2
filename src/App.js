@@ -1,7 +1,8 @@
 import React from "react";
 import "./App.css";
 import Header from "./components/layout/Header";
-import Home from "./components/pages/Home";
+// import Home from "./components/pages/Home";
+import AccountDetail from "./components/layout/Account/AccountDetail";
 import CreateAccount from "./components/pages/Account/Create";
 import Settings from "./components/pages/Settings";
 import ImportAccount from "./components/pages/Account/Import";
@@ -106,7 +107,7 @@ const App = ({ history, location }) => {
 
     dispatch({
       type: "SET_SCREEN",
-      screen: <Home account={selectedAccount} />,
+      screen: <AccountDetail account={selectedAccount} />,
       headerTitle: "Home",
       shouldShowHeader: true
     });
@@ -199,7 +200,7 @@ const App = ({ history, location }) => {
   const backHome = data => {
     dispatch({
       type: "SET_SCREEN",
-      screen: <Home />,
+      screen: <AccountDetail />,
       headerTitle: "Home",
       shouldShowHeader: true
     });
@@ -216,7 +217,7 @@ const App = ({ history, location }) => {
     dispatch({ type: "SET_SELECTED_ACCOUNT", selectedAccount: account });
     dispatch({
       type: "SET_SCREEN",
-      screen: <Home account={account} />,
+      screen: <AccountDetail account={account} />,
       shouldShowHeader: true,
       headerTitle: "Home"
     });

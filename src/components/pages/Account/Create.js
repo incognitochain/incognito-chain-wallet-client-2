@@ -192,6 +192,7 @@ class CreateAccount extends React.Component {
 CreateAccount.propTypes = {
   classes: PropTypes.object.isRequired
 };
+
 // higher-order component
 export default withStyles(styles)(
   connectAccountListContext(
