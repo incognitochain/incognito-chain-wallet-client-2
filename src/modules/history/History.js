@@ -60,7 +60,10 @@ export function History() {
                     );
                   })}
                 </Left>
-                <Right>-{item.amount} Constant</Right>
+                <Right>
+                  {" "}
+                  {item.isIn ? "+" : "-"} {item.amount} Constant
+                </Right>
               </Div>
               <Fee>Fee: {item.fee}</Fee>
             </HistoryItem>

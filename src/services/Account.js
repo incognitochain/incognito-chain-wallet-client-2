@@ -1,9 +1,9 @@
 import axios from "axios";
 import Server from "./Server";
-import {KeyWallet, PaymentInfo} from "constant-chain-web-js/build/wallet";
-import bn from 'bn.js';
+import { KeyWallet, PaymentInfo } from "constant-chain-web-js/build/wallet";
+import bn from "bn.js";
 
-import {getPassphrase} from './PasswordService';
+import { getPassphrase } from "./PasswordService";
 
 // @depricated
 export default class Account {
@@ -60,7 +60,7 @@ export default class Account {
         if (response.data && response.data.Result) return response.data.Result;
       }
     } catch (e) {
-      return {error: true, message: e.message};
+      return { error: true, message: e.message };
     }
 
     return false;
@@ -84,9 +84,8 @@ export default class Account {
     try {
       let result = wallet.removeAccount(privateKeyStr, accountName, passPhrase);
       return result;
-
     } catch (e) {
-      return e
+      return e;
     }
   }
 
@@ -107,17 +106,25 @@ export default class Account {
     let receiverPaymentAddrStr = new Array(param.length);
 
     for (let i = 0; i < paymentInfos.length; i++) {
-      let keyWallet = KeyWallet.base58CheckDeserialize(param[i].paymentAddressStr);
-      receiverPaymentAddrStr[i] = param[i].paymentAddressStr
+      let keyWallet = KeyWallet.base58CheckDeserialize(
+        param[i].paymentAddressStr
+      );
+      receiverPaymentAddrStr[i] = param[i].paymentAddressStr;
       // console.log("Payment addr:", paymentAddr);
-      paymentInfos[i] = new PaymentInfo(keyWallet.KeySet.PaymentAddress, new bn(param[i].amount));
+      paymentInfos[i] = new PaymentInfo(
+        keyWallet.KeySet.PaymentAddress,
+        new bn(param[i].amount)
+      );
     }
 
     let result;
-    try{
-      result = await wallet.MasterAccount.child[indexAccount].createAndSendConstant(paymentInfos, receiverPaymentAddrStr);
-      wallet.save(getPassphrase())
-    } catch(e){
+    try {
+      result = await wallet.MasterAccount.child[
+        indexAccount
+      ].createAndSendConstant(paymentInfos, receiverPaymentAddrStr);
+      wallet.save(getPassphrase());
+      console.log("Wallet after saving history tx: ", wallet);
+    } catch (e) {
       throw e;
     }
 
@@ -128,7 +135,6 @@ export default class Account {
     const result = wallet.createNewAccount(accountName);
     console.log("Result create account: ", result);
     return result;
-
   }
 
   static async getSealerKey(param) {

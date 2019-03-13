@@ -7,7 +7,7 @@ export const initialAppState = {
   accounts: [],
   shouldShowHeader: true
 };
-
+// immutable
 export function appReducer(state = initialAppState, action) {
   switch (action.type) {
     case "SET_ACCOUNT_BALANCE": {
