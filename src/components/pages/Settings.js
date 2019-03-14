@@ -251,13 +251,13 @@ class Settings extends React.Component {
           component="nav"
           subheader={<ListSubheader component="div">Preferences</ListSubheader>}
         >
-          <ListItem button onClick={() => this.showInfo("Not finish")}>
+          <ListItem button onClick={() => this.showInfo("Coming soon")}>
             <ListItemIcon>
               <IconLanguage />
             </ListItemIcon>
             <ListItemText inset primary="Language" secondary="English" />
           </ListItem>
-          {/*<ListItem button onClick={() => this.showInfo("Not finish")}>
+          {/*<ListItem button onClick={() => this.showInfo("Coming soon")}>
             <ListItemIcon>
               <IconCurrency />
             </ListItemIcon>
@@ -268,7 +268,7 @@ class Settings extends React.Component {
           component="nav"
           subheader={<ListSubheader component="div">Privacy</ListSubheader>}
         >
-          {/*<ListItem button onClick={() => this.showInfo("Not finish")}>
+          {/*<ListItem button onClick={() => this.showInfo("Coming soon")}>
             <ListItemIcon>
               <IconArchive />
             </ListItemIcon>

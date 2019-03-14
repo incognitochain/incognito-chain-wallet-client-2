@@ -70,7 +70,7 @@ export default class Account {
 
   // get progress tx
   static getProgressTx() {
-    console.log("Wallet.progressTx: ", Wallet.progressTx);
-    return Wallet.progressTx;
+    console.log("Wallet.progressTx: ", Wallet.ProgressTx);
+    return Wallet.ProgressTx;
   }
 }

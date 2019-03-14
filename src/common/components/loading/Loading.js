@@ -5,7 +5,6 @@ import cls from "classnames";
 import Account from "../../../services/Account";
 
 // export function Loading({ isShow, fullscreen }) {
-
 //   return isShow ? (
 //     <Wrapper className={cls({ fullscreen })}>
 //       <CircularProgress color="secondary" />
@@ -35,6 +34,7 @@ export class Loading extends React.Component {
 
   componentDidMount() {
     let { isShow } = this.props;
+    debugger;
     this.timer = setInterval(this.progress(isShow), 1000);
   }
 
@@ -60,12 +60,6 @@ export class Loading extends React.Component {
             value={this.state.completed}
             color="secondary"
           />
-          {/* <CircularProgress
-            className={classes.progress}
-            variant="determinate"
-            value={this.state.completed}
-            color="secondary"
-          /> */}
         </Wrapper>
       );
     }

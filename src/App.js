@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.css";
 import Header from "./components/layout/Header";
-// import Home from "./components/pages/Home";
 import AccountDetail from "./components/layout/Account/AccountDetail";
 import CreateAccount from "./components/pages/Account/Create";
 import Settings from "./components/pages/Settings";
@@ -108,7 +107,7 @@ const App = ({ history, location }) => {
     dispatch({
       type: "SET_SCREEN",
       screen: <AccountDetail account={selectedAccount} />,
-      headerTitle: "Home",
+      headerTitle: "Wallet",
       shouldShowHeader: true
     });
 
@@ -125,7 +124,7 @@ const App = ({ history, location }) => {
   const selectAccount = action => {
     // TODO - move this to react-router
     let screen = "",
-      headerTitle = "Home";
+      headerTitle = "Wallet";
     if (action === "CREATE_ACCOUNT") {
       screen = (
         <CreateAccount
@@ -201,7 +200,7 @@ const App = ({ history, location }) => {
     dispatch({
       type: "SET_SCREEN",
       screen: <AccountDetail />,
-      headerTitle: "Home",
+      headerTitle: "Wallet",
       shouldShowHeader: true
     });
 
@@ -219,7 +218,7 @@ const App = ({ history, location }) => {
       type: "SET_SCREEN",
       screen: <AccountDetail account={account} />,
       shouldShowHeader: true,
-      headerTitle: "Home"
+      headerTitle: "Wallet"
     });
   };
 

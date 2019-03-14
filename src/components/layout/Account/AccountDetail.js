@@ -316,7 +316,7 @@ class AccountDetail extends React.Component {
               minimumFractionDigits: 2
             })
           : 0}{" "}
-        <span className="constant">Constant</span>
+        <span className="constant">CONST</span>
       </>
     );
   }

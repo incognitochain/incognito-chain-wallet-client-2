@@ -5,11 +5,9 @@ const {download} = require('electron-dl');
 const {exec} = require('child_process');
 
 
-const {app, BrowserWindow, Menu, ipcMain} = electron;
+const {app, BrowserWindow} = electron;
 
 const downloadLink = 'https://github.com/ninjadotorg/constant/releases/download/constant-0.0.2-beta/constant';
-
-const menu = new Menu();
 
 let win;
 
