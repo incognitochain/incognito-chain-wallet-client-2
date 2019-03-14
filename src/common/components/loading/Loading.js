@@ -34,18 +34,17 @@ export class Loading extends React.Component {
   };
 
   componentWillReceiveProps = nextProps => {
-    var that = this;
-    this.timer = setInterval(function() {
-      const { isShow } = nextProps;
-      if (isShow) {
+    const { isShow } = nextProps;
+    if (isShow) {
+      var that = this;
+      clearInterval(this.timer);
+      this.timer = setInterval(function() {
         that.progress(isShow);
-      }
-    }, 2000);
+      }, 90);
+    } else if (isShow == false) {
+      clearInterval(this.timer);
+    }
   };
-
-  componentWillUnmount() {
-    clearInterval(this.timer);
-  }
 
   progress = () => {
     const completed = Account.getProgressTx();
@@ -63,7 +62,9 @@ export class Loading extends React.Component {
             value={this.state.completed}
             color="secondary"
           />
+          {this.state.completed}%
           {/* <CircularProgress
+
             className={classes.progress}
             variant="determinate"
             value={this.state.completed}
