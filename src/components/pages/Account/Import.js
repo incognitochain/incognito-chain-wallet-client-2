@@ -143,7 +143,7 @@ class ImportAccount extends React.Component {
     const { showAlert } = this.state;
 
     return (
-      <div className="" style={{ textAlign: "center" }}>
+      <div className="" style={{ textAlign: "center", width: "97%" }}>
         {showAlert}
         <h1 className="mb-2" style={{ marginTop: "15px" }}>
           Import account
@@ -151,11 +151,14 @@ class ImportAccount extends React.Component {
         <div>
           <span
             className="badge badge-pill badge-light"
-            style={{ lineHeight: "1.2rem", whiteSpace: "unset" }}
+            style={{
+              lineHeight: "1.2rem",
+              whiteSpace: "unset",
+              marginLeft: "5px"
+            }}
           >
             * Imported accounts will not be associated with your originally
-            created Constant account seedphrase. Learn more about imported
-            accounts <a href="https://constant.money">here</a>
+            created Constant account seedphrase.
           </span>
         </div>
 
