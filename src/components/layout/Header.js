@@ -61,6 +61,7 @@ class Header extends React.Component {
     accounts: PropTypes.array.isRequired,
     onChangeAccount: PropTypes.func
   };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -75,6 +76,7 @@ class Header extends React.Component {
 
     this.balanceSubjects = [];
   }
+
   componentDidMount() {
     if (_.get(this, "props.accounts.length")) {
       this.resetRegisterBalanceSubjects();
@@ -93,6 +95,7 @@ class Header extends React.Component {
       }
     }
   }
+
   //register subject for each account
   resetRegisterBalanceSubjects = () => {
     if (this.balanceSubjects) {
@@ -126,6 +129,7 @@ class Header extends React.Component {
     a: 10101,
     b: 1100110
   };
+
   mockGetBalance(name) {
     // TODO - remove this method
     return new Promise(resolve => {
@@ -286,6 +290,7 @@ class Header extends React.Component {
       </div>
     );
   }
+
   renderAccountList = () => {
     const { accounts } = this.props;
     return (
@@ -339,6 +344,7 @@ class Header extends React.Component {
       </Menu>
     );
   };
+
   render() {
     const { classes, title } = this.props;
     const { auth, anchorEl, showAlert } = this.state;
