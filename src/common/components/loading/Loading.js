@@ -32,21 +32,23 @@ export class Loading extends React.Component {
     completed: 0
   };
 
-  componentDidMount() {
-    let { isShow } = this.props;
-    debugger;
-    this.timer = setInterval(this.progress(isShow), 1000);
-  }
+  componentWillReceiveProps = nextProps => {
+    var that = this;
+    this.timer = setInterval(function() {
+      const { isShow } = nextProps;
+      if (isShow) {
+        that.progress(isShow);
+      }
+    }, 2000);
+  };
 
   componentWillUnmount() {
     clearInterval(this.timer);
   }
 
-  progress = isShow => {
-    if (isShow) {
-      const completed = Account.getProgressTx();
-      this.setState({ completed: completed });
-    }
+  progress = () => {
+    const completed = Account.getProgressTx();
+    this.setState({ completed: completed });
   };
 
   render() {
