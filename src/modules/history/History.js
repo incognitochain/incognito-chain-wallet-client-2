@@ -4,6 +4,11 @@ import styled from "styled-components";
 import _ from "lodash";
 import { useAccountContext } from "../../common/context/AccountContext";
 import { useWalletContext } from "../../common/context/WalletContext";
+import {
+  FailedTx,
+  SuccessTx,
+  ConfirmedTx
+} from "constant-chain-web-js/build/wallet";
 
 function truncateMiddle(str = "") {
   return _.truncate(str, { length: 15 }) + str.slice(-4);
@@ -47,6 +52,7 @@ export function History() {
     <Wrapper>
       <Scrollable>
         {state.history.map(item => {
+          const { status } = item;
           return (
             <HistoryItem key={item.txID}>
               <TxID>TxID: {truncateMiddle(item.txID)}</TxID>
@@ -65,6 +71,18 @@ export function History() {
                   {item.isIn ? "+" : "-"} {item.amount} Constant
                 </Right>
               </Div>
+
+              {/* <Div>
+                <Left>
+                  <Fee>Date: {item.time}</Fee>
+                </Left>
+                <Right>
+                  {" "}
+                  <SuccessStatus>Success</SuccessStatus>
+                   {
+                    status === FailedTx ? <FailedStatus>Failed</FailedStatus> : status === SuccessTx ? <SuccessStatus></SuccessStatus> : <ComfirmedStatus></ComfirmedStatus>}  
+                </Right>
+              </Div> */}
               <Fee>Fee: {item.fee}</Fee>
             </HistoryItem>
           );
@@ -127,4 +145,19 @@ const Right = styled.div`
   font-size: 16px;
   font-weight: bold;
   color: #050c33;
+`;
+
+const SuccessStatus = styled.div`
+  color: #4f8a10;
+  background-color: #dff2bf;
+`;
+
+const FailedStatus = styled.div`
+  color: #d8000c;
+  background-color: #ffd2d2;
+`;
+
+const ComfirmedStatus = styled.div`
+  color: #00529b;
+  background-color: #bde5f8;
 `;
