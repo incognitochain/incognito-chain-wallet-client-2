@@ -191,11 +191,17 @@ function AccountSend({ classes, isOpen }) {
     refs.modalConfirmationRef.open();
   };
 
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   async function sendCoin() {
     dispatch({ type: "SHOW_LOADING", isShow: true });
     let { toAddress, amount } = state;
 
-    const result = await Account.sendConstant(
+    await sleep(3000);
+
+    var result = await Account.sendConstant(
       [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
       account,
       wallet
@@ -207,6 +213,7 @@ function AccountSend({ classes, isOpen }) {
     } else {
       toastr.error("Send failed. Please try again!");
     }
+
     dispatch({ type: "SHOW_LOADING", isShow: false });
   }
 
