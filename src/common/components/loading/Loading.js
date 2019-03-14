@@ -2,14 +2,16 @@ import React from "react";
 import { CircularProgress } from "@material-ui/core";
 import styled from "styled-components";
 import cls from "classnames";
+import Account from "../../../services/Account";
 
-export function Loading({ isShow, fullscreen }) {
-  return isShow ? (
-    <Wrapper className={cls({ fullscreen })}>
-      <CircularProgress color="secondary" />
-    </Wrapper>
-  ) : null;
-}
+// export function Loading({ isShow, fullscreen }) {
+
+//   return isShow ? (
+//     <Wrapper className={cls({ fullscreen })}>
+//       <CircularProgress color="secondary" />
+//     </Wrapper>
+//   ) : null;
+// }
 
 const Wrapper = styled.div`
   position: absolute;
@@ -25,3 +27,49 @@ const Wrapper = styled.div`
     position: fixed;
   }
 `;
+
+export class Loading extends React.Component {
+  state = {
+    completed: 0
+  };
+
+  componentDidMount() {
+    let { isShow } = this.props;
+    this.timer = setInterval(this.progress(isShow), 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  progress = isShow => {
+    if (isShow) {
+      const completed = Account.getProgressTx();
+      this.setState({ completed: completed });
+    }
+  };
+
+  render() {
+    const { fullscreen, isShow } = this.props;
+    if (isShow) {
+      return (
+        <Wrapper>
+          <CircularProgress
+            className={fullscreen.progress}
+            variant="determinate"
+            value={this.state.completed}
+            color="secondary"
+          />
+          {/* <CircularProgress
+            className={classes.progress}
+            variant="determinate"
+            value={this.state.completed}
+            color="secondary"
+          /> */}
+        </Wrapper>
+      );
+    }
+
+    return null;
+  }
+}

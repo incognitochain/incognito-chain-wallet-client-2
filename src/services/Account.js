@@ -1,4 +1,9 @@
-import { KeyWallet, PaymentInfo } from "constant-chain-web-js/build/wallet";
+import {
+  KeyWallet,
+  PaymentInfo,
+  AccountWallet,
+  Wallet
+} from "constant-chain-web-js/build/wallet";
 import { getPassphrase } from "./PasswordService";
 import bn from "bn.js";
 
@@ -61,5 +66,11 @@ export default class Account {
   // create new account
   static async createAccount(accountName, wallet) {
     return wallet.createNewAccount(accountName);
+  }
+
+  // get progress tx
+  static getProgressTx() {
+    console.log("Wallet.progressTx: ", Wallet.progressTx);
+    return Wallet.progressTx;
   }
 }

@@ -66,9 +66,9 @@ class MainTabs extends React.Component {
     };
     return (
       <TokenTabs
-        ref={component => {
-          this.tokenTabsRef = component;
-        }}
+        // ref={component => {
+        //   this.tokenTabsRef = component;
+        // }}
         {...props}
         tokenListRef={this.props.tokenListRef}
       />
