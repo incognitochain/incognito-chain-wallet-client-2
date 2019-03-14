@@ -5,7 +5,6 @@ import cls from "classnames";
 import Account from "../../../services/Account";
 
 // export function Loading({ isShow, fullscreen }) {
-
 //   return isShow ? (
 //     <Wrapper className={cls({ fullscreen })}>
 //       <CircularProgress color="secondary" />

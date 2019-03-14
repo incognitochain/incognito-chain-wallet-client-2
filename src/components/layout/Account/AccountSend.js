@@ -236,7 +236,7 @@ function AccountSend({ classes, isOpen }) {
 
       <div className="text-right">
         Balance: {balance ? Math.round(balance / 100).toLocaleString() : 0}{" "}
-        CONSTANT
+        CONST
       </div>
 
       <TextField

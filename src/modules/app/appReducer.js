@@ -1,6 +1,6 @@
 export const initialAppState = {
   screen: "",
-  headerTitle: "Wallet home",
+  headerTitle: "Wallet",
   showAlert: "",
   isAlert: false,
   selectedAccount: {},

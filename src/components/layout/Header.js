@@ -20,7 +20,7 @@ import {
 
 import {
   ExitToApp as IconExitToApp,
-  Home as IconHome,
+  // Home as IconHome,
   Fullscreen as IconFullScreen,
   Settings as IconSettings,
   Info as IconInfo,
@@ -233,7 +233,7 @@ class Header extends React.Component {
 
     return (
       <div className={classes.list}>
-        <List>
+        {/* <List>
           <ListItem button key="home" onClick={() => this.selectMenu("HOME")}>
             <ListItemIcon>
               <IconHome />
@@ -241,12 +241,12 @@ class Header extends React.Component {
             <ListItemText primary="Home" />
           </ListItem>
         </List>
-        <Divider />
+        <Divider /> */}
         <List>
           <ListItem
             button
             key="expandView"
-            onClick={() => this.showInfo("Not finish!")}
+            onClick={() => this.showInfo("Coming soon!")}
           >
             <ListItemIcon>
               <IconFullScreen />
@@ -256,7 +256,7 @@ class Header extends React.Component {
           <ListItem
             button
             key="ninjaConstant"
-            onClick={() => this.showInfo("Not finish!")}
+            onClick={() => this.showInfo("Coming soon!")}
           >
             <ListItemIcon>
               <IconExitToApp />
@@ -269,7 +269,7 @@ class Header extends React.Component {
           <ListItem
             button
             key="info"
-            onClick={() => this.showInfo("Not finish!")}
+            onClick={() => this.showInfo("Coming soon!")}
           >
             <ListItemIcon>
               <IconInfo />
