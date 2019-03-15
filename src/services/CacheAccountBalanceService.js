@@ -15,28 +15,28 @@ export function clearAccountBalance(accountName) {
 
 export function getAccountBalance(accountName) {
   let balance = window.localStorage.getItem("account-" + accountName);
-  if (!balance) return 0;
+  if (!balance) return -1;
   try {
     balance = CryptoJS.AES.decrypt(
       balance,
       CACHE_ACCOUNT_BALANCE_SECRET_KEY
     ).toString(CryptoJS.enc.Utf8);
   } catch (e) {
-    return 0;
+    return -1;
   }
 
   const [bal, expired] = balance.split("****+++++*****");
-  if (!bal || !expired) return 0;
+  if (!bal || !expired) return -1;
 
   if (Date.now() > parseInt(expired, 10)) {
     return;
   }
-  console.log("Get account balance from cache:", bal);
+  console.log("Get account balance from cache:", accountName, bal);
   return parseInt(bal);
 }
 
 export function hasAccountBalance(accountName) {
-  return !!getAccountBalance(accountName);
+  return getAccountBalance(accountName) != -1;
 }
 
 export function saveAccountBalance(balance, accountName) {

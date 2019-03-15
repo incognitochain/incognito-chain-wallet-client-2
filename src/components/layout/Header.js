@@ -48,6 +48,7 @@ import { HeaderSelectedAccount } from "../../modules/account/HeaderSelectedAccou
 import * as passwordService from "../../services/PasswordService";
 import {
   getAccountBalance,
+  hasAccountBalance,
   saveAccountBalance
 } from "../../services/CacheAccountBalanceService";
 
@@ -93,6 +94,12 @@ class Header extends React.Component {
       this.resetRegisterBalanceSubjects();
     }
 
+    /*for (let i = 0; i < this.props.accounts.length; i++) {
+      if (!hasAccountBalance(this.props.accounts[i].name)) {
+        this.resetRegisterBalanceSubjects();
+      }
+    }*/
+
     // when user click to open menu, fire an event to registered subject
     if (this.state.anchorEl !== prevState.anchorEl) {
       if (this.state.anchorEl) {
@@ -116,7 +123,7 @@ class Header extends React.Component {
     }
     this.balanceSubjects = this.props.accounts.map(({ name }) => {
       let balance = getAccountBalance(name);
-      if (balance && balance > 0) {
+      if (balance && balance > -1) {
         this.props.app.appDispatch({
           type: "SET_ACCOUNT_BALANCE",
           accountName: name,
@@ -131,7 +138,7 @@ class Header extends React.Component {
           switchMap(this.loadBalance(name))
         )
         .subscribe(balance => {
-          if (balance > 0) {
+          if (balance >= 0) {
             saveAccountBalance(balance, name);
           }
           this.props.app.appDispatch({
