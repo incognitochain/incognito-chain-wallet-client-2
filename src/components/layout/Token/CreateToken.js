@@ -26,6 +26,7 @@ import * as rpcClientService from "../../../services/RpcClientService";
 import $ from "jquery";
 import toastr from "toastr";
 import { Loading } from "../../../common/components/loading/Loading";
+import Account from "../../../services/Account";
 
 class CreateToken extends React.Component {
   constructor(props) {
@@ -48,6 +49,21 @@ class CreateToken extends React.Component {
   }
 
   onChangeInput = name => e => {
+    if (name === "toAddress") {
+      let isValid = Account.checkPaymentAddress(e.target.value);
+      console.log("isValid: ", isValid);
+      if (!isValid) {
+        toastr.warning("Receiver's address is invalid!");
+      }
+    } else if (name === "amount") {
+      if (Number(e.target.value) <= 0) {
+        toastr.warning("Amount must be greater than zero!");
+      }
+    } else if (name === "fee") {
+      if (Number(e.target.value) < 0) {
+        toastr.warning("Fee must not be less than zero!");
+      }
+    }
     this.setState({ [name]: e.target.value });
   };
 

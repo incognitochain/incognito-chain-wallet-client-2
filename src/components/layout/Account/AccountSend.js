@@ -217,8 +217,24 @@ function AccountSend({ classes, isOpen }) {
     dispatch({ type: "SHOW_LOADING", isShow: false });
   }
 
-  const onChangeInput = name => e =>
+  const onChangeInput = name => e => {
+    if (name === "toAddress") {
+      let isValid = Account.checkPaymentAddress(e.target.value);
+      console.log("isValid: ", isValid);
+      if (!isValid) {
+        toastr.warning("Receiver's address is invalid!");
+      }
+    } else if (name === "amount") {
+      if (Number(e.target.value) <= 0) {
+        toastr.warning("Amount must be greater than zero!");
+      }
+    } else if (name === "fee") {
+      if (Number(e.target.value) < 0) {
+        toastr.warning("Fee must not be less than zero!");
+      }
+    }
     dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
+  };
 
   return (
     <div style={{ padding: "2rem" }}>
@@ -247,7 +263,7 @@ function AccountSend({ classes, isOpen }) {
         margin="normal"
         variant="outlined"
         value={state.toAddress}
-        onChange={onChangeInput("toAddress")}
+        onChange={e => onChangeInput("toAddress")(e)}
         inputProps={{ ref: toInputRef }}
       />
 
