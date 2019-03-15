@@ -30,10 +30,6 @@ function reducer(state, action) {
       throw new Error();
   }
 }
-
-function onClickAvatar() {
-  window.location = url;
-}
 /**
  * NOTE: Only show sending history for now
  */
@@ -76,7 +72,7 @@ export function History() {
             statusText = "Failed";
             statusClass = "failed";
           }
-          const image = genImageFromStr(item.txID, 15);
+          const image = genImageFromStr(item.txID, 40);
           return (
             <HistoryItem key={item.txID}>
               <Div>
@@ -128,7 +124,6 @@ export function History() {
 const Fee = styled.div`
   color: #050c33;
   font-size: 16px;
-  ${"" /* margin-top: 18px; */}
 `;
 
 const Wrapper = styled.div`
@@ -179,20 +174,6 @@ const Right = styled.div`
   height: 100%;
 `;
 
-// const SuccessStatus = styled.div`
-//   color: #4f8a10;
-//   background-color: #dff2bf;
-
-//   border: 1px solid black;
-//   border-radius: 5px;
-
-//   text-align: center;
-//   margin:auto;
-//   width: 50%;
-//   margin-right: 0;
-//   height: 100%;
-// `;
-
 const Status = styled.div`
   border: 1px solid black;
   border-radius: 5px;
@@ -217,26 +198,12 @@ const Status = styled.div`
   }
 `;
 
-// const FailedStatus = styled.div`
-//   color: #d8000c;
-//   background-color: #ffd2d2;
-// `;
-
-// const ComfirmedStatus = styled.div`
-//   color: #00529b;
-//   background-color: #bde5f8;
-// `;
-
 const Left = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
   width: 50px;
   margin: auto;
-  ${"" /* img {
-    width: 10px;
-    height: auto;
-  } */}
 `;
 
 const Time = styled.div`
