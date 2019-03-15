@@ -12,9 +12,8 @@ import {
 } from "constant-chain-web-js/build/wallet";
 import Avatar from "@material-ui/core/Avatar";
 
-//TODO: update url
-// const url = "http://explorer.constant.money:3002/tx/cf934f9b61f97d4937d82e9a0564a6a8101f622aa16f6bf7d823f2fe83ec3f45"
-const url = "https://constant.money/";
+const url = "http://test-explorer-constant-chain.constant.cash/tx/";
+
 function truncateMiddle(str = "") {
   return _.truncate(str, { length: 10 }) + str.slice(-4);
 }
@@ -30,6 +29,7 @@ function reducer(state, action) {
       throw new Error();
   }
 }
+
 /**
  * NOTE: Only show sending history for now
  */
@@ -78,26 +78,25 @@ export function History() {
               <Div>
                 <Row1>
                   <TxID>
-                    <a href={url}>
+                    <a href={url + item.txID} target="_blank">
                       <Avatar alt="tx" src={image} />
                     </a>
                   </TxID>
 
-                  <Time>Date: {item.time}</Time>
+                  <Time>{item.time}</Time>
                 </Row1>
 
                 <Row2>
                   <Left>
                     {(item.receivers || []).map((receiverItem, i) => {
                       return (
-                        <Receiver key={i}>
+                        <Receiver title={receiverItem} key={i}>
                           To: {truncateMiddle(receiverItem)}
                         </Receiver>
                       );
                     })}
                   </Left>
                   <Right>
-                    {" "}
                     {item.isIn ? "+" : "-"} {item.amount} CONST
                   </Right>
                 </Row2>
@@ -123,7 +122,7 @@ export function History() {
 
 const Fee = styled.div`
   color: #050c33;
-  font-size: 16px;
+  font-size: 12px;
 `;
 
 const Wrapper = styled.div`
@@ -175,26 +174,20 @@ const Right = styled.div`
 `;
 
 const Status = styled.div`
-  border: 1px solid black;
-  border-radius: 5px;
-
   text-align: center;
   margin: auto;
   width: 50%;
   margin-right: 0;
   height: 100%;
-
+  font-size: 12px;
   &.success {
-    color: #4f8a10;
-    background-color: #dff2bf;
+    color: #8bc34a;
   }
   &.failed {
-    color: #d8000c;
-    background-color: #ffd2d2;
+    color: #e53935;
   }
   &.confirmed {
-    color: #00529b;
-    background-color: #bde5f8;
+    color: #dce775;
   }
 `;
 
@@ -204,12 +197,14 @@ const Left = styled.div`
   flex-direction: column;
   width: 50px;
   margin: auto;
+  padding: 0px !important;
+  margin: 0px !important;
 `;
 
 const Time = styled.div`
   color: #050c33;
-  margin: auto;
-  margin-left: 30px;
+  margin: 10px 0px 0px 10px;
+  font-size: 13px;
 `;
 
 const Row1 = styled.div`
