@@ -75,4 +75,19 @@ export default class Account {
     console.log("Wallet.progressTx: ", Wallet.ProgressTx);
     return Wallet.ProgressTx;
   }
+
+  static checkPaymentAddress(paymentAddrStr) {
+    let key;
+    try {
+      key = KeyWallet.base58CheckDeserialize(paymentAddrStr);
+    } catch (e) {
+      return false;
+    }
+
+    if (key.KeySet.PaymentAddress === null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
