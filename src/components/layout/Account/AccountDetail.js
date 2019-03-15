@@ -248,8 +248,12 @@ class AccountDetail extends React.Component {
 
   getAccountBalance(accountName) {
     try {
-      return this.props.accountList.find(({ name }) => name === accountName)
-        .value;
+      let balance = cacheAccountBalanceService.getAccountBalance(accountName);
+      if (balance == -1) {
+        return this.props.accountList.find(({ name }) => name === accountName)
+          .value;
+      }
+      return balance;
     } catch (e) {
       console.error(e);
       return -1;
