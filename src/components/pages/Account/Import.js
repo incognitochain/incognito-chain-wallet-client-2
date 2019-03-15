@@ -148,7 +148,7 @@ class ImportAccount extends React.Component {
         <h1 className="mb-2" style={{ marginTop: "15px" }}>
           Import account
         </h1>
-        <div style={{ marginBottom: "0.4em;" }}>
+        <div style={{ marginBottom: "0.4rem" }}>
           <span
             className="badge badge-pill badge-light"
             style={{
