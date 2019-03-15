@@ -46,6 +46,10 @@ import { Subject } from "rxjs";
 import { debounceTime, switchMap } from "rxjs/operators";
 import { HeaderSelectedAccount } from "../../modules/account/HeaderSelectedAccount";
 import * as passwordService from "../../services/PasswordService";
+import {
+  getAccountBalance,
+  saveAccountBalance
+} from "../../services/CacheAccountBalanceService";
 
 const styles = {
   grow: {
@@ -85,14 +89,18 @@ class Header extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.accounts !== prevProps.accounts) {
+    if (this.props.accounts.length !== prevProps.accounts.length) {
       this.resetRegisterBalanceSubjects();
     }
 
     // when user click to open menu, fire an event to registered subject
     if (this.state.anchorEl !== prevState.anchorEl) {
       if (this.state.anchorEl) {
-        this.balanceSubjects.forEach(subject => subject.next(true));
+        this.balanceSubjects.forEach(subject => {
+          if (subject) {
+            subject.next(true);
+          }
+        });
       }
     }
   }
@@ -100,9 +108,22 @@ class Header extends React.Component {
   //register subject for each account
   resetRegisterBalanceSubjects = () => {
     if (this.balanceSubjects) {
-      this.balanceSubjects.forEach(subject => subject.unsubscribe());
+      this.balanceSubjects.forEach(subject => {
+        if (subject) {
+          subject.unsubscribe();
+        }
+      });
     }
     this.balanceSubjects = this.props.accounts.map(({ name }) => {
+      let balance = getAccountBalance(name);
+      if (balance && balance > 0) {
+        this.props.app.appDispatch({
+          type: "SET_ACCOUNT_BALANCE",
+          accountName: name,
+          balance: balance
+        });
+        return null;
+      }
       const subject = new Subject();
       subject
         .pipe(
@@ -110,6 +131,9 @@ class Header extends React.Component {
           switchMap(this.loadBalance(name))
         )
         .subscribe(balance => {
+          if (balance > 0) {
+            saveAccountBalance(balance, name);
+          }
           this.props.app.appDispatch({
             type: "SET_ACCOUNT_BALANCE",
             accountName: name,
@@ -120,25 +144,9 @@ class Header extends React.Component {
     });
   };
   loadBalance = name => () => {
-    // getBalance maybe slow, so we need mockGetBalance sometimes
-    // return this.mockGetBalance(name);
-    //---
-    return this.props.wallet.getAccountByName(name).getBalance();
+    let balancePromise = this.props.wallet.getAccountByName(name).getBalance();
+    return balancePromise;
   };
-  mapNameToBalance = {
-    "AccountWallet 0": 1101001,
-    a: 10101,
-    b: 1100110
-  };
-
-  mockGetBalance(name) {
-    // TODO - remove this method
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(this.mapNameToBalance[name] || 101010);
-      }, 2000);
-    });
-  }
 
   handleClose = (event, reason) => {
     if (reason === "clickaway") {
