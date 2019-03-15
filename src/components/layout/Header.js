@@ -349,19 +349,20 @@ class Header extends React.Component {
       >
         {this.renderAccountList()}
         <MenuItem onClick={() => this.selectMenu("CREATE_ACCOUNT")}>
-          <ListItemIcon style={{ marginLeft: "10px" }}>
+          {/* style={{ marginLeft: "10px" }} */}
+          <ListItemIcon>
             <CreateAccountSVG />
           </ListItemIcon>
           Create Account
         </MenuItem>
         <MenuItem onClick={() => this.selectMenu("IMPORT_ACCOUNT")}>
-          <ListItemIcon style={{ marginLeft: "10px" }}>
+          <ListItemIcon>
             <ImportAccountSVG />
           </ListItemIcon>
           Import Account
         </MenuItem>
         <MenuItem onClick={() => this.logout()}>
-          <ListItemIcon style={{ marginLeft: "10px" }}>
+          <ListItemIcon>
             <ExitAppIcon />
           </ListItemIcon>
           Log out
