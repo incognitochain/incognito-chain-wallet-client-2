@@ -140,7 +140,7 @@ const HistoryItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: 0px 0px;
+  padding: 10px 0px;
   border-bottom: 1px solid #e4e7f2;
 `;
 
