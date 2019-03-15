@@ -148,7 +148,7 @@ class ImportAccount extends React.Component {
         <h1 className="mb-2" style={{ marginTop: "15px" }}>
           Import account
         </h1>
-        <div>
+        <div style={{ marginBottom: "0.4em;" }}>
           <span
             className="badge badge-pill badge-light"
             style={{
@@ -200,7 +200,7 @@ class ImportAccount extends React.Component {
         <Button
           variant="contained"
           size="small"
-          color="default"
+          color="warning"
           className={classes.button2}
           onClick={() => this.onFinish()}
         >

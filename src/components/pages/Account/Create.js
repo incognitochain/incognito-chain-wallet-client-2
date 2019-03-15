@@ -145,7 +145,7 @@ class CreateAccount extends React.Component {
         <h1 className="mb-2" style={{ marginTop: "15px" }}>
           Create new account
         </h1>
-        <div>
+        <div style={{ marginBottom: "0.4em;" }}>
           <span className="badge badge-pill badge-light">
             * This is some tips that user need to know
           </span>
@@ -178,7 +178,7 @@ class CreateAccount extends React.Component {
         <Button
           variant="contained"
           size="small"
-          color="default"
+          color="warning"
           className={classes.button2}
           onClick={() => this.onFinish()}
         >
