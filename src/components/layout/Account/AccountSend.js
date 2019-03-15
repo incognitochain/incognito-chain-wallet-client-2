@@ -199,8 +199,6 @@ function AccountSend({ classes, isOpen }) {
     dispatch({ type: "SHOW_LOADING", isShow: true });
     let { toAddress, amount } = state;
 
-    await sleep(3000);
-
     var result = await Account.sendConstant(
       [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
       account,
