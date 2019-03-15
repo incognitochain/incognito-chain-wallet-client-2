@@ -106,8 +106,7 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
                             <Avatar alt="tx" src={image} />
                           </a>
                         </TxID>
-
-                        <Time>Date: {time.toString()}</Time>
+                        <Time>{time.toString()}</Time>
                       </Row1>
 
                       <Row2>
@@ -157,7 +156,7 @@ const NoData = styled.div`
 
 const Fee = styled.div`
   color: #050c33;
-  font-size: 16px;
+  font-size: 12px;
 `;
 
 const Wrapper = styled.div`
@@ -209,26 +208,20 @@ const Right = styled.div`
 `;
 
 const Status = styled.div`
-  border: 1px solid black;
-  border-radius: 5px;
-
   text-align: center;
   margin: auto;
   width: 50%;
   margin-right: 0;
   height: 100%;
-
+  font-size: 12px;
   &.success {
-    color: #4f8a10;
-    background-color: #dff2bf;
+    color: #8bc34a;
   }
   &.failed {
-    color: #d8000c;
-    background-color: #ffd2d2;
+    color: #e53935;
   }
   &.confirmed {
-    color: #00529b;
-    background-color: #bde5f8;
+    color: #dce775;
   }
 `;
 
@@ -238,12 +231,14 @@ const Left = styled.div`
   flex-direction: column;
   width: 50px;
   margin: auto;
+  padding: 0px !important;
+  margin: 0px !important;
 `;
 
 const Time = styled.div`
   color: #050c33;
-  margin: auto;
-  margin-left: 30px;
+  margin: 10px 0px 0px 10px;
+  font-size: 13px;
 `;
 
 const Row1 = styled.div`
