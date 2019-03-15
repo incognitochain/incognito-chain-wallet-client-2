@@ -24,6 +24,7 @@ import { connectAccountListContext } from "../../../common/context/AccountListCo
 import * as passwordService from "../../../services/PasswordService";
 import _ from "lodash";
 import * as cacheAccountListService from "../../../services/CacheListAccountService";
+import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
 
 const styles = theme => ({
   key: {
@@ -134,6 +135,7 @@ class AccountDetail extends React.Component {
         return;
       }
       cacheAccountListService.clearListAccount();
+      cacheAccountBalanceService.clearAllAccountBalance();
       this.showAlert("Account is removed!", "info");
       window.location.reload();
     } else {
@@ -322,7 +324,9 @@ class AccountDetail extends React.Component {
       </>
     );
   }
+
   tokenListRef = React.createRef();
+
   renderTabs() {
     const { paymentAddress, readonlyKey } = this.state;
     const props = {
