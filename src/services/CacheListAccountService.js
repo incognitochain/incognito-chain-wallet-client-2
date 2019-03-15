@@ -18,7 +18,7 @@ export function getAccountList() {
     return;
   }
 
-  const [accounts, expired] = accountList.split(":");
+  const [accounts, expired] = accountList.split("****+++++*****");
   if (!accounts || !expired) return;
 
   if (Date.now() > parseInt(expired, 10)) {
@@ -34,7 +34,7 @@ export function hasAccountLists() {
 export function saveAccountList(accountList) {
   const expired = Date.now() + CACHE_TIME;
   const toBeSaved = CryptoJS.AES.encrypt(
-    `${accountList}:${expired}`,
+    `${accountList}****+++++*****${expired}`,
     CACHE_SECRET_KEY
   ).toString();
   window.localStorage.setItem("accountList", toBeSaved);
