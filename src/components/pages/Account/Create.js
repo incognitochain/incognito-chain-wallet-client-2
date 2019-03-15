@@ -12,6 +12,7 @@ import Account from "../../../services/Account";
 import { connectWalletContext } from "../../../common/context/WalletContext";
 import { connectAppContext } from "../../../common/context/AppContext";
 import { connectAccountListContext } from "../../../common/context/AccountListContext";
+import * as cacheAccountListService from "../../../services/CacheListAccountService";
 
 import classNames from "classnames";
 
@@ -117,7 +118,7 @@ class CreateAccount extends React.Component {
     const result = await Account.createAccount(accountName, this.props.wallet);
     console.log("Result: ", result);
     if (result && result.key) {
-      window.localStorage.removeItem("accountList");
+      cacheAccountListService.clearListAccount();
       this.props.app.listAccounts(this.props.wallet);
       this.onFinish({ message: "Account is created!" });
     } else {

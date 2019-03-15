@@ -13,6 +13,7 @@ import { connectWalletContext } from "../../../common/context/WalletContext";
 import { getPassphrase } from "../../../services/PasswordService";
 import classNames from "classnames";
 import { connectAppContext } from "../../../common/context/AppContext";
+import * as cacheAccountListService from "../../../services/CacheListAccountService";
 
 const styles = theme => ({
   textField: {
@@ -115,7 +116,7 @@ class ImportAccount extends React.Component {
     );
 
     if (result) {
-      window.localStorage.removeItem("accountList");
+      cacheAccountListService.clearListAccount();
       this.props.app.listAccounts(this.props.wallet);
       this.onFinish({ message: "Account is imported!" });
     } else {

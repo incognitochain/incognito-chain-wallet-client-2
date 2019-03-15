@@ -23,6 +23,7 @@ import { connectWalletContext } from "../../../common/context/WalletContext";
 import { connectAccountListContext } from "../../../common/context/AccountListContext";
 import * as passwordService from "../../../services/PasswordService";
 import _ from "lodash";
+import * as cacheAccountListService from "../../../services/CacheListAccountService";
 
 const styles = theme => ({
   key: {
@@ -132,7 +133,7 @@ class AccountDetail extends React.Component {
         this.showError("Remove error! " + ex.toString());
         return;
       }
-      window.localStorage.removeItem("accountList");
+      cacheAccountListService.clearListAccount();
       this.showAlert("Account is removed!", "info");
       window.location.reload();
     } else {

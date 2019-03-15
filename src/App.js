@@ -25,6 +25,7 @@ import { appReducer, initialAppState } from "./modules/app/appReducer";
 import { useDebugReducer } from "./common/hook/useDebugReducer";
 import * as passwordService from "./services/PasswordService";
 import Server from "./services/Server";
+import * as cacheAccountListService from "./services/CacheListAccountService";
 
 toastr.options.positionClass = "toast-bottom-center";
 toastr.options.preventDuplicates = true;
@@ -68,7 +69,7 @@ const App = ({ history, location }) => {
   }
 
   async function listAccounts(wallet) {
-    let accountList = window.localStorage.getItem("accountList");
+    let accountList = cacheAccountListService.getAccountList();
     if (!accountList || accountList.length == 0) {
       accountList = [];
       try {
@@ -88,7 +89,7 @@ const App = ({ history, location }) => {
       }
 
       if (accountList.length > 0) {
-        window.localStorage.setItem("accountList", JSON.stringify(accountList));
+        cacheAccountListService.saveAccountList(JSON.stringify(accountList));
       }
     } else {
       accountList = JSON.parse(accountList);
