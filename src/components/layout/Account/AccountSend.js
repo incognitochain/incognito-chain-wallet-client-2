@@ -40,7 +40,7 @@ function reducer(state, action) {
     case "CHANGE_INPUT":
       return { ...state, [action.name]: action.value };
     case "RESET":
-      return { ...state, amount: 0, toAddress: "" };
+      return { ...state, amount: "", toAddress: "" };
     case "LOAD_ESTIMATION_FEE":
       return { ...state, isLoadingEstimationFee: true };
     case "LOAD_ESTIMATION_FEE_SUCCESS":
