@@ -11,6 +11,7 @@ import {
   genImageFromStr
 } from "constant-chain-web-js/build/wallet";
 import Avatar from "@material-ui/core/Avatar";
+import moment from "moment";
 
 const url = "http://test-explorer-constant-chain.constant.cash/tx/";
 
@@ -57,7 +58,12 @@ export function History() {
     <Wrapper>
       <Scrollable>
         {state.history.map(item => {
-          console.log("Time:", item.time);
+          let createdTime = "";
+          if (item.time != undefined && item.time != null) {
+            item.time = moment(item.time);
+            createdTime = item.time.format("dd/MM/YYYY - hh:mm:ss");
+          }
+          console.log("Time:", createdTime);
           const { status } = item;
           let statusText;
           let statusClass;
@@ -83,7 +89,7 @@ export function History() {
                     </a>
                   </TxID>
 
-                  <Time>{item.time}</Time>
+                  <Time>{createdTime}</Time>
                 </Row1>
 
                 <Row2>
