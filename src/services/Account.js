@@ -61,6 +61,7 @@ export default class Account {
     } catch (e) {
       throw e;
     }
+    await Wallet.resetProgressTx();
     return result;
   }
 
