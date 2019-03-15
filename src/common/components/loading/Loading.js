@@ -1,7 +1,7 @@
 import React from "react";
 import { CircularProgress } from "@material-ui/core";
 import styled from "styled-components";
-import cls from "classnames";
+
 import Account from "../../../services/Account";
 
 // export function Loading({ isShow, fullscreen }) {
