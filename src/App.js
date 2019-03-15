@@ -68,21 +68,30 @@ const App = ({ history, location }) => {
   }
 
   async function listAccounts(wallet) {
-    let accountList = [];
-    try {
-      accountList = (await wallet.listAccount()).map(account => {
-        return {
-          default: false,
-          name: account["Account Name"],
-          value: -1,
-          PaymentAddress: account.PaymentAddress,
-          ReadonlyKey: account.ReadonlyKey,
-          PrivateKey: account.PrivateKey
-        };
-      });
-    } catch (e) {
-      console.error(e);
-      alert("Error on get listAccount()!");
+    let accountList = window.localStorage.getItem("accountList");
+    if (!accountList || accountList.length == 0) {
+      accountList = [];
+      try {
+        accountList = (await wallet.listAccount()).map(account => {
+          return {
+            default: false,
+            name: account["Account Name"],
+            value: -1,
+            PaymentAddress: account.PaymentAddress,
+            ReadonlyKey: account.ReadonlyKey,
+            PrivateKey: account.PrivateKey
+          };
+        });
+      } catch (e) {
+        console.error(e);
+        alert("Error on get listAccount()!");
+      }
+
+      if (accountList.length > 0) {
+        window.localStorage.setItem("accountList", JSON.stringify(accountList));
+      }
+    } else {
+      accountList = JSON.parse(accountList);
     }
 
     let selectedAccount = {};

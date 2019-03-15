@@ -115,6 +115,7 @@ class ImportAccount extends React.Component {
     );
 
     if (result) {
+      window.localStorage.removeItem("accountList");
       this.props.app.listAccounts(this.props.wallet);
       this.onFinish({ message: "Account is imported!" });
     } else {

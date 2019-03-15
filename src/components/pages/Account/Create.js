@@ -117,6 +117,7 @@ class CreateAccount extends React.Component {
     const result = await Account.createAccount(accountName, this.props.wallet);
     console.log("Result: ", result);
     if (result && result.key) {
+      window.localStorage.removeItem("accountList");
       this.props.app.listAccounts(this.props.wallet);
       this.onFinish({ message: "Account is created!" });
     } else {

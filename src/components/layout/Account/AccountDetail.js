@@ -132,6 +132,7 @@ class AccountDetail extends React.Component {
         this.showError("Remove error! " + ex.toString());
         return;
       }
+      window.localStorage.removeItem("accountList");
       this.showAlert("Account is removed!", "info");
       window.location.reload();
     } else {
