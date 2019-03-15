@@ -54,14 +54,14 @@ export class Loading extends React.Component {
     const { fullscreen, isShow } = this.props;
     if (isShow) {
       return (
-        <Wrapper>
+        <Wrapper style={{ flexFlow: "column" }}>
           <CircularProgress
             className={fullscreen.progress}
             variant="determinate"
             value={this.state.completed}
             color="secondary"
           />
-          {this.state.completed}%
+          <div>{this.state.completed}%</div>
           {/* <CircularProgress
 
             className={classes.progress}
