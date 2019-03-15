@@ -20,6 +20,7 @@ import * as rpcClientService from "../../../services/RpcClientService";
 import { useDebugReducer } from "../../../common/hook/useDebugReducer";
 import { useAppContext } from "../../../common/context/AppContext";
 import { Loading } from "../../../common/components/loading/Loading";
+import { saveAccountBalance } from "../../../services/CacheAccountBalanceService";
 
 const styles = theme => ({
   textField: {
@@ -82,6 +83,7 @@ function AccountSend({ classes, isOpen }) {
       accountName: account.name,
       balance
     });
+    saveAccountBalance(balance, account.name);
   }
 
   let [state, dispatch] = useDebugReducer(

@@ -90,15 +90,9 @@ class Header extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.accounts.length !== prevProps.accounts.length) {
+    if (this.props.accounts !== prevProps.accounts) {
       this.resetRegisterBalanceSubjects();
     }
-
-    /*for (let i = 0; i < this.props.accounts.length; i++) {
-      if (!hasAccountBalance(this.props.accounts[i].name)) {
-        this.resetRegisterBalanceSubjects();
-      }
-    }*/
 
     // when user click to open menu, fire an event to registered subject
     if (this.state.anchorEl !== prevState.anchorEl) {
@@ -122,15 +116,6 @@ class Header extends React.Component {
       });
     }
     this.balanceSubjects = this.props.accounts.map(({ name }) => {
-      let balance = getAccountBalance(name);
-      if (balance && balance > -1) {
-        this.props.app.appDispatch({
-          type: "SET_ACCOUNT_BALANCE",
-          accountName: name,
-          balance: balance
-        });
-        return null;
-      }
       const subject = new Subject();
       subject
         .pipe(
@@ -151,6 +136,10 @@ class Header extends React.Component {
     });
   };
   loadBalance = name => () => {
+    let balance = getAccountBalance(name);
+    if (balance > -1) {
+      return new Promise(resolve => setTimeout(resolve(balance), 1));
+    }
     let balancePromise = this.props.wallet.getAccountByName(name).getBalance();
     return balancePromise;
   };

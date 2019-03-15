@@ -5,6 +5,21 @@ import { useAppContext } from "../../common/context/AppContext";
 import { useAccountListContext } from "../../common/context/AccountListContext";
 import { Subject } from "rxjs";
 import { debounceTime, switchMap } from "rxjs/operators";
+import { getAccountBalance } from "../../services/CacheAccountBalanceService";
+
+function loadBalance(wallet, accountName) {
+  let balance = getAccountBalance(accountName);
+  if (balance == -1) {
+    return wallet
+      .getAccountByName(accountName)
+      .getBalance()
+      .then(balance => [accountName, balance]);
+  } else {
+    return new Promise(resolve =>
+      setTimeout(resolve([accountName, balance]), 1)
+    );
+  }
+}
 
 export const HeaderSelectedAccount = () => {
   const account = useAccountContext();
@@ -21,10 +36,7 @@ export const HeaderSelectedAccount = () => {
         .pipe(
           debounceTime(720),
           switchMap(accountName => {
-            return wallet
-              .getAccountByName(accountName)
-              .getBalance()
-              .then(balance => [accountName, balance]);
+            return loadBalance(wallet, accountName);
           })
         )
         .subscribe(([accountName, balance]) => {
