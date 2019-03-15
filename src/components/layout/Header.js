@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
+import AccountDetail from "./Account/AccountDetail";
 
 import {
   AppBar,
@@ -20,7 +21,7 @@ import {
 
 import {
   ExitToApp as IconExitToApp,
-  // Home as IconHome,
+  Home as IconHome,
   Fullscreen as IconFullScreen,
   Settings as IconSettings,
   Info as IconInfo,
@@ -238,6 +239,15 @@ class Header extends React.Component {
       }
     });
   };
+
+  backHome = () => {
+    this.props.app.appDispatch({
+      type: "SET_SCREEN",
+      screen: <AccountDetail />,
+      headerTitle: "Wallet",
+      shouldShowHeader: true
+    });
+  };
   handleChangeAccount = account => {
     this.setState({ anchorEl: null });
     this.props.onChangeAccount(account);
@@ -248,15 +258,15 @@ class Header extends React.Component {
 
     return (
       <div className={classes.list}>
-        {/* <List>
-          <ListItem button key="home" onClick={() => this.selectMenu("HOME")}>
+        <List>
+          <ListItem button key="home" onClick={() => this.backHome()}>
             <ListItemIcon>
               <IconHome />
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
         </List>
-        <Divider /> */}
+        <Divider />
         <List>
           <ListItem
             button
