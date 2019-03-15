@@ -13,6 +13,7 @@ import { connectWalletContext } from "../../../common/context/WalletContext";
 import { getPassphrase } from "../../../services/PasswordService";
 import classNames from "classnames";
 import { connectAppContext } from "../../../common/context/AppContext";
+import * as cacheAccountListService from "../../../services/CacheListAccountService";
 
 const styles = theme => ({
   textField: {
@@ -115,6 +116,7 @@ class ImportAccount extends React.Component {
     );
 
     if (result) {
+      cacheAccountListService.clearListAccount();
       this.props.app.listAccounts(this.props.wallet);
       this.onFinish({ message: "Account is imported!" });
     } else {
@@ -148,7 +150,7 @@ class ImportAccount extends React.Component {
         <h1 className="mb-2" style={{ marginTop: "15px" }}>
           Import account
         </h1>
-        <div>
+        <div style={{ marginBottom: "0.4rem" }}>
           <span
             className="badge badge-pill badge-light"
             style={{
@@ -200,7 +202,7 @@ class ImportAccount extends React.Component {
         <Button
           variant="contained"
           size="small"
-          color="default"
+          color="warning"
           className={classes.button2}
           onClick={() => this.onFinish()}
         >

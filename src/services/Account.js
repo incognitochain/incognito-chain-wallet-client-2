@@ -31,6 +31,7 @@ export default class Account {
   }
 
   static async sendConstant(param, account, wallet) {
+    await Wallet.resetProgressTx();
     let indexAccount = wallet.getAccountIndexByName(account.name);
 
     // create paymentInfos
@@ -60,6 +61,7 @@ export default class Account {
     } catch (e) {
       throw e;
     }
+    await Wallet.resetProgressTx();
     return result;
   }
 

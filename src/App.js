@@ -25,6 +25,7 @@ import { appReducer, initialAppState } from "./modules/app/appReducer";
 import { useDebugReducer } from "./common/hook/useDebugReducer";
 import * as passwordService from "./services/PasswordService";
 import Server from "./services/Server";
+import * as cacheAccountListService from "./services/CacheListAccountService";
 
 toastr.options.positionClass = "toast-bottom-center";
 toastr.options.preventDuplicates = true;
@@ -68,21 +69,30 @@ const App = ({ history, location }) => {
   }
 
   async function listAccounts(wallet) {
-    let accountList = [];
-    try {
-      accountList = (await wallet.listAccount()).map(account => {
-        return {
-          default: false,
-          name: account["Account Name"],
-          value: -1,
-          PaymentAddress: account.PaymentAddress,
-          ReadonlyKey: account.ReadonlyKey,
-          PrivateKey: account.PrivateKey
-        };
-      });
-    } catch (e) {
-      console.error(e);
-      alert("Error on get listAccount()!");
+    let accountList = cacheAccountListService.getAccountList();
+    if (!accountList || accountList.length == 0) {
+      accountList = [];
+      try {
+        accountList = (await wallet.listAccount()).map(account => {
+          return {
+            default: false,
+            name: account["Account Name"],
+            value: -1,
+            PaymentAddress: account.PaymentAddress,
+            ReadonlyKey: account.ReadonlyKey,
+            PrivateKey: account.PrivateKey
+          };
+        });
+      } catch (e) {
+        console.error(e);
+        alert("Error on get listAccount()!");
+      }
+
+      if (accountList.length > 0) {
+        cacheAccountListService.saveAccountList(JSON.stringify(accountList));
+      }
+    } else {
+      accountList = JSON.parse(accountList);
     }
 
     let selectedAccount = {};

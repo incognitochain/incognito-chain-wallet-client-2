@@ -12,6 +12,7 @@ import Account from "../../../services/Account";
 import { connectWalletContext } from "../../../common/context/WalletContext";
 import { connectAppContext } from "../../../common/context/AppContext";
 import { connectAccountListContext } from "../../../common/context/AccountListContext";
+import * as cacheAccountListService from "../../../services/CacheListAccountService";
 
 import classNames from "classnames";
 
@@ -117,6 +118,7 @@ class CreateAccount extends React.Component {
     const result = await Account.createAccount(accountName, this.props.wallet);
     console.log("Result: ", result);
     if (result && result.key) {
+      cacheAccountListService.clearListAccount();
       this.props.app.listAccounts(this.props.wallet);
       this.onFinish({ message: "Account is created!" });
     } else {
@@ -145,7 +147,7 @@ class CreateAccount extends React.Component {
         <h1 className="mb-2" style={{ marginTop: "15px" }}>
           Create new account
         </h1>
-        <div>
+        <div style={{ marginBottom: "0.4rem" }}>
           <span className="badge badge-pill badge-light">
             * This is some tips that user need to know
           </span>
@@ -178,7 +180,7 @@ class CreateAccount extends React.Component {
         <Button
           variant="contained"
           size="small"
-          color="default"
+          color="warning"
           className={classes.button2}
           onClick={() => this.onFinish()}
         >
