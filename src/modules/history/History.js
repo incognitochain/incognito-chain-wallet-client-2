@@ -203,8 +203,8 @@ const Left = styled.div`
 
 const Time = styled.div`
   color: #050c33;
-  margin: auto;
-  margin-left: 30px;
+  margin: 10px 0px 0px 10px;
+  font-size: 13px;
 `;
 
 const Row1 = styled.div`
