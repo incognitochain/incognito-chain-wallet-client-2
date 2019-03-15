@@ -135,7 +135,7 @@ class AccountDetail extends React.Component {
         return;
       }
       cacheAccountListService.clearListAccount();
-      cacheAccountBalanceService.clearAllAccountBalance();
+      cacheAccountBalanceService.clearAccountBalance(account.name);
       this.showAlert("Account is removed!", "info");
       window.location.reload();
     } else {
