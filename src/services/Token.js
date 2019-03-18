@@ -3,13 +3,15 @@ import {
   CustomTokenPrivacyParamTx,
   CustomTokenParamTx,
   TxTokenVout,
-  KeyWallet
+  KeyWallet,
+  Wallet
 } from "constant-chain-web-js/build/wallet";
 import bn from "bn.js";
 import { getPassphrase } from "./PasswordService";
 
 export default class Token {
   static async createSendCustomToken(submitParam, fee, account, wallet) {
+    await Wallet.resetProgressTx();
     console.log("SEND CUSTOM TOKEN!!!!!!!");
 
     // get index account by name
@@ -61,6 +63,7 @@ export default class Token {
       throw e;
     }
 
+    await Wallet.resetProgressTx();
     return res;
   }
 
@@ -70,6 +73,7 @@ export default class Token {
     account,
     wallet
   ) {
+    await Wallet.resetProgressTx();
     console.log("SEND PRIVACY CUSTOM TOKEN!!!!!!!");
 
     // get index account by name
@@ -118,6 +122,8 @@ export default class Token {
     } catch (e) {
       throw e;
     }
+
+    await Wallet.resetProgressTx();
 
     return response;
   }
