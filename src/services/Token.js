@@ -9,7 +9,7 @@ import bn from "bn.js";
 import { getPassphrase } from "./PasswordService";
 
 export default class Token {
-  static async createSendCustomToken(submitParam, account, wallet) {
+  static async createSendCustomToken(submitParam, fee, account, wallet) {
     console.log("SEND CUSTOM TOKEN!!!!!!!");
 
     // get index account by name
@@ -51,7 +51,8 @@ export default class Token {
       ].createAndSendCustomToken(
         paymentInfos,
         tokenParam,
-        receiverPaymentAddrStr
+        receiverPaymentAddrStr,
+        new bn(fee)
       );
 
       // saving KeyWallet
@@ -65,6 +66,7 @@ export default class Token {
 
   static async createSendPrivacyCustomTokenTransaction(
     submitParam,
+    fee,
     account,
     wallet
   ) {
@@ -108,7 +110,8 @@ export default class Token {
       ].createAndSendPrivacyCustomToken(
         paymentInfos,
         tokenParam,
-        receiverPaymentAddrStr
+        receiverPaymentAddrStr,
+        new bn(fee)
       );
 
       await wallet.save(getPassphrase());

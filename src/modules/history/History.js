@@ -47,6 +47,7 @@ export function History() {
   }, []);
 
   async function loadHistory() {
+    console.log("Load history when change account!!!!");
     let history = await wallet.getHistoryByAccount(account.name);
     dispatch({
       type: "SET_HISTORY",

@@ -199,10 +199,11 @@ function AccountSend({ classes, isOpen }) {
 
   async function sendCoin() {
     dispatch({ type: "SHOW_LOADING", isShow: true });
-    let { toAddress, amount } = state;
+    let { toAddress, amount, fee } = state;
 
     var result = await Account.sendConstant(
       [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
+      Number(fee) * 100,
       account,
       wallet
     );
@@ -211,6 +212,7 @@ function AccountSend({ classes, isOpen }) {
       toastr.success("Completed: ", result.txId);
       dispatch({ type: "RESET" });
     } else {
+      console.log("Cretae tx err: ", result.err);
       toastr.error("Send failed. Please try again!");
     }
 

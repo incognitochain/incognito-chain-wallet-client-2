@@ -20,7 +20,10 @@ import * as walletService from "./services/WalletService";
 import { AppRoute } from "./AppRoute";
 import { HashRouter, withRouter } from "react-router-dom";
 import { AppContext } from "./common/context/AppContext";
-import { WalletContext } from "./common/context/WalletContext";
+import {
+  WalletContext,
+  useWalletContext
+} from "./common/context/WalletContext";
 import { appReducer, initialAppState } from "./modules/app/appReducer";
 import { useDebugReducer } from "./common/hook/useDebugReducer";
 import * as passwordService from "./services/PasswordService";
@@ -219,11 +222,22 @@ const App = ({ history, location }) => {
     }
   };
   const handleChangeAccount = account => {
+    console.log("HANDLE CHANGE ACCOUNT!!!");
     window.localStorage.setItem(
       "accountIndex",
       state.accounts.indexOf(account)
     );
+
     dispatch({ type: "SET_SELECTED_ACCOUNT", selectedAccount: account });
+
+    // let {wallet} = useWalletContext();
+    // console.log("wallet context: ", wallet);
+
+    // account.history = wallet.getHistoryByAccount(account.name);
+
+    // console.log("history:", history)
+    // dispatch({ type: "SET_HISTORY", history});
+
     dispatch({
       type: "SET_SCREEN",
       screen: <AccountDetail account={account} />,

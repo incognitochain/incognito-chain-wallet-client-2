@@ -29,9 +29,6 @@ export async function loadWallet() {
 
   if (wallet.Name) {
     console.timeEnd("loadWallet");
-
-    // get tx by hash from rpc
-
     return wallet;
   }
   console.timeEnd("loadWallet");
