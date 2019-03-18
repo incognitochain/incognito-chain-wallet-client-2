@@ -143,7 +143,10 @@ class CreateToken extends React.Component {
         })
       )
       .subscribe(fee => {
-        this.setState({ fee, isLoadingEstimationFee: false });
+        this.setState({
+          fee: Number(fee) / 100,
+          isLoadingEstimationFee: false
+        });
       }, console.error);
   };
 

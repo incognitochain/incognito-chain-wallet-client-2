@@ -98,7 +98,7 @@ export function History() {
                   <TxID>
                     <a href={url + item.txID} target="_blank">
                       <Avatar
-                        alt={image && image.length > 0 ? tx.ID : "fail"}
+                        alt={image && image.length > 0 ? item.txID : "fail"}
                         src={image}
                       />
                     </a>
