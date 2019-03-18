@@ -45,7 +45,7 @@ function reducer(state, action) {
     case "LOAD_ESTIMATION_FEE":
       return { ...state, isLoadingEstimationFee: true };
     case "LOAD_ESTIMATION_FEE_SUCCESS":
-      return { ...state, isLoadingEstimationFee: false, fee: action.fee };
+      return { ...state, isLoadingEstimationFee: false, fee: action.fee / 100 };
     case "SHOW_LOADING":
       return { ...state, isLoading: action.isShow };
     default:
