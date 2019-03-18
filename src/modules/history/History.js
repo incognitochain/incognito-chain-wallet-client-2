@@ -87,14 +87,20 @@ export function History() {
             statusText = "Failed";
             statusClass = "failed";
           }
-          const image = genImageFromStr(item.txID, 40);
+          var image = "";
+          if (item.txID && item.txID.length > 0) {
+            image = genImageFromStr(item.txID, 40);
+          }
           return (
             <HistoryItem key={item.txID}>
               <Div>
                 <Row1>
                   <TxID>
                     <a href={url + item.txID} target="_blank">
-                      <Avatar alt="tx" src={image} />
+                      <Avatar
+                        alt={image && image.length > 0 ? tx.ID : "fail"}
+                        src={image}
+                      />
                     </a>
                   </TxID>
 
