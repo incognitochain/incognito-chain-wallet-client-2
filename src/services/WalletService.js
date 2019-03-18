@@ -23,6 +23,10 @@ export async function loadWallet() {
 
   await wallet.loadWallet(passphrase);
   console.log("Load Wallet", wallet.MasterAccount.child);
+
+  // update status history
+  updateStatusHistory(wallet);
+
   if (wallet.Name) {
     console.timeEnd("loadWallet");
     return wallet;
@@ -49,5 +53,11 @@ export async function initWallet() {
 }
 
 export function saveWallet(wallet) {
+  wallet.save(getPassphrase());
+}
+
+export async function updateStatusHistory(wallet) {
+  console.log("UPDATING HISTORY STATUS....");
+  await wallet.updateStatusHistory();
   wallet.save(getPassphrase());
 }
