@@ -1,11 +1,5 @@
-import {
-  KeyWallet,
-  PaymentInfo,
-  AccountWallet,
-  Wallet
-} from "constant-chain-web-js/build/wallet";
+import { KeyWallet, Wallet } from "constant-chain-web-js/build/wallet";
 import { getPassphrase } from "./PasswordService";
-import bn from "bn.js";
 
 export default class Account {
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
@@ -31,34 +25,15 @@ export default class Account {
   }
 
   static async sendConstant(param, fee, account, wallet) {
+    // param: payment address string, amount in Number (miliconstant)
     await Wallet.resetProgressTx();
     let indexAccount = wallet.getAccountIndexByName(account.name);
-
-    // create paymentInfos
-    let paymentInfos = new Array(param.length);
-    let receiverPaymentAddrStr = new Array(param.length);
-
-    for (let i = 0; i < paymentInfos.length; i++) {
-      let keyWallet = KeyWallet.base58CheckDeserialize(
-        param[i].paymentAddressStr
-      );
-      receiverPaymentAddrStr[i] = param[i].paymentAddressStr;
-      paymentInfos[i] = new PaymentInfo(
-        keyWallet.KeySet.PaymentAddress,
-        new bn(param[i].amount)
-      );
-    }
-
     // create and send constant
     let result;
     try {
       result = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendConstant(
-        paymentInfos,
-        receiverPaymentAddrStr,
-        new bn(fee)
-      );
+      ].createAndSendConstant(param, fee);
 
       // save wallet
       wallet.save(getPassphrase());

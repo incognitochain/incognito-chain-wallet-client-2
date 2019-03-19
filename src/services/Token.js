@@ -1,12 +1,9 @@
 import {
-  PaymentInfo,
-  CustomTokenPrivacyParamTx,
   CustomTokenParamTx,
   TxTokenVout,
   KeyWallet,
   Wallet
 } from "constant-chain-web-js/build/wallet";
-import bn from "bn.js";
 import { getPassphrase } from "./PasswordService";
 
 export default class Token {
@@ -54,7 +51,7 @@ export default class Token {
         paymentInfos,
         tokenParam,
         receiverPaymentAddrStr,
-        new bn(fee)
+        fee
       );
 
       // saving KeyWallet
@@ -86,37 +83,11 @@ export default class Token {
     // for (let i = 0; i < paymentInfos.length; i++) {
     //   paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
     // }
-
-    // token param
-    // get current token to get token param
-    let tokenParam = new CustomTokenPrivacyParamTx();
-    tokenParam.propertyID = submitParam.TokenID;
-    tokenParam.propertyName = submitParam.TokenName;
-    tokenParam.propertySymbol = submitParam.TokenSymbol;
-    tokenParam.amount = submitParam.TokenAmount;
-    tokenParam.tokenTxType = submitParam.TokenTxType;
-
-    let receiverPaymentAddrStr = new Array(1);
-    receiverPaymentAddrStr[0] = submitParam.TokenReceivers.PaymentAddress;
-
-    tokenParam.receivers = new Array(1);
-    tokenParam.receivers[0] = new PaymentInfo(
-      KeyWallet.base58CheckDeserialize(
-        submitParam.TokenReceivers.PaymentAddress
-      ).KeySet.PaymentAddress,
-      new bn(submitParam.TokenReceivers.Amount)
-    );
-
     let response;
     try {
       response = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendPrivacyCustomToken(
-        paymentInfos,
-        tokenParam,
-        receiverPaymentAddrStr,
-        new bn(fee)
-      );
+      ].createAndSendPrivacyCustomToken(paymentInfos, submitParam, fee);
 
       await wallet.save(getPassphrase());
     } catch (e) {
