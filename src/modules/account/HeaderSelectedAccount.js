@@ -5,7 +5,10 @@ import { useAppContext } from "../../common/context/AppContext";
 import { useAccountListContext } from "../../common/context/AccountListContext";
 import { Subject } from "rxjs";
 import { debounceTime, switchMap } from "rxjs/operators";
-import { getAccountBalance } from "../../services/CacheAccountBalanceService";
+import {
+  getAccountBalance,
+  saveAccountBalance
+} from "../../services/CacheAccountBalanceService";
 
 function loadBalance(wallet, accountName) {
   let balance = getAccountBalance(accountName);
@@ -13,7 +16,10 @@ function loadBalance(wallet, accountName) {
     return wallet
       .getAccountByName(accountName)
       .getBalance()
-      .then(balance => [accountName, balance]);
+      .then(balance => {
+        saveAccountBalance(balance, accountName);
+        return [accountName, balance];
+      });
   } else {
     return new Promise(resolve =>
       setTimeout(resolve([accountName, balance]), 1)
