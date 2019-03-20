@@ -126,7 +126,7 @@ function AccountSend({ classes, isOpen }) {
             .getEstimateFee(
               account.PaymentAddress,
               toAddress,
-              amount,
+              Number(amount) * 100,
               account.PrivateKey
             )
             .catch(e => {
