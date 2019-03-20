@@ -72,6 +72,7 @@ const App = ({ history, location }) => {
   }
 
   async function listAccounts(wallet) {
+    console.time("listAccounts");
     let accountList = cacheAccountListService.getAccountList();
     if (!accountList || accountList.length == 0) {
       accountList = [];

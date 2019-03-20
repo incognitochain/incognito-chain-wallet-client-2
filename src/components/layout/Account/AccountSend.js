@@ -253,7 +253,12 @@ function AccountSend({ classes, isOpen }) {
       />
 
       <div className="text-right">
-        Balance: {balance ? Math.round(balance / 100).toLocaleString() : 0}{" "}
+        Balance:{" "}
+        {balance
+          ? (Number(balance) / 100).toLocaleString(navigator.language, {
+              minimumFractionDigits: 2
+            })
+          : 0}{" "}
         CONST
       </div>
 

@@ -29,7 +29,7 @@ export function getAccountBalance(accountName) {
   if (!bal || !expired) return -1;
 
   if (Date.now() > parseInt(expired, 10)) {
-    return;
+    return -1;
   }
   console.log("Get account balance from cache:", accountName, bal);
   return parseInt(bal);
