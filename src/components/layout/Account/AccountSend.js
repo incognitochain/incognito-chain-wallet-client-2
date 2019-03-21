@@ -24,6 +24,7 @@ import {
   getAccountBalance,
   saveAccountBalance
 } from "../../../services/CacheAccountBalanceService";
+import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
 
 const styles = theme => ({
   textField: {
@@ -215,6 +216,7 @@ function AccountSend({ classes, isOpen }) {
     );
 
     if (result.txId) {
+      clearAccountBalance(account.name);
       toastr.success("Completed: ", result.txId);
       dispatch({ type: "RESET" });
     } else {

@@ -1,20 +1,24 @@
 import CryptoJS from "crypto-js";
 
-const CACHE_ACCOUNT_BALANCE_TIME = 0 * 1000; // 3 minutes
+const CACHE_ACCOUNT_BALANCE_TIME = 1 * 1000; // 3 minutes
 const CACHE_ACCOUNT_BALANCE_SECRET_KEY = "FJexuTITEw";
 
-export function clearAllAccountBalance(accountNames) {
+export function clearAllAccountBalance(accountNames, tokenID = "") {
   for (var i = 0; i < accountNames.length; i++) {
-    clearAccountBalance(accountNames[i]);
+    clearAccountBalance(accountNames[i], tokenID);
   }
 }
 
-export function clearAccountBalance(accountName) {
-  window.localStorage.removeItem("account-" + accountName);
+export function clearAccountBalance(accountName, tokenID = "") {
+  window.localStorage.removeItem(
+    (tokenID != "" ? tokenID + "-" : "") + "account-" + accountName
+  );
 }
 
-export function getAccountBalance(accountName) {
-  let balance = window.localStorage.getItem("account-" + accountName);
+export function getAccountBalance(accountName, tokenID = "") {
+  let balance = window.localStorage.getItem(
+    (tokenID != "" ? tokenID + "-" : "") + "account-" + accountName
+  );
   if (!balance) return -1;
   try {
     balance = CryptoJS.AES.decrypt(
@@ -35,15 +39,18 @@ export function getAccountBalance(accountName) {
   return parseInt(bal);
 }
 
-export function hasAccountBalance(accountName) {
-  return getAccountBalance(accountName) != -1;
+export function hasAccountBalance(accountName, tokenID = "") {
+  return getAccountBalance(accountName, tokenID) != -1;
 }
 
-export function saveAccountBalance(balance, accountName) {
+export function saveAccountBalance(balance, accountName, tokenID = "") {
   const expired = Date.now() + CACHE_ACCOUNT_BALANCE_TIME;
   const toBeSaved = CryptoJS.AES.encrypt(
     `${balance}****+++++*****${expired}`,
     CACHE_ACCOUNT_BALANCE_SECRET_KEY
   ).toString();
-  window.localStorage.setItem("account-" + accountName, toBeSaved);
+  window.localStorage.setItem(
+    (tokenID != "" ? tokenID + "-" : "") + "account-" + accountName,
+    toBeSaved
+  );
 }
