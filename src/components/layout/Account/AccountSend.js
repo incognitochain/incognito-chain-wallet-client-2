@@ -20,7 +20,10 @@ import * as rpcClientService from "../../../services/RpcClientService";
 import { useDebugReducer } from "../../../common/hook/useDebugReducer";
 import { useAppContext } from "../../../common/context/AppContext";
 import { Loading } from "../../../common/components/loading/Loading";
-import { saveAccountBalance } from "../../../services/CacheAccountBalanceService";
+import {
+  getAccountBalance,
+  saveAccountBalance
+} from "../../../services/CacheAccountBalanceService";
 
 const styles = theme => ({
   textField: {
@@ -77,13 +80,16 @@ function AccountSend({ classes, isOpen }) {
   }, []);
 
   async function reloadBalance() {
-    const balance = await wallet.getAccountByName(account.name).getBalance();
+    let balance = getAccountBalance(account.name);
+    if (balance == -1) {
+      balance = await wallet.getAccountByName(account.name).getBalance();
+      saveAccountBalance(balance, account.name);
+    }
     appDispatch({
       type: "SET_ACCOUNT_BALANCE",
       accountName: account.name,
       balance
     });
-    saveAccountBalance(balance, account.name);
   }
 
   let [state, dispatch] = useDebugReducer(
@@ -126,7 +132,7 @@ function AccountSend({ classes, isOpen }) {
             .getEstimateFee(
               account.PaymentAddress,
               toAddress,
-              amount,
+              Number(amount) * 100,
               account.PrivateKey
             )
             .catch(e => {
@@ -253,7 +259,12 @@ function AccountSend({ classes, isOpen }) {
       />
 
       <div className="text-right">
-        Balance: {balance ? Math.round(balance / 100).toLocaleString() : 0}{" "}
+        Balance:{" "}
+        {balance
+          ? (Number(balance) / 100).toLocaleString(navigator.language, {
+              minimumFractionDigits: 2
+            })
+          : 0}{" "}
         CONST
       </div>
 
