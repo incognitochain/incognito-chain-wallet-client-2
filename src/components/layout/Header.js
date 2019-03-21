@@ -126,6 +126,10 @@ class Header extends React.Component {
           if (balance >= 0) {
             saveAccountBalance(balance, name);
           }
+          (async () => {
+            this.props.wallet.save("");
+            console.log("wallet", this.props.wallet);
+          })();
           this.props.app.appDispatch({
             type: "SET_ACCOUNT_BALANCE",
             accountName: name,
