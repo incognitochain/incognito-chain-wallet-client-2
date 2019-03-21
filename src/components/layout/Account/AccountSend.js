@@ -22,7 +22,8 @@ import { useAppContext } from "../../../common/context/AppContext";
 import { Loading } from "../../../common/components/loading/Loading";
 import {
   getAccountBalance,
-  saveAccountBalance
+  saveAccountBalance,
+  clearAccountBalance
 } from "../../../services/CacheAccountBalanceService";
 import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
 
