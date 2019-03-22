@@ -7,7 +7,6 @@ import ServerList from "../layout/Setting/ServerList";
 import ServerAddOrEdit from "../layout/Setting/ServerAddOrEdit";
 import Server from "../../services/Server";
 import * as walletService from "../../services/WalletService";
-import { connectWalletContext } from "../../common/context/WalletContext";
 
 import {
   Tooltip,
