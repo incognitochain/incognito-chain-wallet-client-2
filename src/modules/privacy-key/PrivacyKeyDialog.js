@@ -22,7 +22,9 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
                 <CopyPasteSVG />
               </span>
             </div>
-            <div className="keyDes">{ReadonlyKey}</div>
+            <div className="keyDes">
+              {ReadonlyKey.substring(0, 20) + "..." + ReadonlyKey.substring(90)}
+            </div>
           </div>
         </CopyToClipboard>
 
@@ -34,7 +36,9 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
                 <CopyPasteSVG />
               </span>
             </div>
-            <div className="keyDes">{PrivateKey}</div>
+            <div className="keyDes">
+              {PrivateKey.substring(0, 20) + "..." + PrivateKey.substring(90)}
+            </div>
           </div>
         </CopyToClipboard>
       </Wrapper>
