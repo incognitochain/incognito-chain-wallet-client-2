@@ -137,9 +137,7 @@ function AccountSend({ classes, isOpen }) {
               toAddress,
               Number(amount) * 100,
               account.PrivateKey,
-              null,
-              null,
-              account
+              accountWallet
             )
             .catch(e => {
               console.error(e);
