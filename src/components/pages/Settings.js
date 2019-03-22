@@ -322,4 +322,4 @@ Settings.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Settings);
+export default withStyles(styles)(connectWalletContext(Settings));
