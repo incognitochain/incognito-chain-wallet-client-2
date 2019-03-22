@@ -6,3 +6,5 @@ yarn-error.log
 package-lock.json
 build.crx
 build.pem
+dist
+.yarnclean

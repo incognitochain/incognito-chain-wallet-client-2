@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal } from "common/components/modal";
+import { Modal } from "@common/components/modal";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useAccountContext } from "../../common/context/AccountContext";
 import toastr from "toastr";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal } from "common/components/modal";
+import { Modal } from "@common/components/modal";
 import ServerAddOrEdit from "./ServerAddOrEdit";
 
 function ServerEditModal({ isOpen, onClose, server = {}, onFinishSave }) {

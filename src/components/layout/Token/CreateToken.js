@@ -18,8 +18,8 @@ import {
   filter,
   startWith
 } from "rxjs/operators";
-import { connectAccountContext } from "common/context/AccountContext";
-import { connectWalletContext } from "common/context/WalletContext";
+import { connectAccountContext } from "@common/context/AccountContext";
+import { connectWalletContext } from "@common/context/WalletContext";
 import _ from "lodash";
 import styled from "styled-components";
 import * as rpcClientService from "../../../services/RpcClientService";
