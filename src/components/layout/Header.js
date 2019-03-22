@@ -205,6 +205,22 @@ class Header extends React.Component {
     this.showAlert(msg, { flag: "info", duration: 3000, hideIcon: true });
   };
 
+  expandView = () => {
+    let chromeId = window.chrome.runtime.id;
+    if (chromeId) {
+      window.open("chrome-extension://" + chromeId + "/index.html");
+      return;
+    } else {
+      this.showWarning("This feature is only on chrome extension");
+      return;
+    }
+  };
+
+  viewConstantExplorer = () => {
+    window.open(process.env.CONSTANT_EXPLORER);
+    return;
+  };
+
   toggleDrawer = (side, open) => () => {
     this.setState({
       [side]: open
@@ -261,11 +277,7 @@ class Header extends React.Component {
         </List>
         <Divider />
         <List>
-          <ListItem
-            button
-            key="expandView"
-            onClick={() => this.showInfo("Coming soon!")}
-          >
+          <ListItem button key="expandView" onClick={() => this.expandView()}>
             <ListItemIcon>
               <IconFullScreen />
             </ListItemIcon>
@@ -274,7 +286,7 @@ class Header extends React.Component {
           <ListItem
             button
             key="ninjaConstant"
-            onClick={() => this.showInfo("Coming soon!")}
+            onClick={() => this.viewConstantExplorer()}
           >
             <ListItemIcon>
               <IconExitToApp />
