@@ -4,7 +4,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useAccountContext } from "../../common/context/AccountContext";
 import toastr from "toastr";
 import styled from "styled-components";
-import { ReactComponent as CopyPasteSVG } from "../../assets/images/copy-paste.svg";
+import { ReactComponent as CopyPasteSVG } from "@assets/images/copy-paste.svg";
 
 export function PrivacyKeyDialog({ isOpen, onClose }) {
   const { PrivateKey, ReadonlyKey } = useAccountContext();

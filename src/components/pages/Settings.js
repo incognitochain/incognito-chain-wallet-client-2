@@ -28,7 +28,7 @@ import {
   Computer as IconServer,
   Ballot as IconPassPhrase
 } from "@material-ui/icons";
-import { ReactComponent as RefreshIcon } from "../../assets/images/refresh-icon.svg";
+import { ReactComponent as RefreshIcon } from "@assets/images/refresh-icon.svg";
 
 const styles = theme => ({
   root: {

@@ -13,7 +13,7 @@ import AccountSend from "./AccountSend";
 
 import { Send as IconSend } from "@material-ui/icons";
 import Dialog from "../../core/Dialog";
-import img1 from "../../../assets/images/img1.png";
+import img1 from "@assets/images/img1.png";
 import "./List.scss";
 import _ from "lodash";
 import { connectWalletContext } from "../../../common/context/WalletContext";

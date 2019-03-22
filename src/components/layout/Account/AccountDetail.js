@@ -294,9 +294,7 @@ class AccountDetail extends React.Component {
                   account.PaymentAddress.substring(90)
                 }
               />
-              <IconPasteWrapper>
-                <CopyPasteSVG />
-              </IconPasteWrapper>
+              <IconPasteWrapper>{/*<CopyPasteSVG />*/}</IconPasteWrapper>
             </PaymentInput>
           </CopyToClipboard>
         </CopyToClipboardWrapper>
