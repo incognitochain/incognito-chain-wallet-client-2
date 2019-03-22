@@ -34,7 +34,8 @@ export function getEstimateFeeForSendingToken(
   to,
   amount,
   tokenObject,
-  privateKey
+  privateKey,
+  account
 ) {
   console.log("getEstimateFeeForSendingToken");
   console.log("\tfrom:" + from);
@@ -47,6 +48,7 @@ export function getEstimateFeeForSendingToken(
     to,
     amount,
     tokenObject,
-    privateKey
+    privateKey,
+    account
   );
 }
