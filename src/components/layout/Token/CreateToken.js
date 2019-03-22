@@ -121,6 +121,9 @@ class CreateToken extends React.Component {
       distinctUntilChanged(),
       startWith(0)
     );
+    const accountWallet = this.props.wallet.getAccountByName(
+      this.props.account.name
+    );
 
     this.subscription = combineLatest(toAddressObservable, amountObservable)
       .pipe(
@@ -133,7 +136,8 @@ class CreateToken extends React.Component {
               toAddress,
               amount,
               this.getRequestTokenObject(),
-              this.props.account.PrivateKey
+              this.props.account.PrivateKey,
+              accountWallet
             )
             .catch(e => {
               console.error(e);

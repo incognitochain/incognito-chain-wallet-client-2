@@ -61,3 +61,7 @@ export async function updateStatusHistory(wallet) {
   await wallet.updateStatusHistory();
   wallet.save(getPassphrase());
 }
+
+export function clearCache(wallet) {
+  wallet.clearCached();
+}

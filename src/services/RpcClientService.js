@@ -16,8 +16,17 @@ export function listPrivacyTokens() {
   return getRpcClient().listPrivacyCustomTokens();
 }
 
-export function getEstimateFee(from, to, amount, privateKey) {
-  return getRpcClient().getEstimateFee(from, to, amount, privateKey);
+export function getEstimateFee(from, to, amount, privateKey, accountWallet) {
+  console.log("Estimating fee ...");
+  return getRpcClient().getEstimateFee(
+    from,
+    to,
+    amount,
+    privateKey,
+    null,
+    null,
+    accountWallet
+  );
 }
 
 export function getEstimateFeeForSendingToken(
@@ -25,7 +34,8 @@ export function getEstimateFeeForSendingToken(
   to,
   amount,
   tokenObject,
-  privateKey
+  privateKey,
+  account
 ) {
   console.log("getEstimateFeeForSendingToken");
   console.log("\tfrom:" + from);
@@ -38,6 +48,7 @@ export function getEstimateFeeForSendingToken(
     to,
     amount,
     tokenObject,
-    privateKey
+    privateKey,
+    account
   );
 }

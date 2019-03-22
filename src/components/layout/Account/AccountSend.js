@@ -68,6 +68,7 @@ function AccountSend({ classes, isOpen }) {
   const account = useAccountContext();
   const accounts = useAccountListContext();
   const { appDispatch } = useAppContext();
+  const accountWallet = wallet.getAccountByName(account.name);
 
   let balance;
   try {
@@ -135,7 +136,8 @@ function AccountSend({ classes, isOpen }) {
               account.PaymentAddress,
               toAddress,
               Number(amount) * 100,
-              account.PrivateKey
+              account.PrivateKey,
+              accountWallet
             )
             .catch(e => {
               console.error(e);

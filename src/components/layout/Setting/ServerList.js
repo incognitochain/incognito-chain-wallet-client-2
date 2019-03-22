@@ -28,6 +28,12 @@ import {
 import Server from "../../../services/Server";
 import ServerEditModal from "./ServerEditModal";
 import toastr from "toastr";
+import { connectWalletContext } from "../../../common/context/WalletContext";
+import { clearCache } from "../../../services/WalletService";
+import {
+  clearAllAccountBalance,
+  clearAccountBalance
+} from "../../../services/CacheAccountBalanceService";
 
 const styles = theme => ({
   button: {
@@ -134,6 +140,42 @@ class ServerList extends React.Component {
     let servers = this.state.servers;
     for (let s of servers) {
       if (server.address === s.address) {
+        if (!s.default) {
+          // clear cached
+          clearCache(this.props.wallet);
+
+          let accountNames = new Array(
+            this.props.wallet.MasterAccount.child.length
+          );
+          for (
+            let i = 0;
+            i < this.props.wallet.MasterAccount.child.length;
+            i++
+          ) {
+            accountNames[i] = this.props.wallet.MasterAccount.child[i].name;
+          }
+          // clear balance cache for constant
+          clearAllAccountBalance(accountNames);
+
+          // clear balance cache for token
+          for (
+            let i = 0;
+            i < this.props.wallet.MasterAccount.child.length;
+            i++
+          ) {
+            for (
+              let j = 0;
+              j <
+              this.props.wallet.MasterAccount.child[i].followingTokens.length;
+              j++
+            ) {
+              clearAccountBalance(
+                this.props.wallet.MasterAccount.child[i].name,
+                this.props.wallet.MasterAccount.child[i].followingTokens[j].ID
+              );
+            }
+          }
+        }
         s.default = true;
       } else {
         s.default = false;
@@ -267,4 +309,4 @@ ServerList.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(ServerList);
+export default withStyles(styles)(connectWalletContext(ServerList));
