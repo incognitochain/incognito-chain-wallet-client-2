@@ -206,8 +206,18 @@ class Header extends React.Component {
   };
 
   expandView = () => {
-    let chromeId = chrome.runtime.id;
-    window.open("chrome-extension://" + chromeId + "/index.html");
+    let chromeId = window.chrome.runtime.id;
+    if (chromeId) {
+      window.open("chrome-extension://" + chromeId + "/index.html");
+      return;
+    } else {
+      this.showWarning("This feature is only on chrome extension");
+      return;
+    }
+  };
+
+  viewConstantExplorer = () => {
+    window.open(process.env.CONSTANT_EXPLORER);
     return;
   };
 
@@ -276,7 +286,7 @@ class Header extends React.Component {
           <ListItem
             button
             key="ninjaConstant"
-            onClick={() => this.showInfo("Coming soon!")}
+            onClick={() => this.viewConstantExplorer()}
           >
             <ListItemIcon>
               <IconExitToApp />
