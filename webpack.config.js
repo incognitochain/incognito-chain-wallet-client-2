@@ -78,7 +78,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|gif|jpe?g|svg|webp)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        test: /\.(png|gif|jpe?g|webp)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         use: [
           'image-webpack-loader',
           {
@@ -100,18 +100,8 @@ module.exports = {
         ]
       },
       {
-        test: /\.svg$/,
-        use: [
-          {
-            loader: "babel-loader"
-          },
-          {
-            loader: "react-svg-loader",
-            options: {
-              jsx: true // true outputs JSX tags
-            }
-          }
-        ]
+        test: /.svg$/,
+        use: ['@svgr/webpack', 'url-loader'],
       }
     ],
   }
