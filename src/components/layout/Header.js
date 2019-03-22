@@ -205,6 +205,12 @@ class Header extends React.Component {
     this.showAlert(msg, { flag: "info", duration: 3000, hideIcon: true });
   };
 
+  expandView = () => {
+    let chromeId = chrome.runtime.id;
+    window.open("chrome-extension://" + chromeId + "/index.html");
+    return;
+  };
+
   toggleDrawer = (side, open) => () => {
     this.setState({
       [side]: open
@@ -261,11 +267,7 @@ class Header extends React.Component {
         </List>
         <Divider />
         <List>
-          <ListItem
-            button
-            key="expandView"
-            onClick={() => this.showInfo("Coming soon!")}
-          >
+          <ListItem button key="expandView" onClick={() => this.expandView()}>
             <ListItemIcon>
               <IconFullScreen />
             </ListItemIcon>
