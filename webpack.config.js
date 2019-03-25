@@ -4,11 +4,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const appPath = filepath => path.resolve(__dirname, filepath);
-const appEnv = require('./.env.js');
 
 module.exports = (env, argv) => {
   const isProduction = (argv.mode === 'production');
-  console.log("isProduction:", isProduction)
+  console.log("build mode:", argv.mode)
+  const appEnv = require('./.env.' + argv.mode + '.js');
 
   const stats = {
     modules: false,
