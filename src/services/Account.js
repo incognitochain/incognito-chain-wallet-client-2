@@ -44,6 +44,26 @@ export default class Account {
     return result;
   }
 
+  static async staking(param, fee, account, wallet) {
+    // param: payment address string, amount in Number (miliconstant)
+    await Wallet.resetProgressTx();
+    let indexAccount = wallet.getAccountIndexByName(account.name);
+    // create and send constant
+    let result;
+    try {
+      result = await wallet.MasterAccount.child[
+        indexAccount
+      ].createAndSendStakingTx(param, fee);
+
+      // save wallet
+      wallet.save(getPassphrase());
+    } catch (e) {
+      throw e;
+    }
+    await Wallet.resetProgressTx();
+    return result;
+  }
+
   // create new account
   static async createAccount(accountName, wallet) {
     return wallet.createNewAccount(accountName);

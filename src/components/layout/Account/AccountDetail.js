@@ -8,6 +8,7 @@ import ConfirmDialog from "../../core/ConfirmDialog";
 import Dialog from "../../core/Dialog";
 import Account from "../../../services/Account";
 import AccountSend from "./AccountSend";
+import AccountStaking from "./AccountStaking";
 import CreateToken from "../../layout/Token/CreateToken";
 import MainTabs from "../../modules/MainTabs";
 import {
@@ -237,6 +238,19 @@ class AccountDetail extends React.Component {
     );
   }
 
+  renderStaking() {
+    const { modalAccountStaking } = this.state;
+    return (
+      <Dialog
+        title="Staking"
+        onRef={modal => (this.modalAccountStakingRef = modal)}
+        className={{ margin: 0 }}
+      >
+        {modalAccountStaking}
+      </Dialog>
+    );
+  }
+
   openAccountSend = account => {
     // this.modalAccountDetailRef.close();
     this.setState({
@@ -244,6 +258,15 @@ class AccountDetail extends React.Component {
       modalAccountSend: <AccountSend />
     });
     this.modalAccountSendRef.open();
+  };
+
+  openAccountStaking = account => {
+    // this.modalAccountDetailRef.close();
+    this.setState({
+      modalAccountDetail: "",
+      modalAccountStaking: <AccountStaking />
+    });
+    this.modalAccountStakingRef.open();
   };
 
   getAccountBalance(accountName) {
@@ -302,13 +325,27 @@ class AccountDetail extends React.Component {
         </CopyToClipboardWrapper>
         <Balance>{this.renderBalance(balance)}</Balance>
 
-        <SendButton
-          className="SendButton"
-          variant="contained"
-          onClick={() => this.openAccountSend(account)}
-        >
-          Send
-        </SendButton>
+        <div className="row">
+          <div className="col-sm">
+            <SendButton
+              className="SendButton"
+              variant="contained"
+              onClick={() => this.openAccountSend(account)}
+            >
+              Send
+            </SendButton>
+          </div>
+
+          <div className="col-sm">
+            <SendButton
+              className="SendButton"
+              variant="contained"
+              onClick={() => this.openAccountStaking(account)}
+            >
+              Staking
+            </SendButton>
+          </div>
+        </div>
       </AccountInfoWrapper>
     );
   };
@@ -355,6 +392,7 @@ class AccountDetail extends React.Component {
         {this.renderConfirmRemove()}
         {this.renderTokenCreate()}
         {this.renderSendConstant()}
+        {this.renderStaking()}
       </Wrapper>
     );
   }
