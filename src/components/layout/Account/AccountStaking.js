@@ -113,7 +113,12 @@ function AccountStaking({ classes, isOpen }) {
     account => ({
       paymentAddress: account.PaymentAddress,
       toAddress: BurnAddress,
-      amount: AmountStakingShard,
+      amount: (Number(AmountStakingShard) / 100).toLocaleString(
+        navigator.language,
+        {
+          minimumFractionDigits: 2
+        }
+      ),
       fee: "",
       showAlert: "",
       isAlert: false,
@@ -366,7 +371,15 @@ function AccountStaking({ classes, isOpen }) {
         margin="normal"
         variant="outlined"
         value={
-          state.stakingType == "0" ? AmountStakingShard : AmountStakingBeacon
+          state.stakingType == "0"
+            ? (Number(AmountStakingShard) / 100).toLocaleString(
+                navigator.language,
+                { minimumFractionDigits: 2 }
+              )
+            : (Number(AmountStakingBeacon) / 100).toLocaleString(
+                navigator.language,
+                { minimumFractionDigits: 2 }
+              )
         }
         onChange={e => onChangeInput("amount")(e)}
         inputProps={{ ref: amountInputRef }}
