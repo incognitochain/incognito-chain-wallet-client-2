@@ -209,11 +209,14 @@ function AccountSend({ classes, isOpen }) {
 
   async function sendCoin() {
     dispatch({ type: "SHOW_LOADING", isShow: true });
-    let { toAddress, amount, fee } = state;
+
+    // isPrivacy in state is string
+    let { toAddress, amount, fee, isPrivacy } = state;
 
     var result = await Account.sendConstant(
       [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
       Number(fee) * 100,
+      Number(isPrivacy),
       account,
       wallet
     );

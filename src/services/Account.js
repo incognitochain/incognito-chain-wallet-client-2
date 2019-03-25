@@ -24,7 +24,7 @@ export default class Account {
     }
   }
 
-  static async sendConstant(param, fee, account, wallet) {
+  static async sendConstant(param, fee, isPrivacy, account, wallet) {
     // param: payment address string, amount in Number (miliconstant)
     await Wallet.resetProgressTx();
     let indexAccount = wallet.getAccountIndexByName(account.name);
@@ -33,7 +33,7 @@ export default class Account {
     try {
       result = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendConstant(param, fee);
+      ].createAndSendConstant(param, fee, isPrivacy);
 
       // save wallet
       wallet.save(getPassphrase());
