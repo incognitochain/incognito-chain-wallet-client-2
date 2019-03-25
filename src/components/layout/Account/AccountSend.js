@@ -2,7 +2,7 @@ import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Account from "../../../services/Account";
-import { Button, TextField } from "@material-ui/core";
+import { Button, TextField, Checkbox } from "@material-ui/core";
 import { useAccountContext } from "../../../common/context/AccountContext";
 import toastr from "toastr";
 import { useWalletContext } from "../../../common/context/WalletContext";
@@ -105,7 +105,8 @@ function AccountSend({ classes, isOpen }) {
       amount: "",
       fee: "",
       showAlert: "",
-      isAlert: false
+      isAlert: false,
+      isPrivacy: "0"
     })
   );
 
@@ -248,6 +249,8 @@ function AccountSend({ classes, isOpen }) {
       if (Number(e.target.value) < 0) {
         toastr.warning("Fee must not be less than zero!");
       }
+    } else if (name === "isPrivacy") {
+      e.target.value = e.target.value == "0" ? "1" : "0";
     }
     dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
   };
@@ -266,14 +269,31 @@ function AccountSend({ classes, isOpen }) {
         onChange={onChangeInput("paymentAddress")}
       />
 
-      <div className="text-right">
-        Balance:{" "}
-        {balance
-          ? (Number(balance) / 100).toLocaleString(navigator.language, {
-              minimumFractionDigits: 2
-            })
-          : 0}{" "}
-        CONST
+      <div className="row">
+        <div className="col-sm">
+          <div>
+            <Checkbox
+              label="Is Privacy"
+              id="isPrivacy"
+              checked={state.isPrivacy == "1" ? true : false}
+              value={state.isPrivacy}
+              onChange={onChangeInput("isPrivacy")}
+              color="primary"
+            />
+            Is Privacy
+          </div>
+        </div>
+        <div className="col-sm">
+          <div className="text-right">
+            Balance:{" "}
+            {balance
+              ? (Number(balance) / 100).toLocaleString(navigator.language, {
+                  minimumFractionDigits: 2
+                })
+              : 0}{" "}
+            CONST
+          </div>
+        </div>
       </div>
 
       <TextField
