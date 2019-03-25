@@ -2,7 +2,7 @@ import React from "react";
 import Popover from "@material-ui/core/Popover";
 import { withStyles } from "@material-ui/core/styles";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { ReactComponent as CopyPasteSVG } from "assets/images/copy-paste.svg";
+import { ReactComponent as CopyPasteSVG } from "@assets/images/copy-paste.svg";
 import toastr from "toastr";
 import styled from "styled-components";
 

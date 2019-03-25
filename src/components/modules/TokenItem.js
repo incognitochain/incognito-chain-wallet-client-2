@@ -1,7 +1,7 @@
 import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import styled from "styled-components";
-import { CopyableTooltip } from "common/components/copyable-tooltip";
+import { CopyableTooltip } from "@common/components/copyable-tooltip";
 import { useAccountWallet } from "../../modules/tokens/hook/useAccountWallet";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import numeral from "numeral";

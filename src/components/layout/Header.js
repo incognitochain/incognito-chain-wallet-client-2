@@ -32,9 +32,9 @@ import {
   Warning as IconWarning
 } from "@material-ui/icons";
 
-import { ReactComponent as CreateAccountSVG } from "../../assets/images/create-account.svg";
-import { ReactComponent as ImportAccountSVG } from "../../assets/images/import-account.svg";
-import { ReactComponent as ExitAppIcon } from "../../assets/images/exit-app-icon.svg";
+import { ReactComponent as CreateAccountSVG } from "@assets/images/create-account.svg";
+import { ReactComponent as ImportAccountSVG } from "@assets/images/import-account.svg";
+import { ReactComponent as ExitAppIcon } from "@assets/images/exit-app-icon.svg";
 import "./Header.scss";
 
 import AccountList from "../layout/Account/AccountList";

@@ -15,7 +15,7 @@ import {
   CheckCircle as IconSuccess,
   Warning as IconWarning
 } from "@material-ui/icons";
-import { ReactComponent as CopyPasteSVG } from "assets/images/copy-paste.svg";
+import { ReactComponent as CopyPasteSVG } from "@assets/images/copy-paste.svg";
 import toastr from "toastr";
 import styled from "styled-components";
 import { connectAccountContext } from "../../../common/context/AccountContext";
