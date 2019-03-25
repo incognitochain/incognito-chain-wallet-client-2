@@ -44,10 +44,10 @@
     "toastr": "^2.1.4"
   },
   "scripts": {
-    "start": "webpack-dev-server --open",
-    "build": "npm run clean && npm run compile",
-    "clean": "rm -rf ./build/index.bundle.js",
-    "compile": "NODE_ENV=production webpack --config ./webpack.config.js --progress",
+    "start": "webpack-dev-server --open --mode production",
+    "start:dev": "webpack-dev-server --open --mode development",
+    "build": "webpack --config ./webpack.config.js --progress --mode production",
+    "build:dev": "webpack --config ./webpack.config.js --progress --mode development",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "yarn build && yarn electron-only",
