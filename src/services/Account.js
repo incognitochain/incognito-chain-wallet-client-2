@@ -64,6 +64,28 @@ export default class Account {
     return result;
   }
 
+  static async defragment(amount, fee, isPrivacy, account, wallet) {
+    // param: payment address string, amount in Number (miliconstant)
+    await Wallet.resetProgressTx();
+    let indexAccount = wallet.getAccountIndexByName(account.name);
+    // create and send constant
+    let result;
+    try {
+      result = await wallet.MasterAccount.child[indexAccount].defragment(
+        amount,
+        fee,
+        isPrivacy
+      );
+
+      // save wallet
+      wallet.save(getPassphrase());
+    } catch (e) {
+      throw e;
+    }
+    await Wallet.resetProgressTx();
+    return result;
+  }
+
   // create new account
   static async createAccount(accountName, wallet) {
     return wallet.createNewAccount(accountName);

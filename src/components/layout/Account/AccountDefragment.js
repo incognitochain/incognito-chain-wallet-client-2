@@ -25,7 +25,6 @@ import {
   saveAccountBalance,
   clearAccountBalance
 } from "../../../services/CacheAccountBalanceService";
-import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
 
 const styles = theme => ({
   textField: {
@@ -60,7 +59,7 @@ function reducer(state, action) {
 
 const refs = { modalConfirmationRef: null }; //TODO - remove this
 
-function AccountSend({ classes, isOpen }) {
+function AccountDefragment({ classes, isOpen }) {
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
 
@@ -101,41 +100,42 @@ function AccountSend({ classes, isOpen }) {
     account,
     account => ({
       paymentAddress: account.PaymentAddress,
-      toAddress: "",
-      amount: "",
+      // toAddress: "",
+      amount: "1",
       fee: "",
       showAlert: "",
       isAlert: false,
-      isPrivacy: "0"
+      isPrivacy: "1"
     })
   );
 
   React.useEffect(() => {
-    const toAddressObservable = fromEvent(toInputRef.current, "keyup").pipe(
-      map(e => e.target.value),
-      filter(Boolean),
-      debounceTime(750),
-      distinctUntilChanged(),
-      startWith("")
-    );
+    // const toAddressObservable = fromEvent(toInputRef.current, "keyup").pipe(
+    //   map(e => e.target.value),
+    //   filter(Boolean),
+    //   debounceTime(750),
+    //   distinctUntilChanged(),
+    //   startWith("")
+    // );
 
     const amountObservable = fromEvent(amountInputRef.current, "keyup").pipe(
       map(e => Number(e.target.value)),
       filter(Boolean),
       debounceTime(750),
       distinctUntilChanged(),
-      startWith(0)
+      startWith("")
     );
 
-    const subscription = combineLatest(toAddressObservable, amountObservable)
+    const subscription = combineLatest(
+      /*toAddressObservable,*/ amountObservable
+    )
       .pipe(
-        filter(([toAddress, amount]) => toAddress && amount),
-        switchMap(([toAddress, amount]) => {
+        filter(([amount]) => amount),
+        switchMap(([amount]) => {
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
           return rpcClientService
-            .getEstimateFee(
+            .getEstimateFeeToDefragment(
               account.PaymentAddress,
-              toAddress,
               Number(amount) * 100,
               account.PrivateKey,
               accountWallet,
@@ -163,13 +163,8 @@ function AccountSend({ classes, isOpen }) {
     };
   }, []);
 
-  const confirmSendCoin = () => {
-    const { toAddress, amount, fee, EstimateTxSizeInKb, GOVFeePerKbTx } = state;
-
-    if (!toAddress) {
-      toastr.warning("To address is required!");
-      return;
-    }
+  const confirmDefragment = () => {
+    const { amount, fee, EstimateTxSizeInKb, GOVFeePerKbTx } = state;
 
     if (!amount) {
       toastr.warning("Amount is required!");
@@ -186,8 +181,8 @@ function AccountSend({ classes, isOpen }) {
       return;
     }
 
-    if (Number(amount) <= 0) {
-      toastr.warning("Amount must be greater than zero!");
+    if (Number(amount) <= 0.01) {
+      toastr.warning("Amount is invalid!");
       return;
     }
 
@@ -205,18 +200,14 @@ function AccountSend({ classes, isOpen }) {
     refs.modalConfirmationRef.open();
   };
 
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  async function sendCoin() {
+  async function defragment() {
     dispatch({ type: "SHOW_LOADING", isShow: true });
 
     // isPrivacy in state is string
-    let { toAddress, amount, fee, isPrivacy } = state;
+    let { amount, fee, isPrivacy } = state;
 
-    var result = await Account.sendConstant(
-      [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
+    var result = await Account.defragment(
+      Number(amount) * 100,
       Number(fee) * 100,
       Number(isPrivacy),
       account,
@@ -228,7 +219,7 @@ function AccountSend({ classes, isOpen }) {
       toastr.success("Completed: ", result.txId);
       dispatch({ type: "RESET" });
     } else {
-      console.log("Cretae tx err: ", result.err);
+      console.log("Create tx err: ", result.err);
       toastr.error("Send failed. Please try again!");
     }
 
@@ -297,7 +288,7 @@ function AccountSend({ classes, isOpen }) {
         </div>
       </div>
 
-      <TextField
+      {/* <TextField
         required
         id="toAddress"
         label="To"
@@ -307,7 +298,7 @@ function AccountSend({ classes, isOpen }) {
         value={state.toAddress}
         onChange={e => onChangeInput("toAddress")(e)}
         inputProps={{ ref: toInputRef }}
-      />
+      /> */}
 
       <TextField
         required
@@ -338,9 +329,9 @@ function AccountSend({ classes, isOpen }) {
         color="primary"
         className={classes.button}
         fullWidth
-        onClick={() => confirmSendCoin()}
+        onClick={() => confirmDefragment()}
       >
-        Send
+        Defragment
       </Button>
       <div className="badge badge-pill badge-light mt-3">
         * Only send CONSTANT to a CONSTANT address.
@@ -354,10 +345,10 @@ function AccountSend({ classes, isOpen }) {
       <ConfirmDialog
         title="Confirmation"
         onRef={modal => (refs.modalConfirmationRef = modal)}
-        onOK={() => sendCoin()}
+        onOK={() => defragment()}
         className={{ margin: 0 }}
       >
-        <div>Are you sure to transfer out {state.amount} CONSTANT?</div>
+        <div>Are you sure to defragment wallet? </div>
       </ConfirmDialog>
 
       <Loading fullscreen isShow={state.isLoading} />
@@ -365,4 +356,4 @@ function AccountSend({ classes, isOpen }) {
   );
 }
 
-export default withStyles(styles)(AccountSend);
+export default withStyles(styles)(AccountDefragment);

@@ -9,6 +9,7 @@ import Dialog from "../../core/Dialog";
 import Account from "../../../services/Account";
 import AccountSend from "./AccountSend";
 import AccountStaking from "./AccountStaking";
+import AccountDefragment from "./AccountDefragment";
 import CreateToken from "../../layout/Token/CreateToken";
 import MainTabs from "../../modules/MainTabs";
 import {
@@ -251,6 +252,19 @@ class AccountDetail extends React.Component {
     );
   }
 
+  renderDefragment() {
+    const { modalAccountDefragment } = this.state;
+    return (
+      <Dialog
+        title="Defragment"
+        onRef={modal => (this.modalAccountDefragmentRef = modal)}
+        className={{ margin: 0 }}
+      >
+        {modalAccountDefragment}
+      </Dialog>
+    );
+  }
+
   openAccountSend = account => {
     // this.modalAccountDetailRef.close();
     this.setState({
@@ -261,7 +275,6 @@ class AccountDetail extends React.Component {
   };
 
   openAccountStaking = account => {
-    // this.modalAccountDetailRef.close();
     this.setState({
       modalAccountDetail: "",
       modalAccountStaking: <AccountStaking />
@@ -269,6 +282,13 @@ class AccountDetail extends React.Component {
     this.modalAccountStakingRef.open();
   };
 
+  openAccountDefragment = account => {
+    this.setState({
+      modalAccountDetail: "",
+      modalAccountDefragment: <AccountDefragment />
+    });
+    this.modalAccountDefragmentRef.open();
+  };
   getAccountBalance(accountName) {
     try {
       let balance = cacheAccountBalanceService.getAccountBalance(accountName);
@@ -345,6 +365,16 @@ class AccountDetail extends React.Component {
               Staking
             </SendButton>
           </div>
+
+          <div className="col-sm">
+            <SendButton
+              className="SendButton"
+              variant="contained"
+              onClick={() => this.openAccountDefragment(account)}
+            >
+              Defragment
+            </SendButton>
+          </div>
         </div>
       </AccountInfoWrapper>
     );
@@ -393,6 +423,7 @@ class AccountDetail extends React.Component {
         {this.renderTokenCreate()}
         {this.renderSendConstant()}
         {this.renderStaking()}
+        {this.renderDefragment()}
       </Wrapper>
     );
   }
@@ -435,6 +466,7 @@ const SendButton = styled(Button)`
 
   &.SendButton {
     background-color: white;
+    font-size: 12px;
   }
 `;
 

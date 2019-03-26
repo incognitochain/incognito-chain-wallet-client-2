@@ -154,7 +154,8 @@ function AccountStaking({ classes, isOpen }) {
               state.toAddress,
               Number(amountInputRef.current.value) * 100,
               account.PrivateKey,
-              accountWallet
+              accountWallet,
+              false
             )
             .catch(e => {
               console.error(e);
@@ -229,8 +230,8 @@ function AccountStaking({ classes, isOpen }) {
     }
 
     if (
-      (stakingType == "0" && amount != AmountStakingShard) ||
-      (stakingType == "1" && amount != AmountStakingBeacon)
+      (stakingType == "0" && amount != AmountStakingShard / 100) ||
+      (stakingType == "1" && amount != AmountStakingBeacon / 100)
     ) {
       toastr.warning("Amount is invalid!");
       return;
