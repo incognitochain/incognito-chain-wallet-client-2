@@ -127,7 +127,7 @@ function AccountSend({ classes, isOpen }) {
       distinctUntilChanged(),
       startWith(0)
     );
-    const isPrivacyObservable = fromEvent(toInputRef.current, "change").pipe(
+    const isPrivacyObservable = fromEvent(isPrivacyRef.current, "change").pipe(
       map(e => e.target.value),
       filter(Boolean),
       debounceTime(750),
@@ -141,11 +141,13 @@ function AccountSend({ classes, isOpen }) {
       isPrivacyObservable
     )
       .pipe(
-        filter(
-          ([toAddress, amount, isPrivacy]) => toAddress && amount && isPrivacy
-        ),
+        filter(([toAddress, amount, isPrivacy]) => toAddress && amount),
         switchMap(([toAddress, amount, isPrivacy]) => {
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
+          console.log(
+            "isPrivacy when estimate fee: ",
+            isPrivacyRef.current.value
+          );
           return rpcClientService
             .getEstimateFee(
               account.PaymentAddress,
@@ -153,7 +155,7 @@ function AccountSend({ classes, isOpen }) {
               Number(amount) * 100,
               account.PrivateKey,
               accountWallet,
-              Number(isPrivacy)
+              Number(isPrivacyRef.current.value)
             )
             .catch(e => {
               console.error(e);
@@ -228,6 +230,8 @@ function AccountSend({ classes, isOpen }) {
 
     // isPrivacy in state is string
     let { toAddress, amount, fee, isPrivacy } = state;
+
+    console.log("isPrivacy when create tx: ", isPrivacy);
 
     var result = await Account.sendConstant(
       [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
