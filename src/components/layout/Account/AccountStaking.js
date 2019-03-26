@@ -159,7 +159,7 @@ function AccountStaking({ classes, isOpen }) {
             )
             .catch(e => {
               console.error(e);
-              toastr.error("Error on get estimation fee!");
+              toastr.error("Error on get estimation fee! " + e.toString());
               return Promise.resolve(0);
             });
         })

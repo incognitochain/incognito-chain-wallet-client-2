@@ -110,14 +110,6 @@ function AccountDefragment({ classes, isOpen }) {
   );
 
   React.useEffect(() => {
-    // const toAddressObservable = fromEvent(toInputRef.current, "keyup").pipe(
-    //   map(e => e.target.value),
-    //   filter(Boolean),
-    //   debounceTime(750),
-    //   distinctUntilChanged(),
-    //   startWith("")
-    // );
-
     const amountObservable = fromEvent(amountInputRef.current, "keyup").pipe(
       map(e => Number(e.target.value)),
       filter(Boolean),
@@ -126,24 +118,29 @@ function AccountDefragment({ classes, isOpen }) {
       startWith("")
     );
 
-    const subscription = combineLatest(
-      /*toAddressObservable,*/ amountObservable
-    )
+    const subscription = combineLatest(amountObservable)
       .pipe(
-        filter(([amount]) => amount),
+        filter(([amount]) => true),
         switchMap(([amount]) => {
+          if (Number(amountInputRef.current.value) <= 0) {
+            return;
+          }
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
+          console.log(
+            "Amount when combine latest: ",
+            Number(amountInputRef.current.value) * 100
+          );
           return rpcClientService
             .getEstimateFeeToDefragment(
               account.PaymentAddress,
-              Number(amount) * 100,
+              Number(amountInputRef.current.value) * 100,
               account.PrivateKey,
               accountWallet,
               Number(state.isPrivacy)
             )
             .catch(e => {
               console.error(e);
-              toastr.error("Error on get estimation fee!");
+              toastr.error("Error on get estimation fee! " + e.toString());
               return Promise.resolve(0);
             });
         })
@@ -206,19 +203,23 @@ function AccountDefragment({ classes, isOpen }) {
     // isPrivacy in state is string
     let { amount, fee, isPrivacy } = state;
 
-    var result = await Account.defragment(
-      Number(amount) * 100,
-      Number(fee) * 100,
-      Number(isPrivacy),
-      account,
-      wallet
-    );
-
-    if (result.txId) {
-      clearAccountBalance(account.name);
-      toastr.success("Completed: ", result.txId);
-      dispatch({ type: "RESET" });
-    } else {
+    try {
+      var result = await Account.defragment(
+        Number(amount) * 100,
+        Number(fee) * 100,
+        Number(isPrivacy),
+        account,
+        wallet
+      );
+      if (result.txId) {
+        clearAccountBalance(account.name);
+        toastr.success("Completed: ", result.txId);
+        dispatch({ type: "RESET" });
+      } else {
+        console.log("Create tx err: ", result.err);
+        toastr.error("Send failed. Please try again!");
+      }
+    } catch (e) {
       console.log("Create tx err: ", result.err);
       toastr.error("Send failed. Please try again!");
     }

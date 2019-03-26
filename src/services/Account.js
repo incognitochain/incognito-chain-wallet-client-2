@@ -80,6 +80,7 @@ export default class Account {
       // save wallet
       wallet.save(getPassphrase());
     } catch (e) {
+      await Wallet.resetProgressTx();
       throw e;
     }
     await Wallet.resetProgressTx();

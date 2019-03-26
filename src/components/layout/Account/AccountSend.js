@@ -63,6 +63,7 @@ const refs = { modalConfirmationRef: null }; //TODO - remove this
 function AccountSend({ classes, isOpen }) {
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
+  const isPrivacyRef = React.useRef();
 
   const { wallet } = useWalletContext();
   const account = useAccountContext();
@@ -126,11 +127,24 @@ function AccountSend({ classes, isOpen }) {
       distinctUntilChanged(),
       startWith(0)
     );
+    const isPrivacyObservable = fromEvent(toInputRef.current, "change").pipe(
+      map(e => e.target.value),
+      filter(Boolean),
+      debounceTime(750),
+      distinctUntilChanged(),
+      startWith("")
+    );
 
-    const subscription = combineLatest(toAddressObservable, amountObservable)
+    const subscription = combineLatest(
+      toAddressObservable,
+      amountObservable,
+      isPrivacyObservable
+    )
       .pipe(
-        filter(([toAddress, amount]) => toAddress && amount),
-        switchMap(([toAddress, amount]) => {
+        filter(
+          ([toAddress, amount, isPrivacy]) => toAddress && amount && isPrivacy
+        ),
+        switchMap(([toAddress, amount, isPrivacy]) => {
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
           return rpcClientService
             .getEstimateFee(
@@ -139,11 +153,11 @@ function AccountSend({ classes, isOpen }) {
               Number(amount) * 100,
               account.PrivateKey,
               accountWallet,
-              Number(state.isPrivacy)
+              Number(isPrivacy)
             )
             .catch(e => {
               console.error(e);
-              toastr.error("Error on get estimation fee!");
+              toastr.error("Error on get estimation fee! " + e.toString());
               return Promise.resolve(0);
             });
         })
@@ -280,6 +294,7 @@ function AccountSend({ classes, isOpen }) {
               value={state.isPrivacy}
               onChange={onChangeInput("isPrivacy")}
               color="primary"
+              inputProps={{ ref: isPrivacyRef }}
             />
             Is Privacy
           </div>

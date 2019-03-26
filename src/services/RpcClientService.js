@@ -16,7 +16,7 @@ export function listPrivacyTokens() {
   return getRpcClient().listPrivacyCustomTokens();
 }
 
-export function getEstimateFee(
+export async function getEstimateFee(
   from,
   to,
   amount,
@@ -25,19 +25,25 @@ export function getEstimateFee(
   isPrivacy
 ) {
   console.log("Estimating fee ...");
-  return getRpcClient().getEstimateFee(
-    from,
-    to,
-    amount,
-    privateKey,
-    null,
-    null,
-    accountWallet,
-    isPrivacy
-  );
+  let fee;
+  try {
+    fee = await getRpcClient().getEstimateFee(
+      from,
+      to,
+      amount,
+      privateKey,
+      null,
+      null,
+      accountWallet,
+      isPrivacy
+    );
+  } catch (e) {
+    throw e;
+  }
+  return fee;
 }
 
-export function getEstimateFeeForSendingToken(
+export async function getEstimateFeeForSendingToken(
   from,
   to,
   amount,
@@ -51,17 +57,24 @@ export function getEstimateFeeForSendingToken(
   console.log("\tamount:" + amount);
   console.log("\ttokenObject", tokenObject);
   console.log("\tprivateKey", privateKey);
-  return getRpcClient().getEstimateFeeForSendingToken(
-    from,
-    to,
-    amount,
-    tokenObject,
-    privateKey,
-    account
-  );
+
+  let fee;
+  try {
+    fee = await getRpcClient().getEstimateFeeForSendingToken(
+      from,
+      to,
+      amount,
+      tokenObject,
+      privateKey,
+      account
+    );
+  } catch (e) {
+    throw e;
+  }
+  return fee;
 }
 
-export function getEstimateFeeToDefragment(
+export async function getEstimateFeeToDefragment(
   from,
   amount,
   privateKey,
@@ -69,11 +82,17 @@ export function getEstimateFeeToDefragment(
   isPrivacy
 ) {
   console.log("Estimating fee ...");
-  return getRpcClient().getEstimateFeeToDefragment(
-    from,
-    amount,
-    privateKey,
-    accountWallet,
-    isPrivacy
-  );
+  let fee;
+  try {
+    fee = await getRpcClient().getEstimateFeeToDefragment(
+      from,
+      amount,
+      privateKey,
+      accountWallet,
+      isPrivacy
+    );
+  } catch (e) {
+    throw e;
+  }
+  return fee;
 }
