@@ -74,6 +74,7 @@ function AccountStaking({ classes, isOpen }) {
   console.log("BurnAddress: ", BurnAddress);
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
+  const stakingTypeRef = React.createRef();
 
   const { wallet } = useWalletContext();
   const account = useAccountContext();
@@ -123,7 +124,10 @@ function AccountStaking({ classes, isOpen }) {
   );
 
   React.useEffect(() => {
-    const toAddressObservable = fromEvent(toInputRef.current, "keyup").pipe(
+    const stakingTypeObservable = fromEvent(
+      stakingTypeRef.current,
+      "change"
+    ).pipe(
       map(e => e.target.value),
       filter(Boolean),
       debounceTime(750),
@@ -131,25 +135,19 @@ function AccountStaking({ classes, isOpen }) {
       startWith("")
     );
 
-    const amountObservable = fromEvent(amountInputRef.current, "keyup").pipe(
-      map(e => Number(e.target.value)),
-      filter(Boolean),
-      debounceTime(750),
-      distinctUntilChanged(),
-      startWith(0)
-    );
-
-    const subscription = combineLatest(toAddressObservable, amountObservable)
+    const subscription = combineLatest(stakingTypeObservable)
       .pipe(
-        filter(([toAddress, amount]) => toAddress && amount),
-        switchMap(([toAddress, amount]) => {
+        filter(([stakingType]) => {
+          return true;
+        }),
+        switchMap(([stakingType]) => {
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
           console.log("Estimate fee .......");
           return rpcClientService
             .getEstimateFee(
               account.PaymentAddress,
-              toAddress,
-              Number(amount) * 100,
+              state.toAddress,
+              Number(amountInputRef.current.value) * 100,
               account.PrivateKey,
               accountWallet
             )
@@ -286,10 +284,14 @@ function AccountStaking({ classes, isOpen }) {
       if (Number(e.target.value) < 0) {
         toastr.warning("Fee must not be less than zero!");
       }
+    } else if (name === "stakingType") {
+      if (e.target.value == "1") {
+        dispatch({ type: "CHANGE_INPUT", name: "amount", value: "1" });
+      }
+      if (e.target.value == "1") {
+        dispatch({ type: "CHANGE_INPUT", name: "amount", value: "2" });
+      }
     }
-    // else if (name === "stakingType") {
-    //   e.target.value = e.target.value == "0" ? "1" : "0";
-    // }
     dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
   };
 
@@ -314,7 +316,8 @@ function AccountStaking({ classes, isOpen }) {
             <select
               label="Staking Type"
               id="stakingType"
-              onChange={onChangeInput("stakingType")}
+              onChange={e => onChangeInput("stakingType")(e)}
+              ref={stakingTypeRef}
             >
               <option
                 value="0"
@@ -346,28 +349,27 @@ function AccountStaking({ classes, isOpen }) {
       </div>
 
       <TextField
-        disabled
         required
+        disabled
         id="toAddress"
         label="To"
         className={classes.textField}
         margin="normal"
         variant="outlined"
-        value={BurnAddress}
+        value={state.toAddress}
         onChange={e => onChangeInput("toAddress")(e)}
         inputProps={{ ref: toInputRef }}
       />
 
       <TextField
         required
+        disabled
         id="amount"
         label="Amount"
         className={classes.textField}
         margin="normal"
         variant="outlined"
-        value={
-          state.stakingType == "0" ? AmountStakingShard : AmountStakingBeacon
-        }
+        value={state.amount}
         onChange={e => onChangeInput("amount")(e)}
         inputProps={{ ref: amountInputRef }}
       />
