@@ -3,7 +3,7 @@ import React from "react";
 export const AccountContext = React.createContext({
   PaymentAddress: "",
   PrivateKey: "",
-  Pubkey: "",
+  PublicKey: "",
   ReadonlyKey: "",
   name: ""
   // value: 0 // WARNING: get account balance from AccountListContext instead
