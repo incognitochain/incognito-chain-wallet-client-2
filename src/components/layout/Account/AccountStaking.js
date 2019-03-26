@@ -114,7 +114,12 @@ function AccountStaking({ classes, isOpen }) {
     account => ({
       paymentAddress: account.PaymentAddress,
       toAddress: BurnAddress,
-      amount: AmountStakingShard,
+      amount: (Number(AmountStakingShard) / 100).toLocaleString(
+        navigator.language,
+        {
+          minimumFractionDigits: 2
+        }
+      ),
       fee: "",
       showAlert: "",
       isAlert: false,
@@ -285,12 +290,17 @@ function AccountStaking({ classes, isOpen }) {
         toastr.warning("Fee must not be less than zero!");
       }
     } else if (name === "stakingType") {
-      if (e.target.value == "1") {
-        dispatch({ type: "CHANGE_INPUT", name: "amount", value: "1" });
-      }
-      if (e.target.value == "1") {
-        dispatch({ type: "CHANGE_INPUT", name: "amount", value: "2" });
-      }
+      const amountVal =
+        e.target.value == "0"
+          ? (Number(AmountStakingShard) / 100).toLocaleString(
+              navigator.language,
+              { minimumFractionDigits: 2 }
+            )
+          : (Number(AmountStakingBeacon) / 100).toLocaleString(
+              navigator.language,
+              { minimumFractionDigits: 2 }
+            );
+      dispatch({ type: "CHANGE_INPUT", name: "amount", value: amountVal });
     }
     dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
   };
