@@ -62,6 +62,7 @@ const refs = { modalConfirmationRef: null }; //TODO - remove this
 function AccountDefragment({ classes, isOpen }) {
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
+  const isPrivacyRef = React.useRef();
 
   const { wallet } = useWalletContext();
   const account = useAccountContext();
@@ -118,7 +119,15 @@ function AccountDefragment({ classes, isOpen }) {
       startWith("")
     );
 
-    const subscription = combineLatest(amountObservable)
+    const isPrivacyObservable = fromEvent(isPrivacyRef.current, "change").pipe(
+      map(e => e.target.value),
+      filter(Boolean),
+      debounceTime(750),
+      distinctUntilChanged(),
+      startWith("")
+    );
+
+    const subscription = combineLatest(amountObservable, isPrivacyObservable)
       .pipe(
         filter(([amount]) => true),
         switchMap(([amount]) => {
@@ -126,17 +135,17 @@ function AccountDefragment({ classes, isOpen }) {
             return;
           }
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
-          console.log(
-            "Amount when combine latest: ",
-            Number(amountInputRef.current.value) * 100
-          );
+          // console.log(
+          //   "Amount when combine latest: ",
+          //   Number(amountInputRef.current.value) * 100
+          // );
           return rpcClientService
             .getEstimateFeeToDefragment(
               account.PaymentAddress,
               Number(amountInputRef.current.value) * 100,
               account.PrivateKey,
               accountWallet,
-              Number(state.isPrivacy)
+              Number(isPrivacyRef.current.value)
             )
             .catch(e => {
               console.error(e);
@@ -220,8 +229,8 @@ function AccountDefragment({ classes, isOpen }) {
         toastr.error("Send failed. Please try again!");
       }
     } catch (e) {
-      console.log("Create tx err: ", result.err);
-      toastr.error("Send failed. Please try again!");
+      console.log("Create tx err: ", e);
+      toastr.error("Send failed. Please try again! " + e.toString());
     }
 
     dispatch({ type: "SHOW_LOADING", isShow: false });
@@ -272,6 +281,7 @@ function AccountDefragment({ classes, isOpen }) {
               value={state.isPrivacy}
               onChange={onChangeInput("isPrivacy")}
               color="primary"
+              inputProps={{ ref: isPrivacyRef }}
             />
             Is Privacy
           </div>
