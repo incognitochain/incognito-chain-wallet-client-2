@@ -74,6 +74,7 @@ const App = ({ history, location }) => {
   async function listAccounts(wallet) {
     console.time("listAccounts");
     let accountList = cacheAccountListService.getAccountList();
+    console.log("accountList", accountList);
     if (!accountList || accountList.length == 0) {
       accountList = [];
       try {
@@ -84,7 +85,8 @@ const App = ({ history, location }) => {
             value: -1,
             PaymentAddress: account.PaymentAddress,
             ReadonlyKey: account.ReadonlyKey,
-            PrivateKey: account.PrivateKey
+            PrivateKey: account.PrivateKey,
+            PublicKey: account.PublicKey
           };
         });
       } catch (e) {
