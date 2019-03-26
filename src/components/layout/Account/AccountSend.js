@@ -106,7 +106,7 @@ function AccountSend({ classes, isOpen }) {
       fee: "",
       showAlert: "",
       isAlert: false,
-      isPrivacy: "0"
+      isPrivacy: "1"
     })
   );
 
