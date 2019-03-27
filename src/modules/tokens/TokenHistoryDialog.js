@@ -11,6 +11,7 @@ import {
   genImageFromStr
 } from "constant-chain-web-js/build/wallet";
 import Avatar from "@material-ui/core/Avatar";
+import moment from "moment";
 
 //TODO: update url
 // const url = "http://explorer.constant.money:3002/tx/cf934f9b61f97d4937d82e9a0564a6a8101f622aa16f6bf7d823f2fe83ec3f45"
@@ -97,6 +98,12 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
                 }
                 const image = genImageFromStr(txID, 40);
 
+                let createdTime = "";
+                if (time != undefined && time != null) {
+                  time = moment(time);
+                  createdTime = time.format("DD/MM/YYYY - hh:mm:ss");
+                }
+
                 return (
                   <HistoryItem key={txID}>
                     <Div>
@@ -106,7 +113,7 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
                             <Avatar alt="tx" src={image} />
                           </a>
                         </TxID>
-                        <Time>{time.toString()}</Time>
+                        <Time>{createdTime}</Time>
                       </Row1>
 
                       <Row2>

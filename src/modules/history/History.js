@@ -44,7 +44,7 @@ export function History() {
 
   React.useEffect(() => {
     loadHistory();
-  }, []);
+  }, [account]);
 
   async function loadHistory() {
     console.log("Load history when change account!!!!");

@@ -64,15 +64,11 @@ class MainTabs extends React.Component {
       paymentAddress: paymentAddress,
       ...this.props
     };
-    return (
-      <TokenTabs
-        // ref={component => {
-        //   this.tokenTabsRef = component;
-        // }}
-        {...props}
-        tokenListRef={this.props.tokenListRef}
-      />
-    );
+    return <TokenTabs {...props} tokenListRef={this.props.tokenListRef} />;
+  };
+
+  renderHistory = () => {
+    return <History />;
   };
 
   render() {
@@ -105,7 +101,7 @@ class MainTabs extends React.Component {
         {renderIf(value === mapTabNameToIndex["tokens"])(
           this.renderTokenTabs()
         )}
-        {renderIf(value === mapTabNameToIndex["history"])(<History />)}
+        {renderIf(value === mapTabNameToIndex["history"])(this.renderHistory())}
         {renderIf(value === mapTabNameToIndex["privacyKey"])(
           this.renderPrivacyKey()
         )}

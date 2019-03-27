@@ -26,13 +26,7 @@ import {
   clearAccountBalance
 } from "../../../services/CacheAccountBalanceService";
 import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
-import {
-  BurnAddress,
-  AmountStakingBeacon,
-  MetaStakingBeacon,
-  AmountStakingShard,
-  MetaStakingShard
-} from "constant-chain-web-js/build/wallet";
+import { BurnAddress } from "constant-chain-web-js/build/wallet";
 
 const styles = theme => ({
   textField: {
@@ -69,6 +63,9 @@ function reducer(state, action) {
 }
 
 const refs = { modalConfirmationRef: null }; //TODO - remove this
+
+const amountStakingShard = rpcClientService.getStakingAmount(0);
+const amountStakingBeacon = rpcClientService.getStakingAmount(1);
 
 function AccountStaking({ classes, isOpen }) {
   console.log("BurnAddress: ", BurnAddress);
@@ -114,7 +111,7 @@ function AccountStaking({ classes, isOpen }) {
     account => ({
       paymentAddress: account.PaymentAddress,
       toAddress: BurnAddress,
-      amount: (Number(AmountStakingShard) / 100).toLocaleString(
+      amount: (Number(amountStakingShard) / 100).toLocaleString(
         navigator.language,
         {
           minimumFractionDigits: 2
@@ -214,24 +211,24 @@ function AccountStaking({ classes, isOpen }) {
       return;
     }
 
-    if (isNaN(fee)) {
-      toastr.warning("Fee is invalid!");
-      return;
-    }
-
     if (Number(amount) <= 0) {
       toastr.warning("Amount must be greater than zero!");
       return;
     }
 
-    if (Number(amount) > Number(balance)) {
+    if (isNaN(fee)) {
+      toastr.warning("Fee is invalid!");
+      return;
+    }
+
+    if (Number(amount) >= Number(balance)) {
       toastr.warning("Insufficient this account balance!");
       return;
     }
 
     if (
-      (stakingType == "0" && amount != AmountStakingShard / 100) ||
-      (stakingType == "1" && amount != AmountStakingBeacon / 100)
+      (stakingType == "0" && amount != amountStakingShard / 100) ||
+      (stakingType == "1" && amount != amountStakingBeacon / 100)
     ) {
       toastr.warning("Amount is invalid!");
       return;
@@ -245,10 +242,6 @@ function AccountStaking({ classes, isOpen }) {
 
     refs.modalConfirmationRef.open();
   };
-
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
 
   async function staking() {
     dispatch({ type: "SHOW_LOADING", isShow: true });
@@ -268,8 +261,8 @@ function AccountStaking({ classes, isOpen }) {
       toastr.success("Completed: ", result.txId);
       dispatch({ type: "RESET" });
     } else {
-      console.log("Cretae tx err: ", result.err);
-      toastr.error("Send failed. Please try again!");
+      console.log("Create tx err: ", result.err);
+      toastr.error("Staking failed. Please try again!");
     }
 
     dispatch({ type: "SHOW_LOADING", isShow: false });
@@ -293,11 +286,11 @@ function AccountStaking({ classes, isOpen }) {
     } else if (name === "stakingType") {
       const amountVal =
         e.target.value == "0"
-          ? (Number(AmountStakingShard) / 100).toLocaleString(
+          ? (Number(amountStakingShard) / 100).toLocaleString(
               navigator.language,
               { minimumFractionDigits: 2 }
             )
-          : (Number(AmountStakingBeacon) / 100).toLocaleString(
+          : (Number(amountStakingBeacon) / 100).toLocaleString(
               navigator.language,
               { minimumFractionDigits: 2 }
             );
@@ -404,7 +397,7 @@ function AccountStaking({ classes, isOpen }) {
         fullWidth
         onClick={() => confirmStaking()}
       >
-        Send
+        Staking
       </Button>
       <div className="badge badge-pill badge-light mt-3">
         * Only send CONSTANT to a CONSTANT address.

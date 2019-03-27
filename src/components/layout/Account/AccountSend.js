@@ -46,7 +46,7 @@ function reducer(state, action) {
     case "CHANGE_INPUT":
       return { ...state, [action.name]: action.value };
     case "RESET":
-      return { ...state, amount: "", toAddress: "" };
+      return { ...state, amount: "", toAddress: "", fee: "" };
     case "LOAD_ESTIMATION_FEE":
       return { ...state, isLoadingEstimationFee: true };
     case "LOAD_ESTIMATION_FEE_SUCCESS":
@@ -197,13 +197,13 @@ function AccountSend({ classes, isOpen }) {
       return;
     }
 
-    if (isNaN(fee)) {
-      toastr.warning("Fee is invalid!");
+    if (Number(amount) <= 0.01) {
+      toastr.warning("Amount is invalid!");
       return;
     }
 
-    if (Number(amount) <= 0) {
-      toastr.warning("Amount must be greater than zero!");
+    if (isNaN(fee)) {
+      toastr.warning("Fee is invalid!");
       return;
     }
 
@@ -261,12 +261,12 @@ function AccountSend({ classes, isOpen }) {
         toastr.warning("Receiver's address is invalid!");
       }
     } else if (name === "amount") {
-      if (Number(e.target.value) <= 0) {
-        toastr.warning("Amount must be greater than zero!");
+      if (Number(e.target.value) <= 0.01) {
+        toastr.warning("Amount must be greater than 0.01 constant!");
       }
     } else if (name === "fee") {
-      if (Number(e.target.value) < 0) {
-        toastr.warning("Fee must not be less than zero!");
+      if (Number(e.target.value) <= 0) {
+        toastr.warning("Fee must be greater than zero!");
       }
     } else if (name === "isPrivacy") {
       e.target.value = e.target.value == "0" ? "1" : "0";

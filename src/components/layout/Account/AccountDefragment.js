@@ -45,7 +45,7 @@ function reducer(state, action) {
     case "CHANGE_INPUT":
       return { ...state, [action.name]: action.value };
     case "RESET":
-      return { ...state, amount: "", toAddress: "" };
+      return { ...state, amount: "", toAddress: "", fee: "" };
     case "LOAD_ESTIMATION_FEE":
       return { ...state, isLoadingEstimationFee: true };
     case "LOAD_ESTIMATION_FEE_SUCCESS":
@@ -61,7 +61,6 @@ const refs = { modalConfirmationRef: null }; //TODO - remove this
 
 function AccountDefragment({ classes, isOpen }) {
   const amountInputRef = React.useRef();
-  const toInputRef = React.useRef();
   const isPrivacyRef = React.useRef();
 
   const { wallet } = useWalletContext();
@@ -101,7 +100,6 @@ function AccountDefragment({ classes, isOpen }) {
     account,
     account => ({
       paymentAddress: account.PaymentAddress,
-      // toAddress: "",
       amount: "1",
       fee: "",
       showAlert: "",
@@ -135,10 +133,6 @@ function AccountDefragment({ classes, isOpen }) {
             return;
           }
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
-          // console.log(
-          //   "Amount when combine latest: ",
-          //   Number(amountInputRef.current.value) * 100
-          // );
           return rpcClientService
             .getEstimateFeeToDefragment(
               account.PaymentAddress,
@@ -225,12 +219,12 @@ function AccountDefragment({ classes, isOpen }) {
         toastr.success("Completed: ", result.txId);
         dispatch({ type: "RESET" });
       } else {
-        console.log("Create tx err: ", result.err);
-        toastr.error("Send failed. Please try again!");
+        console.log("Defragment err: ", result.err);
+        toastr.error("Defragment failed. Please try again!");
       }
     } catch (e) {
-      console.log("Create tx err: ", e);
-      toastr.error("Send failed. Please try again! " + e.toString());
+      console.log("Defragment err: ", e);
+      toastr.error("Defragment failed. Please try again! " + e.toString());
     }
 
     dispatch({ type: "SHOW_LOADING", isShow: false });
@@ -244,8 +238,8 @@ function AccountDefragment({ classes, isOpen }) {
         toastr.warning("Receiver's address is invalid!");
       }
     } else if (name === "amount") {
-      if (Number(e.target.value) <= 0) {
-        toastr.warning("Amount must be greater than zero!");
+      if (Number(e.target.value) <= 0.01) {
+        toastr.warning("Amount must be greater than 0.01 constant!");
       }
     } else if (name === "fee") {
       if (Number(e.target.value) < 0) {
