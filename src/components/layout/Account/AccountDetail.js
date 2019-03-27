@@ -190,12 +190,11 @@ class AccountDetail extends React.Component {
     });
     this.modalTokenCreateRef.open();
   };
+
   handleCloseCreateToken = () => {
     this.modalTokenCreateRef.close();
-
-    // this.tokenTabsRef??????
-    // this.tokenTabsRef.onRefresh();
   };
+
   handleRemoveAccount = () => {
     this.modalDeleteAccountRef.open();
   };
@@ -266,7 +265,6 @@ class AccountDetail extends React.Component {
   }
 
   openAccountSend = account => {
-    // this.modalAccountDetailRef.close();
     this.setState({
       modalAccountDetail: "",
       modalAccountSend: <AccountSend />
@@ -289,6 +287,7 @@ class AccountDetail extends React.Component {
     });
     this.modalAccountDefragmentRef.open();
   };
+
   getAccountBalance(accountName) {
     try {
       let balance = cacheAccountBalanceService.getAccountBalance(accountName);

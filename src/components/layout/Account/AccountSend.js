@@ -25,7 +25,7 @@ import {
   saveAccountBalance,
   clearAccountBalance
 } from "../../../services/CacheAccountBalanceService";
-import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
+import { DelayInput } from "react-delay-input";
 
 const styles = theme => ({
   textField: {
@@ -221,10 +221,6 @@ function AccountSend({ classes, isOpen }) {
     refs.modalConfirmationRef.open();
   };
 
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   async function sendCoin() {
     dispatch({ type: "SHOW_LOADING", isShow: true });
 
@@ -324,10 +320,24 @@ function AccountSend({ classes, isOpen }) {
         margin="normal"
         variant="outlined"
         value={state.toAddress}
-        onChange={e => onChangeInput("toAddress")(e)}
+        onChange={e => {
+          onChangeInput("toAddress")(e);
+        }}
         inputProps={{ ref: toInputRef }}
       />
 
+      {/* <DelayInput
+        required
+        id="amount"
+        label="Amount"
+        className={classes.textField}
+        margin="normal"
+        variant="outlined"
+        value={state.amount}
+        delayTimeout={1000}
+        onChange={e => onChangeInput("amount")(e)}
+        inputProps={{ ref: amountInputRef }}
+      /> */}
       <TextField
         required
         id="amount"
@@ -336,6 +346,7 @@ function AccountSend({ classes, isOpen }) {
         margin="normal"
         variant="outlined"
         value={state.amount}
+        delayTimeout={1000}
         onChange={e => onChangeInput("amount")(e)}
         inputProps={{ ref: amountInputRef }}
       />
