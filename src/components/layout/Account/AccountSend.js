@@ -248,8 +248,8 @@ function AccountSend({ classes, isOpen }) {
       toastr.success("Completed: ", result.txId);
       dispatch({ type: "RESET" });
     } else {
-      console.log("Cretae tx err: ", result.err);
-      toastr.error("Send failed. Please try again!");
+      console.log("Create tx err: ", result.err);
+      toastr.error("Send failed. Please try again! Err:" + result.err.Message);
     }
 
     dispatch({ type: "SHOW_LOADING", isShow: false });
