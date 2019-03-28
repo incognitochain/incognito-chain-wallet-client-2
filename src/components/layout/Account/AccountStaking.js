@@ -399,7 +399,7 @@ function AccountStaking({
       </div>
       {state.isLoadingEstimationFee ? (
         <div className="badge badge-pill badge-light mt-3">
-          * Loading estimation fee...
+          * Loading estimation <b>MIN FEE</b>...
         </div>
       ) : null}
 

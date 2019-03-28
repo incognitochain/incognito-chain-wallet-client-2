@@ -417,7 +417,7 @@ class CreateToken extends React.Component {
         </Button>
         {this.state.isLoadingEstimationFee ? (
           <div className="badge badge-pill badge-light mt-3">
-            * Loading estimation fee...
+            * Loading estimation <b>MIN FEE</b>...
           </div>
         ) : null}
       </form>
