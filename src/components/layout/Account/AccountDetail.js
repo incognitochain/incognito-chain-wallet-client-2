@@ -27,6 +27,7 @@ import * as passwordService from "../../../services/PasswordService";
 import _ from "lodash";
 import * as cacheAccountListService from "../../../services/CacheListAccountService";
 import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
+import * as rpcClientService from "../../../services/RpcClientService";
 
 const styles = theme => ({
   key: {
@@ -272,10 +273,14 @@ class AccountDetail extends React.Component {
     this.modalAccountSendRef.open();
   };
 
-  openAccountStaking = account => {
+  openAccountStaking = async account => {
+    const amountStakingShard = await rpcClientService.getStakingAmount(0);
+    const amountStakingBeacon = await rpcClientService.getStakingAmount(1);
     this.setState({
       modalAccountDetail: "",
-      modalAccountStaking: <AccountStaking />
+      modalAccountStaking: (
+        <AccountStaking amountStakingShard amountStakingBeacon />
+      )
     });
     this.modalAccountStakingRef.open();
   };

@@ -66,7 +66,12 @@ function reducer(state, action) {
 
 const refs = { modalConfirmationRef: null }; //TODO - remove this
 
-function AccountStaking({ classes, isOpen }) {
+function AccountStaking({
+  classes,
+  isOpen,
+  amountStakingShard,
+  amountStakingBeacon
+}) {
   console.log("BurnAddress: ", BurnAddress);
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
@@ -79,8 +84,6 @@ function AccountStaking({ classes, isOpen }) {
   const accountWallet = wallet.getAccountByName(account.name);
 
   let balance;
-  let amountStakingShard;
-  let amountStakingBeacon;
   try {
     balance = accounts.find(({ name }) => name === account.name).value;
   } catch (e) {
@@ -90,7 +93,6 @@ function AccountStaking({ classes, isOpen }) {
 
   React.useEffect(() => {
     reloadBalance();
-    loadStakingAmount();
   }, []);
 
   async function reloadBalance() {
@@ -106,13 +108,8 @@ function AccountStaking({ classes, isOpen }) {
     });
   }
 
-  async function loadStakingAmount() {
-    amountStakingShard = await rpcClientService.getStakingAmount(0);
-    amountStakingBeacon = await rpcClientService.getStakingAmount(1);
-  }
-
   let [state, dispatch] = useDebugReducer(
-    "AccountStaking",
+    "AccountSend",
     reducer,
     account,
     account => ({
