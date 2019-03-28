@@ -13,10 +13,6 @@ import {
 import Avatar from "@material-ui/core/Avatar";
 import moment from "moment";
 
-//TODO: update url
-// const url = "http://explorer.constant.money:3002/tx/cf934f9b61f97d4937d82e9a0564a6a8101f622aa16f6bf7d823f2fe83ec3f45"
-const url = "https://constant.money/";
-
 function truncateMiddle(str = "") {
   return _.truncate(str, { length: 10 }) + str.slice(-4);
 }
@@ -109,7 +105,9 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
                     <Div>
                       <Row1>
                         <TxID>
-                          <a href={url}>
+                          <a
+                            href={process.env.CONSTANT_EXPLORER + "tx/" + txID}
+                          >
                             <Avatar alt="tx" src={image} />
                           </a>
                         </TxID>
