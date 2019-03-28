@@ -2,7 +2,7 @@ import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Account from "../../../services/Account";
-import { Button, TextField, Checkbox } from "@material-ui/core";
+import { Button, TextField, Select, MenuItem } from "@material-ui/core";
 import { useAccountContext } from "../../../common/context/AccountContext";
 import toastr from "toastr";
 import { useWalletContext } from "../../../common/context/WalletContext";
@@ -321,25 +321,16 @@ function AccountStaking({
       <div className="row">
         <div className="col-sm">
           <div>
-            <select
+            <Select
               label="Staking Type"
               id="stakingType"
               onChange={e => onChangeInput("stakingType")(e)}
               ref={stakingTypeRef}
+              value={state.stakingType}
             >
-              <option
-                value="0"
-                selected={state.stakingType == "0" ? true : false}
-              >
-                Shard Type
-              </option>
-              <option
-                value="1"
-                selected={state.stakingType == "1" ? true : false}
-              >
-                Beacon Type
-              </option>
-            </select>
+              <MenuItem value="0">Shard Type</MenuItem>
+              <MenuItem value="1">Beacon Type</MenuItem>
+            </Select>
           </div>
         </div>
         {console.log("state.stakingType: ", state.stakingType)}
