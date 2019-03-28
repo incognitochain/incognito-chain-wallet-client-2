@@ -308,7 +308,7 @@ function AccountDefragment({ classes, isOpen }) {
       <TextField
         required
         id="amount"
-        label="Amount"
+        label="<= Amount"
         className={classes.textField}
         margin="normal"
         variant="outlined"
