@@ -344,7 +344,7 @@ class AccountDetail extends React.Component {
         </CopyToClipboardWrapper>
         <Balance>{this.renderBalance(balance)}</Balance>
 
-        <div className="row">
+        <div className="row" style={{ flexWrap: "nowrap" }}>
           <div className="col-sm">
             <SendButton
               className="SendButton"
