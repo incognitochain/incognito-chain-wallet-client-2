@@ -26,7 +26,9 @@ import {
   clearAccountBalance
 } from "../../../services/CacheAccountBalanceService";
 import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
-import { BurnAddress } from "constant-chain-web-js/build/wallet";
+
+const BurnAddress =
+  "1NHooC9spWwdWZw7itkDrSrueSHtdGtR9deCHSvDK84KAFow5b7LNopcsCFz";
 
 const styles = theme => ({
   textField: {
@@ -64,9 +66,6 @@ function reducer(state, action) {
 
 const refs = { modalConfirmationRef: null }; //TODO - remove this
 
-const amountStakingShard = rpcClientService.getStakingAmount(0);
-const amountStakingBeacon = rpcClientService.getStakingAmount(1);
-
 function AccountStaking({ classes, isOpen }) {
   console.log("BurnAddress: ", BurnAddress);
   const amountInputRef = React.useRef();
@@ -80,6 +79,8 @@ function AccountStaking({ classes, isOpen }) {
   const accountWallet = wallet.getAccountByName(account.name);
 
   let balance;
+  let amountStakingShard;
+  let amountStakingBeacon;
   try {
     balance = accounts.find(({ name }) => name === account.name).value;
   } catch (e) {
@@ -89,6 +90,7 @@ function AccountStaking({ classes, isOpen }) {
 
   React.useEffect(() => {
     reloadBalance();
+    loadStakingAmount();
   }, []);
 
   async function reloadBalance() {
@@ -104,8 +106,13 @@ function AccountStaking({ classes, isOpen }) {
     });
   }
 
+  async function loadStakingAmount() {
+    amountStakingShard = await rpcClientService.getStakingAmount(0);
+    amountStakingBeacon = await rpcClientService.getStakingAmount(1);
+  }
+
   let [state, dispatch] = useDebugReducer(
-    "AccountSend",
+    "AccountStaking",
     reducer,
     account,
     account => ({

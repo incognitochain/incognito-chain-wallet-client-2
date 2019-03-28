@@ -95,7 +95,7 @@ function AccountDefragment({ classes, isOpen }) {
   }
 
   let [state, dispatch] = useDebugReducer(
-    "AccountSend",
+    "AccountDefragment",
     reducer,
     account,
     account => ({
@@ -353,7 +353,7 @@ function AccountDefragment({ classes, isOpen }) {
         onOK={() => defragment()}
         className={{ margin: 0 }}
       >
-        <div>Are you sure to defragment wallet? </div>
+        <div>Are you sure to defragment wallet?</div>
       </ConfirmDialog>
 
       <Loading fullscreen isShow={state.isLoading} />

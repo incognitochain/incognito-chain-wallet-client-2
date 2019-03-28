@@ -98,11 +98,11 @@ export async function getEstimateFeeToDefragment(
 }
 
 export async function getStakingAmount(type) {
-  let amount;
+  let resp;
   try {
-    amount = await getRpcClient().getStakingAmount(type);
+    resp = await getRpcClient().getStakingAmount(type);
   } catch (e) {
     throw e;
   }
-  return amount;
+  return resp.res;
 }
