@@ -279,7 +279,10 @@ class AccountDetail extends React.Component {
     this.setState({
       modalAccountDetail: "",
       modalAccountStaking: (
-        <AccountStaking amountStakingShard amountStakingBeacon />
+        <AccountStaking
+          amountStakingShard={amountStakingShard}
+          amountStakingBeacon={amountStakingBeacon}
+        />
       )
     });
     this.modalAccountStakingRef.open();
