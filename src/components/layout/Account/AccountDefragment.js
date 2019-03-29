@@ -313,7 +313,7 @@ function AccountDefragment({ classes, isOpen }) {
       <TextField
         required
         id="amount"
-        label="Amount"
+        label="<= Amount"
         className={classes.textField}
         margin="normal"
         variant="outlined"
@@ -348,7 +348,7 @@ function AccountDefragment({ classes, isOpen }) {
       </div>
       {state.isLoadingEstimationFee ? (
         <div className="badge badge-pill badge-light mt-3">
-          * Loading estimation fee...
+          * Loading estimation <b>MIN FEE</b>...
         </div>
       ) : null}
 

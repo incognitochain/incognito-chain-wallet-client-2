@@ -49,7 +49,12 @@ function reducer(state, action) {
     case "LOAD_ESTIMATION_FEE":
       return { ...state, isLoadingEstimationFee: true };
     case "LOAD_ESTIMATION_FEE_SUCCESS":
-      return { ...state, isLoadingEstimationFee: false, fee: action.fee / 100 };
+      return {
+        ...state,
+        isLoadingEstimationFee: false,
+        fee: action.fee / 100,
+        minFee: action.fee / 100
+      };
     case "SHOW_LOADING":
       return { ...state, isLoading: action.isShow };
     default:
@@ -103,7 +108,8 @@ function AccountSend({ classes, isOpen }) {
       paymentAddress: account.PaymentAddress,
       toAddress: "",
       amount: "",
-      fee: "",
+      fee: "0.00",
+      minFee: "0.00",
       showAlert: "",
       isAlert: false,
       isPrivacy: "1"
@@ -241,8 +247,8 @@ function AccountSend({ classes, isOpen }) {
       toastr.success("Completed: ", result.txId);
       dispatch({ type: "RESET" });
     } else {
-      console.log("Cretae tx err: ", result.err);
-      toastr.error("Send failed. Please try again!");
+      console.log("Create tx err: ", result.err);
+      toastr.error("Send failed. Please try again! Err:" + result.err.Message);
     }
 
     dispatch({ type: "SHOW_LOADING", isShow: false });
@@ -262,6 +268,10 @@ function AccountSend({ classes, isOpen }) {
     } else if (name === "fee") {
       if (Number(e.target.value) <= 0) {
         toastr.warning("Fee must be greater than zero!");
+      } else {
+        if (Number(e.target.value) < state.minFee) {
+          toastr.warning("Fee must be greater than min fee!");
+        }
       }
     } else if (name === "isPrivacy") {
       e.target.value = e.target.value == "0" ? "1" : "0";
@@ -353,7 +363,7 @@ function AccountSend({ classes, isOpen }) {
       <TextField
         required
         id="fee"
-        label="Fee"
+        label={"Min Fee " + state.minFee}
         className={classes.textField}
         margin="normal"
         variant="outlined"
@@ -376,7 +386,7 @@ function AccountSend({ classes, isOpen }) {
       </div>
       {state.isLoadingEstimationFee ? (
         <div className="badge badge-pill badge-light mt-3">
-          * Loading estimation fee...
+          * Loading estimation <b>MIN FEE</b>...
         </div>
       ) : null}
 

@@ -2,7 +2,7 @@ import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Account from "../../../services/Account";
-import { Button, TextField, Checkbox } from "@material-ui/core";
+import { Button, TextField, Select, MenuItem } from "@material-ui/core";
 import { useAccountContext } from "../../../common/context/AccountContext";
 import toastr from "toastr";
 import { useWalletContext } from "../../../common/context/WalletContext";
@@ -28,7 +28,7 @@ import {
 import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
 
 const BurnAddress =
-  "1NHooC9spWwdWZw7itkDrSrueSHtdGtR9deCHSvDK84KAFow5b7LNopcsCFz";
+  "1NHnxeKaZD5tMCzWR3yKXeQYh6o9XaskNhYb7WsWacwcUxB92GnoNGJTMHf1";
 
 const styles = theme => ({
   textField: {
@@ -325,25 +325,16 @@ function AccountStaking({
       <div className="row">
         <div className="col-sm">
           <div>
-            <select
+            <Select
               label="Staking Type"
               id="stakingType"
               onChange={e => onChangeInput("stakingType")(e)}
               ref={stakingTypeRef}
+              value={state.stakingType}
             >
-              <option
-                value="0"
-                selected={state.stakingType == "0" ? true : false}
-              >
-                Shard Type
-              </option>
-              <option
-                value="1"
-                selected={state.stakingType == "1" ? true : false}
-              >
-                Beacon Type
-              </option>
-            </select>
+              <MenuItem value="0">Shard Type</MenuItem>
+              <MenuItem value="1">Beacon Type</MenuItem>
+            </Select>
           </div>
         </div>
         {console.log("state.stakingType: ", state.stakingType)}
@@ -412,7 +403,7 @@ function AccountStaking({
       </div>
       {state.isLoadingEstimationFee ? (
         <div className="badge badge-pill badge-light mt-3">
-          * Loading estimation fee...
+          * Loading estimation <b>MIN FEE</b>...
         </div>
       ) : null}
 
