@@ -74,7 +74,7 @@ function AccountStaking({
   console.log("BurnAddress: ", BurnAddress);
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
-  const stakingTypeRef = React.useRef();
+  let stakingTypeRef = React.useRef();
 
   const { wallet } = useWalletContext();
   const account = useAccountContext();
@@ -129,10 +129,7 @@ function AccountStaking({
   );
 
   React.useEffect(() => {
-    const stakingTypeObservable = fromEvent(
-      stakingTypeRef.current,
-      "change"
-    ).pipe(
+    const stakingTypeObservable = fromEvent(stakingTypeRef.node, "change").pipe(
       map(e => e.target.value),
       filter(Boolean),
       debounceTime(750),
@@ -335,7 +332,9 @@ function AccountStaking({
               label="Staking Type"
               id="stakingType"
               onChange={e => onChangeInput("stakingType")(e)}
-              ref={stakingTypeRef}
+              inputRef={select => {
+                stakingTypeRef = select;
+              }}
               value={state.stakingType}
             >
               <MenuItem value="0">Shard Type</MenuItem>
