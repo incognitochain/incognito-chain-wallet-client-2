@@ -132,6 +132,11 @@ function AccountDefragment({ classes, isOpen }) {
           if (Number(amountInputRef.current.value) <= 0) {
             return;
           }
+          if (balance <= 0) {
+            toastr.warning("Balance is zero!");
+            return Promise.resolve(0);
+          }
+
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
           return rpcClientService
             .getEstimateFeeToDefragment(

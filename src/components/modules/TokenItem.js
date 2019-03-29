@@ -23,7 +23,7 @@ export function TokenItem({
 
   React.useEffect(() => {
     loadBalance(item.isInit);
-  }, [item.ID]);
+  }, [item.ID, item.history]);
 
   async function loadBalance(isInit) {
     if (isInit) {

@@ -147,6 +147,10 @@ function AccountStaking({
           return true;
         }),
         switchMap(([stakingType]) => {
+          if (balance <= 0) {
+            toastr.warning("Balance is zero!");
+            return Promise.resolve(0);
+          }
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
           console.log("Estimate fee .......");
           return rpcClientService
@@ -254,7 +258,7 @@ function AccountStaking({
     let { fee, stakingType } = state;
 
     var result = await Account.staking(
-      { type: Number(stakingType) },
+      { type: Number(stakingType), burningAddress: BurnAddress },
       Number(fee) * 100,
       account,
       wallet

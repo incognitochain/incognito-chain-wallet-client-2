@@ -25,7 +25,6 @@ import {
   saveAccountBalance,
   clearAccountBalance
 } from "../../../services/CacheAccountBalanceService";
-import { DelayInput } from "react-delay-input";
 
 const styles = theme => ({
   textField: {

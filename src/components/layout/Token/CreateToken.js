@@ -129,6 +129,7 @@ class CreateToken extends React.Component {
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
+          console.log("Estimate feeeeeeeee");
           this.setState({ isLoadingEstimationFee: true });
           return rpcClientService
             .getEstimateFeeForSendingToken(
