@@ -25,7 +25,6 @@ import {
   saveAccountBalance,
   clearAccountBalance
 } from "../../../services/CacheAccountBalanceService";
-import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
 
 const BurnAddress =
   "1NHnxeKaZD5tMCzWR3yKXeQYh6o9XaskNhYb7WsWacwcUxB92GnoNGJTMHf1";
@@ -52,7 +51,7 @@ function reducer(state, action) {
     case "CHANGE_INPUT":
       return { ...state, [action.name]: action.value };
     case "RESET":
-      return { ...state, amount: "", toAddress: "" };
+      return { ...state, amount: "", toAddress: "", fee: "" };
     case "LOAD_ESTIMATION_FEE":
       return { ...state, isLoadingEstimationFee: true };
     case "LOAD_ESTIMATION_FEE_SUCCESS":
@@ -75,7 +74,7 @@ function AccountStaking({
   console.log("BurnAddress: ", BurnAddress);
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
-  const stakingTypeRef = React.createRef();
+  const stakingTypeRef = React.useRef();
 
   const { wallet } = useWalletContext();
   const account = useAccountContext();
