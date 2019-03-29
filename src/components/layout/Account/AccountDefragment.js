@@ -225,7 +225,9 @@ function AccountDefragment({ classes, isOpen }) {
         dispatch({ type: "RESET" });
       } else {
         console.log("Defragment err: ", result.err);
-        toastr.error("Defragment failed. Please try again!");
+        toastr.error(
+          "Defragment failed. Please try again! Err:" + result.err.Message
+        );
       }
     } catch (e) {
       console.log("Defragment err: ", e);

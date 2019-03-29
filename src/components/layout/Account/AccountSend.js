@@ -107,7 +107,7 @@ function AccountSend({ classes, isOpen }) {
     account => ({
       paymentAddress: account.PaymentAddress,
       toAddress: "",
-      amount: "",
+      amount: "0.01",
       fee: "0.00",
       minFee: "0.00",
       showAlert: "",

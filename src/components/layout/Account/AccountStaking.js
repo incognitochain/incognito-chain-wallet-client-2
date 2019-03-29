@@ -256,20 +256,27 @@ function AccountStaking({
     // isPrivacy in state is string
     let { fee, stakingType } = state;
 
-    var result = await Account.staking(
-      { type: Number(stakingType), burningAddress: BurnAddress },
-      Number(fee) * 100,
-      account,
-      wallet
-    );
+    try {
+      var result = await Account.staking(
+        { type: Number(stakingType), burningAddress: BurnAddress },
+        Number(fee) * 100,
+        account,
+        wallet
+      );
 
-    if (result.txId) {
-      clearAccountBalance(account.name);
-      toastr.success("Completed: ", result.txId);
-      dispatch({ type: "RESET" });
-    } else {
-      console.log("Create tx err: ", result.err);
-      toastr.error("Staking failed. Please try again!");
+      if (result.txId) {
+        clearAccountBalance(account.name);
+        toastr.success("Completed: ", result.txId);
+        dispatch({ type: "RESET" });
+      } else {
+        console.log("Create tx err: ", result.err);
+        toastr.error(
+          "Staking failed. Please try again! Err:" + result.err.Message
+        );
+      }
+    } catch (e) {
+      console.log("Create tx err: ", e.toString());
+      toastr.error("Staking failed. Please try again! Err:" + e.toString());
     }
 
     dispatch({ type: "SHOW_LOADING", isShow: false });
