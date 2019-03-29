@@ -234,21 +234,28 @@ function AccountSend({ classes, isOpen }) {
 
     console.log("isPrivacy when create tx: ", isPrivacy);
 
-    var result = await Account.sendConstant(
-      [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
-      Number(fee) * 100,
-      Number(isPrivacy),
-      account,
-      wallet
-    );
+    try {
+      var result = await Account.sendConstant(
+        [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
+        Number(fee) * 100,
+        Number(isPrivacy),
+        account,
+        wallet
+      );
 
-    if (result.txId) {
-      clearAccountBalance(account.name);
-      toastr.success("Completed: ", result.txId);
-      dispatch({ type: "RESET" });
-    } else {
-      console.log("Create tx err: ", result.err);
-      toastr.error("Send failed. Please try again! Err:" + result.err.Message);
+      if (result.txId) {
+        clearAccountBalance(account.name);
+        toastr.success("Completed: ", result.txId);
+        dispatch({ type: "RESET" });
+      } else {
+        console.log("Create tx err: ", result.err);
+        toastr.error(
+          "Send failed. Please try again! Err:" + result.err.Message
+        );
+      }
+    } catch (e) {
+      console.log("Create tx err: ", e);
+      toastr.error("Create and send failed. Please try again! Err:" + e);
     }
 
     dispatch({ type: "SHOW_LOADING", isShow: false });
