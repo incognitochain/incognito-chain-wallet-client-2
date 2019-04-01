@@ -23,7 +23,7 @@ export function TokenItem({
 
   React.useEffect(() => {
     loadBalance(item.isInit);
-  }, [item.ID, item.history]);
+  }, [item.ID, item.history, accountWallet]);
 
   async function loadBalance(isInit) {
     if (isInit) {
@@ -32,6 +32,11 @@ export function TokenItem({
           let balance = null;
           if (tabName === "privacy") {
             balance = await accountWallet.getPrivacyCustomTokenBalance(item.ID);
+            console.log(
+              "accountWallet when get balance privacy custom token: ",
+              accountWallet
+            );
+            console.log("balance privacy custom token: ", balance);
           } else if (tabName === "custom") {
             balance = await accountWallet.getCustomTokenBalance(item.ID);
           }
@@ -51,6 +56,11 @@ export function TokenItem({
         let balance = null;
         if (tabName === "privacy") {
           balance = await accountWallet.getPrivacyCustomTokenBalance(item.ID);
+          console.log(
+            "accountWallet when get balance privacy custom token: ",
+            accountWallet
+          );
+          console.log("balance privacy custom token: ", balance);
         } else if (tabName === "custom") {
           balance = await accountWallet.getCustomTokenBalance(item.ID);
         }
@@ -78,6 +88,7 @@ export function TokenItem({
   };
 
   const { Image, ID, Name } = item;
+  console.log("Image: ", Image);
 
   return (
     <Wrapper className="wrapperToken">
