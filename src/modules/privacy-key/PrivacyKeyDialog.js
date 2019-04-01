@@ -5,10 +5,14 @@ import { useAccountContext } from "../../common/context/AccountContext";
 import toastr from "toastr";
 import styled from "styled-components";
 import { ReactComponent as CopyPasteSVG } from "@assets/images/copy-paste.svg";
+import Account from "../../services/Account.js";
 
 export function PrivacyKeyDialog({ isOpen, onClose }) {
   console.log("useAccountContext()", useAccountContext());
   const { PrivateKey, ReadonlyKey, PublicKey } = useAccountContext();
+  console.log("Public key in account context: ", PublicKey);
+  const PublicKeyCheckEncode = Account.checkEncodePublicKey(PublicKey);
+
   const copyToClipBoard = () => {
     toastr.success("Copied!");
   };
@@ -46,7 +50,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
         <CopyToClipboard text={PublicKey} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
             <div className="titleKeys">
-              <div className="keyNamePublic">PUCLIC KEY</div>
+              <div className="keyNamePublic">PUBLIC KEY IN HEX</div>
               <span className="clickCopy">
                 <CopyPasteSVG />
               </span>
@@ -54,6 +58,24 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
             <div className="keyDes">
               {PublicKey
                 ? PublicKey.substring(0, 20) + "..." + PublicKey.substring(90)
+                : ""}
+            </div>
+          </div>
+        </CopyToClipboard>
+
+        <CopyToClipboard text={PublicKeyCheckEncode} onCopy={copyToClipBoard}>
+          <div className="wrapperKeys">
+            <div className="titleKeys">
+              <div className="keyNamePublic">PUBLIC KEY</div>
+              <span className="clickCopy">
+                <CopyPasteSVG />
+              </span>
+            </div>
+            <div className="keyDes">
+              {PublicKeyCheckEncode
+                ? PublicKeyCheckEncode.substring(0, 20) +
+                  "..." +
+                  PublicKeyCheckEncode.substring(90)
                 : ""}
             </div>
           </div>

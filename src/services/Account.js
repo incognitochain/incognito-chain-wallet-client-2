@@ -1,4 +1,8 @@
-import { KeyWallet, Wallet } from "constant-chain-web-js/build/wallet";
+import {
+  KeyWallet,
+  Wallet,
+  checkEncode
+} from "constant-chain-web-js/build/wallet";
 import { getPassphrase } from "./PasswordService";
 
 export default class Account {
@@ -111,5 +115,9 @@ export default class Account {
     } else {
       return true;
     }
+  }
+
+  static checkEncodePublicKey(publicKeyBytes) {
+    return checkEncode(publicKeyBytes, 0x00);
   }
 }
