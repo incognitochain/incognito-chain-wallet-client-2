@@ -2,7 +2,7 @@ import { Wallet, RpcClient } from "constant-chain-web-js/build/wallet";
 import localforage from "localforage";
 import { getPassphrase } from "./PasswordService";
 import Server from "./Server";
-import { getActiveShard } from "./RpcClientService";
+import { getMaxShardNumber } from "./RpcClientService";
 
 const numOfAccount = 1;
 const walletName = "wallet1";
@@ -17,7 +17,7 @@ export async function loadWallet() {
   );
 
   try {
-    Wallet.ShardNumber = await getActiveShard();
+    Wallet.ShardNumber = await getMaxShardNumber();
     console.log("Wallet.ShardNumber: ", Wallet.ShardNumber);
   } catch (e) {
     console.log(e);
