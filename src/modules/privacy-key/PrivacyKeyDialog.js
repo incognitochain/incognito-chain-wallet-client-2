@@ -67,7 +67,9 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
         <CopyToClipboard text={PublicKeyCheckEncode} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
             <div className="titleKeys">
-              <div className="keyNamePublicCheckEncode">PUBLIC KEY</div>
+              <div className="keyNamePublicCheckEncode">
+                PUBLIC KEY BASE58 CHECK ENCODE
+              </div>
               <span className="clickCopy">
                 <CopyPasteSVG />
               </span>
