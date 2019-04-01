@@ -269,8 +269,8 @@ function AccountSend({ classes, isOpen }) {
         toastr.warning("Receiver's address is invalid!");
       }
     } else if (name === "amount") {
-      if (Number(e.target.value) <= 0.01) {
-        toastr.warning("Amount must be greater than 0.01 constant!");
+      if (Number(e.target.value) < 0.01) {
+        toastr.warning("Amount must be not less than 0.01 constant!");
       }
     } else if (name === "fee") {
       if (Number(e.target.value) <= 0) {

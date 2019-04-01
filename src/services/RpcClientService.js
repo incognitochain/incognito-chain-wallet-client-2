@@ -106,3 +106,17 @@ export async function getStakingAmount(type) {
   }
   return resp.res;
 }
+
+export async function getActiveShard(type) {
+  let resp;
+  try {
+    resp = await getRpcClient().getActiveShard(type);
+  } catch (e) {
+    throw e;
+  }
+
+  if (resp.err != null) {
+    throw resp.err;
+  }
+  return resp.shardNumber;
+}
