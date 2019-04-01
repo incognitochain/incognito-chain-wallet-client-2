@@ -4,6 +4,7 @@ export const AccountContext = React.createContext({
   PaymentAddress: "",
   PrivateKey: "",
   PublicKey: "",
+  PublicKeyCheckEncode: "",
   ReadonlyKey: "",
   name: ""
   // value: 0 // WARNING: get account balance from AccountListContext instead

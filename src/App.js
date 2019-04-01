@@ -86,7 +86,8 @@ const App = ({ history, location }) => {
             PaymentAddress: account.PaymentAddress,
             ReadonlyKey: account.ReadonlyKey,
             PrivateKey: account.PrivateKey,
-            PublicKey: account.PublicKey
+            PublicKey: account.PublicKey,
+            PublicKeyCheckEncode: account.PublicKeyCheckEncode
           };
         });
       } catch (e) {

@@ -63,6 +63,8 @@ class TokenTabs extends React.Component {
       const { wallet, account } = this.props;
       const accountWallet = wallet.getAccountByName(account.name);
       const followingTokens = accountWallet.listFollowingTokens();
+      console.log("accountWallet when  followingTokens: ", accountWallet);
+      console.log("followingTokens: ", followingTokens);
 
       this.setState({
         listCustomTokenBalance: followingTokens.filter(

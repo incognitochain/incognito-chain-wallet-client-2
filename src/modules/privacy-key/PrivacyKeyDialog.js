@@ -5,14 +5,15 @@ import { useAccountContext } from "../../common/context/AccountContext";
 import toastr from "toastr";
 import styled from "styled-components";
 import { ReactComponent as CopyPasteSVG } from "@assets/images/copy-paste.svg";
-import Account from "../../services/Account.js";
 
 export function PrivacyKeyDialog({ isOpen, onClose }) {
   console.log("useAccountContext()", useAccountContext());
-  const { PrivateKey, ReadonlyKey, PublicKey } = useAccountContext();
-  console.log("Public key in account context: ", PublicKey);
-  const PublicKeyCheckEncode = Account.checkEncodePublicKey(PublicKey);
-
+  const {
+    PrivateKey,
+    ReadonlyKey,
+    PublicKey,
+    PublicKeyCheckEncode
+  } = useAccountContext();
   const copyToClipBoard = () => {
     toastr.success("Copied!");
   };
@@ -66,7 +67,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
         <CopyToClipboard text={PublicKeyCheckEncode} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
             <div className="titleKeys">
-              <div className="keyNamePublic">PUBLIC KEY</div>
+              <div className="keyNamePublicCheckEncode">PUBLIC KEY</div>
               <span className="clickCopy">
                 <CopyPasteSVG />
               </span>
