@@ -4,6 +4,14 @@ html,
 body {
   height: 100vh;
   display: flex;
+  min-width: 414px;
+  min-height: 931px;
+}
+html {
+  min-width: 414px;
+  min-height: 931px;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 body {
   flex: 1;
@@ -17,6 +25,8 @@ body {
 #root {
   flex: 1;
   display: flex;
+  min-width: 414px;
+  min-height: 931px;
 }
 
 body {
