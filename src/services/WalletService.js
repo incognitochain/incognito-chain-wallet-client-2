@@ -51,7 +51,13 @@ export async function initWallet() {
 
     let wallet = new Wallet();
     wallet.Storage = localforage;
-    wallet.init(passphrase, numOfAccount, walletName, localforage);
+    wallet.init(
+      passphrase,
+      numOfAccount,
+      walletName,
+      localforage,
+      process.env.SHARD_ID
+    );
 
     await wallet.save(passphrase);
     console.timeEnd("initWallet");
