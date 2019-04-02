@@ -27,7 +27,7 @@ import {
 } from "../../../services/CacheAccountBalanceService";
 
 const BurnAddress =
-  "1NHnxeKaZD5tMCzWR3yKXeQYh6o9XaskNhYb7WsWacwcUxB92GnoNGJTMHf1";
+  "1NHp2EKw7ALdXUzBfoRJvKrBBM9nkejyDcHVPvUjDcWRyG22dHHyiBKQGL1c";
 
 const styles = theme => ({
   textField: {

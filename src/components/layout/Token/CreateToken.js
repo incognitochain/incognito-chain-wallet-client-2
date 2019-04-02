@@ -301,7 +301,8 @@ class CreateToken extends React.Component {
       console.error(e);
       toastr.error(
         (this.props.isCreate ? "Create" : "Send") +
-          " Token fail. Please try again later!"
+          " Token fail. Please try again later!" +
+          e.toString()
       );
     } finally {
       this.setState({ isLoading: false });
