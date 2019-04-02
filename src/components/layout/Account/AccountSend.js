@@ -148,7 +148,7 @@ function AccountSend({ classes, isOpen }) {
       .pipe(
         filter(
           ([toAddress, amount, isPrivacy]) =>
-            toAddress && Number(amount) >= 0.01
+            Account.checkPaymentAddress(toAddress) && Number(amount) >= 0.01
         ),
         switchMap(([toAddress, amount, isPrivacy]) => {
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
@@ -156,6 +156,10 @@ function AccountSend({ classes, isOpen }) {
             "isPrivacy when estimate fee: ",
             isPrivacyRef.current.value
           );
+          if (balance <= 0) {
+            toastr.warning("Balance is zero!");
+            return Promise.resolve(0);
+          }
           return rpcClientService
             .getEstimateFee(
               account.PaymentAddress,
@@ -167,7 +171,7 @@ function AccountSend({ classes, isOpen }) {
             )
             .catch(e => {
               console.error(e);
-              toastr.error("Error on get estimation fee! " + e.toString());
+              toastr.error("Error on get estimation fee!");
               return Promise.resolve(0);
             });
         })
@@ -308,6 +312,7 @@ function AccountSend({ classes, isOpen }) {
         margin="normal"
         variant="outlined"
         value={state.paymentAddress}
+        disabled
         onChange={onChangeInput("paymentAddress")}
       />
 
