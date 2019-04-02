@@ -146,7 +146,10 @@ function AccountSend({ classes, isOpen }) {
       isPrivacyObservable
     )
       .pipe(
-        filter(([toAddress, amount, isPrivacy]) => toAddress && amount),
+        filter(
+          ([toAddress, amount, isPrivacy]) =>
+            toAddress && Number(amount) >= 0.01
+        ),
         switchMap(([toAddress, amount, isPrivacy]) => {
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
           console.log(
