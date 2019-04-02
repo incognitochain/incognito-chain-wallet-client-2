@@ -42,14 +42,13 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
     initialState
   );
 
-  const accountWallet = useAccountWallet();
-
   React.useEffect(() => {
     isOpen && onInit();
   }, [isOpen]);
 
   function onInit() {
     dispatch({ type: "RESET" });
+    const accountWallet = useAccountWallet();
     if (tabName === "privacy") {
       const history = accountWallet.getPrivacyCustomTokenTrxByTokenID(tokenId);
       dispatch({ type: "SET_HISTORY", history });

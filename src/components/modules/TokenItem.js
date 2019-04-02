@@ -18,14 +18,15 @@ export function TokenItem({
   onClickHistory
 }) {
   const { wallet } = useWalletContext();
-  const accountWallet = useAccountWallet();
   const [balance, setBalance] = React.useState(null);
 
   React.useEffect(() => {
+    const accountWallet = useAccountWallet();
     loadBalance(item.isInit);
   }, [item.ID, item.history, accountWallet]);
 
   async function loadBalance(isInit) {
+    const accountWallet = useAccountWallet();
     if (isInit) {
       setTimeout(async () => {
         try {
