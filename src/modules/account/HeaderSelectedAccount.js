@@ -67,7 +67,8 @@ export const HeaderSelectedAccount = () => {
   }, [account.name]);
 
   function triggerLoadBalance(accountName) {
-    balanceSubjectRef.current.next(accountName);
+    const sub = balanceSubjectRef && balanceSubjectRef.current;
+    sub && sub.next(accountName);
   }
 
   const balance = (
