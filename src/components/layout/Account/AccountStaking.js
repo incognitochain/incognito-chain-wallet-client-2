@@ -285,21 +285,7 @@ function AccountStaking({
   }
 
   const onChangeInput = name => e => {
-    if (name === "toAddress") {
-      let isValid = Account.checkPaymentAddress(e.target.value);
-      console.log("isValid: ", isValid);
-      if (!isValid) {
-        toastr.warning("Receiver's address is invalid!");
-      }
-    } else if (name === "amount") {
-      if (Number(e.target.value) < 0.01) {
-        toastr.warning("Amount must be at least 0.01 constant!");
-      }
-    } else if (name === "fee") {
-      if (Number(e.target.value) < 0) {
-        toastr.warning("Fee must be at least 0.01 constant!");
-      }
-    } else if (name === "stakingType") {
+    if (name === "stakingType") {
       const amountVal =
         e.target.value == "0"
           ? (Number(amountStakingShard) / 100).toLocaleString(
@@ -313,6 +299,24 @@ function AccountStaking({
       dispatch({ type: "CHANGE_INPUT", name: "amount", value: amountVal });
     }
     dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
+  };
+
+  const onValidator = name => e => {
+    if (name === "toAddress") {
+      let isValid = Account.checkPaymentAddress(e.target.value);
+      console.log("isValid: ", isValid);
+      if (!isValid) {
+        toastr.warning("Receiver's address is invalid!");
+      }
+    } else if (name === "amount") {
+      if (Number(e.target.value) < 0.01) {
+        toastr.warning("Amount must be at least 0.01 constant!");
+      }
+    } else if (name === "fee") {
+      if (Number(e.target.value) < 0.01) {
+        toastr.warning("Fee must be at least 0.01 constant!");
+      }
+    }
   };
 
   return (
@@ -371,6 +375,7 @@ function AccountStaking({
         variant="outlined"
         value={state.toAddress}
         onChange={e => onChangeInput("toAddress")(e)}
+        onBlur={e => onValidator("toAddress")(e)}
         inputProps={{ ref: toInputRef }}
       />
 
@@ -384,6 +389,7 @@ function AccountStaking({
         variant="outlined"
         value={state.amount}
         onChange={e => onChangeInput("amount")(e)}
+        onBlur={e => onValidator("amount")(e)}
         inputProps={{ ref: amountInputRef }}
       />
 
@@ -396,6 +402,7 @@ function AccountStaking({
         variant="outlined"
         value={state.fee}
         onChange={onChangeInput("fee")}
+        onBlur={e => onValidator("fee")(e)}
       />
 
       <Button
