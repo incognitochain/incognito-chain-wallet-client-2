@@ -21,7 +21,6 @@ export async function loadWallet() {
     console.log("Wallet.ShardNumber: ", Wallet.ShardNumber);
   } catch (e) {
     console.log(e);
-    return false;
   }
 
   console.log("Wallet when load wallet:", Wallet);
