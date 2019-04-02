@@ -1,5 +1,6 @@
 import { KeyWallet, Wallet } from "constant-chain-web-js/build/wallet";
 import { getPassphrase } from "./PasswordService";
+import localforage from "localforage";
 
 export default class Account {
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
@@ -89,7 +90,7 @@ export default class Account {
 
   // create new account
   static async createAccount(accountName, wallet) {
-    return wallet.createNewAccount(accountName);
+    return wallet.createNewAccount(accountName, process.env.SHARD_ID);
   }
 
   // get progress tx

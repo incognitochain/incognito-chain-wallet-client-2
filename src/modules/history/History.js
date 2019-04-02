@@ -65,7 +65,7 @@ export function History() {
   history.sort(compare);
   return (
     <Wrapper>
-      <Scrollable>
+      <Container>
         {history.map(item => {
           let createdTime = "";
           if (item.time != undefined && item.time != null) {
@@ -136,7 +136,7 @@ export function History() {
             </HistoryItem>
           );
         })}
-      </Scrollable>
+      </Container>
     </Wrapper>
   );
 }
@@ -152,8 +152,7 @@ const Wrapper = styled.div`
   display: flex;
 `;
 
-const Scrollable = styled.div`
-  overflow: auto;
+const Container = styled.div`
   flex: 1;
 `;
 
