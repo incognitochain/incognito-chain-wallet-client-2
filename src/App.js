@@ -294,10 +294,10 @@ export default () => (
 const Wrapper = styled.div`
   background: url(assets/images/bg.png) no-repeat center center;
   margin: 0 auto;
-  height: 100vh;
-  min-height: 931px;
+  min-height: 100%;
+  height: auto;
+  height: fit-content;
   width: 414px;
-  overflow: auto;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;

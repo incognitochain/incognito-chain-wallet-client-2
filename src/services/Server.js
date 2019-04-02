@@ -31,6 +31,13 @@ export default class Server {
         username: "",
         password: "",
         name: "Local"
+      },
+      {
+        default: false,
+        address: "http://172.104.168.159:9334",
+        username: "",
+        password: "",
+        name: "Server"
       }
     ]);
   }
