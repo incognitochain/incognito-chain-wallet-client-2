@@ -243,6 +243,13 @@ function AccountDefragment({ classes, isOpen }) {
   }
 
   const onChangeInput = name => e => {
+    if (name === "isPrivacy") {
+      e.target.value = e.target.value == "0" ? "1" : "0";
+    }
+    dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
+  };
+
+  const onValidator = name => e => {
     if (name === "toAddress") {
       let isValid = Account.checkPaymentAddress(e.target.value);
       console.log("isValid: ", isValid);
@@ -257,10 +264,7 @@ function AccountDefragment({ classes, isOpen }) {
       if (Number(e.target.value) < 0.01) {
         toastr.warning("Fee must be at least 0.01 constant!");
       }
-    } else if (name === "isPrivacy") {
-      e.target.value = e.target.value == "0" ? "1" : "0";
     }
-    dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
   };
 
   return (
@@ -273,6 +277,7 @@ function AccountDefragment({ classes, isOpen }) {
         className={classes.textField}
         margin="normal"
         variant="outlined"
+        disabled
         value={state.paymentAddress}
         onChange={onChangeInput("paymentAddress")}
       />
@@ -326,6 +331,7 @@ function AccountDefragment({ classes, isOpen }) {
         variant="outlined"
         value={state.amount}
         onChange={e => onChangeInput("amount")(e)}
+        onBlur={e => onValidator("amount")(e)}
         inputProps={{ ref: amountInputRef }}
       />
 
@@ -338,6 +344,7 @@ function AccountDefragment({ classes, isOpen }) {
         variant="outlined"
         value={state.fee}
         onChange={onChangeInput("fee")}
+        onBlur={e => onValidator("fee")(e)}
       />
 
       <Button
