@@ -270,6 +270,13 @@ function AccountSend({ classes, isOpen }) {
   }
 
   const onChangeInput = name => e => {
+    if (name === "isPrivacy") {
+      e.target.value = e.target.value == "0" ? "1" : "0";
+    }
+    dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
+  };
+
+  const onValidator = name => e => {
     if (name === "toAddress") {
       let isValid = Account.checkPaymentAddress(e.target.value);
       if (!isValid) {
@@ -287,10 +294,7 @@ function AccountSend({ classes, isOpen }) {
           toastr.warning("Fee must be greater than min fee!");
         }
       }
-    } else if (name === "isPrivacy") {
-      e.target.value = e.target.value == "0" ? "1" : "0";
     }
-    dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
   };
 
   return (
@@ -346,6 +350,7 @@ function AccountSend({ classes, isOpen }) {
         onChange={e => {
           onChangeInput("toAddress")(e);
         }}
+        onBlur={e => onValidator("toAddress")(e)}
         inputProps={{ ref: toInputRef }}
       />
 
@@ -371,6 +376,7 @@ function AccountSend({ classes, isOpen }) {
         value={state.amount}
         delayTimeout={1000}
         onChange={e => onChangeInput("amount")(e)}
+        onBlur={e => onValidator("amount")(e)}
         inputProps={{ ref: amountInputRef }}
       />
 
@@ -383,6 +389,7 @@ function AccountSend({ classes, isOpen }) {
         variant="outlined"
         value={state.fee}
         onChange={onChangeInput("fee")}
+        onBlur={e => onValidator("fee")(e)}
       />
 
       <Button
