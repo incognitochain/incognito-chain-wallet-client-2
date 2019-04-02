@@ -1,20 +1,66 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const appPath = filepath => path.resolve(__dirname, filepath);
+
+const optimization = {
+  minimize: true,
+  minimizer: [
+    new TerserPlugin({
+      terserOptions: {
+        warnings: false,
+        compress: {
+          comparisons: false,
+          drop_console: true,
+        },
+        parse: {},
+        mangle: true,
+        output: {
+          comments: false,
+          ascii_only: true,
+        },
+      },
+      parallel: true,
+      cache: true,
+      sourceMap: false,
+    }),
+  ],
+  nodeEnv: 'production',
+  sideEffects: true,
+};
+
+const devConfig = {
+  mode: 'development',
+  devServer: {
+    host: 'localhost',
+    watchContentBase: true,
+    stats: {
+      modules: false,
+      children: false,
+      chunks: false,
+    },
+    port: '3000',
+    disableHostCheck: true,
+    publicPath: '/',
+    historyApiFallback: {
+      disableDotRule: true,
+    },
+    hot: true,
+  },
+};
+
+const prodConfig = {
+  mode: 'production',
+  optimization
+};
 
 module.exports = (env, argv) => {
   const isProduction = (argv.mode === 'production');
   console.log("build mode:", argv.mode)
   const appEnv = require('./.env.' + argv.mode + '.js');
-
-  const stats = {
-    modules: false,
-    children: false,
-    chunks: false,
-  };
 
   return {
     entry: './src/index.js',
@@ -25,20 +71,7 @@ module.exports = (env, argv) => {
       publicPath: '/',
       // globalObject: 'this',
     },
-    mode: 'development',
     devtool: 'inline-source-map',
-    devServer: {
-      host: 'localhost',
-      watchContentBase: true,
-      stats,
-      port: '3000',
-      disableHostCheck: true,
-      publicPath: '/',
-      historyApiFallback: {
-        disableDotRule: true,
-      },
-      hot: true,
-    },
     resolve: {
       alias: {
         '@assets': appPath('src/assets'),
@@ -78,7 +111,7 @@ module.exports = (env, argv) => {
       rules: [
         {
           test: /\.js$/,
-          exclude: /node_modules/,
+          exclude: [/node_modules/, /constant-chain-web-js/],
           use: 'babel-loader'
         },
         {
@@ -117,6 +150,7 @@ module.exports = (env, argv) => {
           use: ['@svgr/webpack', 'url-loader'],
         }
       ],
-    }
+    },
+    ...isProduction ? prodConfig : devConfig
   }
 }
