@@ -181,18 +181,23 @@ function AccountDefragment({ classes, isOpen }) {
       return;
     }
 
-    if (isNaN(fee)) {
-      toastr.warning("Fee is invalid!");
-      return;
-    }
-
-    if (Number(amount) <= 0.01) {
-      toastr.warning("Amount is invalid!");
+    if (Number(amount) < 0.01) {
+      toastr.warning("Amount must be at least 0.01 constant!");
       return;
     }
 
     if (Number(amount) > Number(balance)) {
       toastr.warning("Insufficient this account balance!");
+      return;
+    }
+
+    if (isNaN(fee)) {
+      toastr.warning("Fee is invalid!");
+      return;
+    }
+
+    if (Number(fee) < 0.01) {
+      toastr.warning("Fee must be at least 0.01 constant!");
       return;
     }
 
@@ -245,12 +250,12 @@ function AccountDefragment({ classes, isOpen }) {
         toastr.warning("Receiver's address is invalid!");
       }
     } else if (name === "amount") {
-      if (Number(e.target.value) <= 0.01) {
-        toastr.warning("Amount must be greater than 0.01 constant!");
+      if (Number(e.target.value) < 0.01) {
+        toastr.warning("Amount must be at least 0.01 constant!");
       }
     } else if (name === "fee") {
-      if (Number(e.target.value) < 0) {
-        toastr.warning("Fee must not be less than zero!");
+      if (Number(e.target.value) < 0.01) {
+        toastr.warning("Fee must be at least 0.01 constant!");
       }
     } else if (name === "isPrivacy") {
       e.target.value = e.target.value == "0" ? "1" : "0";

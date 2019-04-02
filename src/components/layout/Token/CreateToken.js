@@ -56,12 +56,12 @@ class CreateToken extends React.Component {
         toastr.warning("Receiver's address is invalid!");
       }
     } else if (name === "amount") {
-      if (Number(e.target.value) <= 0) {
-        toastr.warning("Amount must be greater than zero!");
+      if (Number(e.target.value) < 0.01) {
+        toastr.warning("Amount must be at least 0.01 constant!");
       }
     } else if (name === "fee") {
-      if (Number(e.target.value) < 0) {
-        toastr.warning("Fee must not be less than zero!");
+      if (Number(e.target.value) < 0.01) {
+        toastr.warning("Fee must be at least 0.01 constant!");
       }
     }
     this.setState({ [name]: e.target.value });
@@ -286,8 +286,6 @@ class CreateToken extends React.Component {
       const { type } = this.props;
       const { submitParams, fee } = this.state;
 
-      console.log("Submit param when create or send token: ", submitParams[3]);
-
       //  if type = 0: privacy custom token, else: custom token
       if (type === 0) {
         await this.createSendPrivacyTokenTransaction(submitParams[3], fee);
@@ -301,7 +299,7 @@ class CreateToken extends React.Component {
       console.error(e);
       toastr.error(
         (this.props.isCreate ? "Create" : "Send") +
-          " Token fail. Please try again later!" +
+          " Token fail. Please try again later! " +
           e.toString()
       );
     } finally {

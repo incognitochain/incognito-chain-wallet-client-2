@@ -215,13 +215,18 @@ function AccountStaking({
       return;
     }
 
-    if (Number(amount) <= 0) {
-      toastr.warning("Amount must be greater than zero!");
+    if (Number(amount) < 0.01) {
+      toastr.warning("Amount must be at least 0.01 constant!");
       return;
     }
 
     if (isNaN(fee)) {
       toastr.warning("Fee is invalid!");
+      return;
+    }
+
+    if (Number(fee) < 0.01) {
+      toastr.warning("Fee must be at least 0.01 constant!");
       return;
     }
 
@@ -287,12 +292,12 @@ function AccountStaking({
         toastr.warning("Receiver's address is invalid!");
       }
     } else if (name === "amount") {
-      if (Number(e.target.value) <= 0) {
-        toastr.warning("Amount must be greater than zero!");
+      if (Number(e.target.value) < 0.01) {
+        toastr.warning("Amount must be at least 0.01 constant!");
       }
     } else if (name === "fee") {
       if (Number(e.target.value) < 0) {
-        toastr.warning("Fee must not be less than zero!");
+        toastr.warning("Fee must be at least 0.01 constant!");
       }
     } else if (name === "stakingType") {
       const amountVal =

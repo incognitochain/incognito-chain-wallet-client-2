@@ -203,7 +203,12 @@ function AccountSend({ classes, isOpen }) {
     }
 
     if (Number(amount) <= 0.01) {
-      toastr.warning("Amount is invalid!");
+      toastr.warning("Amount must be at least 0.01 constant!");
+      return;
+    }
+
+    if (Number(amount) > Number(balance)) {
+      toastr.warning("Insufficient this account balance!");
       return;
     }
 
@@ -212,8 +217,8 @@ function AccountSend({ classes, isOpen }) {
       return;
     }
 
-    if (Number(amount) > Number(balance)) {
-      toastr.warning("Insufficient this account balance!");
+    if (Number(fee) <= 0.01) {
+      toastr.warning("Fee must be at least 0.01 constant!");
       return;
     }
 
@@ -264,17 +269,16 @@ function AccountSend({ classes, isOpen }) {
   const onChangeInput = name => e => {
     if (name === "toAddress") {
       let isValid = Account.checkPaymentAddress(e.target.value);
-      console.log("isValid: ", isValid);
       if (!isValid) {
         toastr.warning("Receiver's address is invalid!");
       }
     } else if (name === "amount") {
       if (Number(e.target.value) < 0.01) {
-        toastr.warning("Amount must be not less than 0.01 constant!");
+        toastr.warning("Amount must be at least 0.01 constant!");
       }
     } else if (name === "fee") {
-      if (Number(e.target.value) <= 0) {
-        toastr.warning("Fee must be greater than zero!");
+      if (Number(e.target.value) < 0.01) {
+        toastr.warning("Fee must be at least 0.01 constant!");
       } else {
         if (Number(e.target.value) < state.minFee) {
           toastr.warning("Fee must be greater than min fee!");
