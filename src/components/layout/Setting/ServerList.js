@@ -183,7 +183,9 @@ class ServerList extends React.Component {
     }
 
     Server.set(servers);
-    this.setState({ servers });
+    this.setState({ servers }, () => {
+      window.location.reload();
+    });
   };
 
   removeServer = server => {
