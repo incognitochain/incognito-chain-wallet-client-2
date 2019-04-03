@@ -51,11 +51,16 @@ function reducer(state, action) {
     case "CHANGE_INPUT":
       return { ...state, [action.name]: action.value };
     case "RESET":
-      return { ...state, amount: "", toAddress: "", fee: "" };
+      return { ...state, amount: "", toAddress: "", fee: "", minFee: "" };
     case "LOAD_ESTIMATION_FEE":
       return { ...state, isLoadingEstimationFee: true };
     case "LOAD_ESTIMATION_FEE_SUCCESS":
-      return { ...state, isLoadingEstimationFee: false, fee: action.fee / 100 };
+      return {
+        ...state,
+        isLoadingEstimationFee: false,
+        fee: action.fee / 100,
+        minFee: action.fee / 100
+      };
     case "SHOW_LOADING":
       return { ...state, isLoading: action.isShow };
     default:
@@ -121,6 +126,7 @@ function AccountStaking({
         }
       ),
       fee: "",
+      minFee: "",
       showAlert: "",
       isAlert: false,
       isPrivacy: "0",
@@ -185,6 +191,7 @@ function AccountStaking({
       toAddress,
       amount,
       fee,
+      minFee,
       EstimateTxSizeInKb,
       GOVFeePerKbTx,
       stakingType
@@ -228,6 +235,10 @@ function AccountStaking({
     if (Number(fee) < 0.01) {
       toastr.warning("Fee must be at least 0.01 constant!");
       return;
+    } else {
+      if (Number(fee) < minFee) {
+        toastr.warning("Fee must be greater than min fee!");
+      }
     }
 
     if (Number(amount) >= Number(balance)) {
@@ -315,6 +326,10 @@ function AccountStaking({
     } else if (name === "fee") {
       if (Number(e.target.value) < 0.01) {
         toastr.warning("Fee must be at least 0.01 constant!");
+      } else {
+        if (Number(e.target.value) < state.minFee) {
+          toastr.warning("Fee must be greater than min fee!");
+        }
       }
     }
   };
@@ -396,7 +411,7 @@ function AccountStaking({
       <TextField
         required
         id="fee"
-        label="Fee"
+        label={"Min Fee " + state.minFee}
         className={classes.textField}
         margin="normal"
         variant="outlined"

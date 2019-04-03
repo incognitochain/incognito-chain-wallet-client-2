@@ -192,7 +192,14 @@ function AccountSend({ classes, isOpen }) {
   }, []);
 
   const confirmSendCoin = () => {
-    const { toAddress, amount, fee, EstimateTxSizeInKb, GOVFeePerKbTx } = state;
+    const {
+      toAddress,
+      amount,
+      fee,
+      minFee,
+      EstimateTxSizeInKb,
+      GOVFeePerKbTx
+    } = state;
 
     if (!toAddress) {
       toastr.warning("To address is required!");
@@ -227,6 +234,10 @@ function AccountSend({ classes, isOpen }) {
     if (Number(fee) < 0.01) {
       toastr.warning("Fee must be at least 0.01 constant!");
       return;
+    } else {
+      if (Number(fee) < minFee) {
+        toastr.warning("Fee must be greater than min fee!");
+      }
     }
 
     if (Number(fee) / EstimateTxSizeInKb < GOVFeePerKbTx) {
@@ -359,18 +370,6 @@ function AccountSend({ classes, isOpen }) {
         inputProps={{ ref: toInputRef }}
       />
 
-      {/* <DelayInput
-        required
-        id="amount"
-        label="Amount"
-        className={classes.textField}
-        margin="normal"
-        variant="outlined"
-        value={state.amount}
-        delayTimeout={1000}
-        onChange={e => onChangeInput("amount")(e)}
-        inputProps={{ ref: amountInputRef }}
-      /> */}
       <TextField
         required
         id="amount"
