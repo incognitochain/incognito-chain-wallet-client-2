@@ -26,18 +26,18 @@ export default class Server {
   static setDefault() {
     local.save(APP.SERVERS, [
       {
-        default: true,
+        default: false,
         address: "http://localhost:9334",
         username: "",
         password: "",
         name: "Local"
       },
       {
-        default: false,
+        default: true,
         address: "http://172.104.168.159:9334",
         username: "",
         password: "",
-        name: "Server"
+        name: "Testnet"
       }
     ]);
   }
