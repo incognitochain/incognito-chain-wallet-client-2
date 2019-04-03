@@ -294,7 +294,6 @@ class CreateToken extends React.Component {
       }
       this.handleAlertOpen();
       this.props.onRefreshTokenList();
-      this.props.onClose();
     } catch (e) {
       console.error(e);
       toastr.error(
