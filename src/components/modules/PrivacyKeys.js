@@ -42,7 +42,7 @@ class PrivacyKeys extends React.Component {
             color="primary"
             onClick={() => this.setState({ showKeyModal: true })}
           >
-            Export Private Key
+            Export Key
           </Button>
         </ButtonWrapper>
 
