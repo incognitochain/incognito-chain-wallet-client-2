@@ -7,6 +7,7 @@ import Settings from "./components/pages/Settings";
 import ImportAccount from "./components/pages/Account/Import";
 import Snackbar from "@material-ui/core/Snackbar";
 import { AccountContext } from "./common/context/AccountContext";
+import SplashScreen from "./common/components/splash";
 import { AccountListContext } from "./common/context/AccountListContext";
 import {
   Error as IconError,
@@ -37,6 +38,10 @@ const App = ({ history, location }) => {
   let [state, dispatch] = useDebugReducer("App", appReducer, initialAppState);
 
   React.useEffect(() => {
+    dispatch({
+      type: "SET_SCREEN",
+      screen: <SplashScreen />
+    });
     onInit();
   }, []);
 
