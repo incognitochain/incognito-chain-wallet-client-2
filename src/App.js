@@ -42,7 +42,7 @@ const App = ({ history, location }) => {
       type: "SET_SCREEN",
       screen: <SplashScreen />
     });
-    onInit();
+    setTimeout(onInit, 2000);
   }, []);
 
   async function onInit() {
