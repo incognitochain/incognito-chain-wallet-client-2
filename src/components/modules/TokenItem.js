@@ -21,9 +21,8 @@ export function TokenItem({
   const [balance, setBalance] = React.useState(null);
 
   React.useEffect(() => {
-    const accountWallet = useAccountWallet();
     loadBalance(item.isInit);
-  }, [item.ID, item.history, accountWallet]);
+  }, [item.ID, item.history]);
 
   async function loadBalance(isInit) {
     const accountWallet = useAccountWallet();
