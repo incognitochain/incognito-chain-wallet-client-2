@@ -209,7 +209,7 @@ function AccountSend({ classes, isOpen }) {
       return;
     }
 
-    if (Number(amount) <= 0.01) {
+    if (Number(amount) < 0.01) {
       toastr.warning("Amount must be at least 0.01 constant!");
       return;
     }
@@ -224,7 +224,7 @@ function AccountSend({ classes, isOpen }) {
       return;
     }
 
-    if (Number(fee) <= 0.01) {
+    if (Number(fee) < 0.01) {
       toastr.warning("Fee must be at least 0.01 constant!");
       return;
     }
