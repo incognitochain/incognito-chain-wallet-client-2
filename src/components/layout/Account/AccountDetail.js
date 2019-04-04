@@ -68,6 +68,12 @@ class AccountDetail extends React.Component {
     };
   }
 
+  static getDerivedStateFromProps(props) {
+    return {
+      paymentAddress: props?.account?.PaymentAddress
+    };
+  }
+
   onFinish = data => {
     const { onFinish } = this.props;
 

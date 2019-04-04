@@ -2,6 +2,7 @@ import React from "react";
 import { ListItemText, ListItem, Avatar, Button } from "@material-ui/core";
 
 import { Remove as IconRemove } from "@material-ui/icons";
+import SocialShare from "../../common/components/socialShare";
 
 import "./PrivacyKeys.scss";
 import styled from "styled-components";
@@ -34,6 +35,7 @@ class PrivacyKeys extends React.Component {
   };
 
   render() {
+    const { paymentAddress } = this.props;
     return (
       <div className="wrapperPrivacyKeyContainer">
         <ButtonWrapper>
@@ -52,6 +54,8 @@ class PrivacyKeys extends React.Component {
         />
 
         {this.renderRemoveAccount()}
+
+        <SocialShare url="https://myconstant.money" quote={paymentAddress} />
       </div>
     );
   }
