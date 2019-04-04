@@ -256,24 +256,26 @@ class CreateToken extends React.Component {
   };
   createSendCustomTokenTransaction = async (params, fee) => {
     try {
-      await Token.createSendCustomToken(
+      let response = await Token.createSendCustomToken(
         params,
         Number(fee) * 100,
         this.props.account,
         this.props.wallet
       );
+      return response;
     } catch (e) {
       throw e;
     }
   };
   createSendPrivacyTokenTransaction = async (params, fee) => {
     try {
-      await Token.createSendPrivacyCustomTokenTransaction(
+      let response = await Token.createSendPrivacyCustomTokenTransaction(
         params,
         Number(fee) * 100,
         this.props.account,
         this.props.wallet
       );
+      return response;
     } catch (e) {
       throw e;
     }
@@ -287,14 +289,30 @@ class CreateToken extends React.Component {
       const { submitParams, fee } = this.state;
 
       //  if type = 0: privacy custom token, else: custom token
+      let response;
       if (type === 0) {
-        await this.createSendPrivacyTokenTransaction(submitParams[3], fee);
+        response = await this.createSendPrivacyTokenTransaction(
+          submitParams[3],
+          fee
+        );
       } else {
-        await this.createSendCustomTokenTransaction(submitParams[3], fee);
+        response = await this.createSendCustomTokenTransaction(
+          submitParams[3],
+          fee
+        );
       }
-      this.handleAlertOpen();
-      this.props.onRefreshTokenList();
-      this.props.onClose();
+
+      if (response.err != null) {
+        toastr.error(
+          (this.props.isCreate ? "Create" : "Send") +
+            " Token fail. Please try again later! " +
+            response.err.toString()
+        );
+      } else {
+        this.handleAlertOpen();
+        this.props.onRefreshTokenList();
+        this.props.onClose();
+      }
     } catch (e) {
       console.error(e);
       toastr.error(

@@ -107,8 +107,6 @@ export function FollowTokenDialog({
   function onClickFollow() {
     const accountWallet = wallet.getAccountByName(account.name);
     const followedTokens = state.tokens.filter(token => token.isSelected);
-
-    console.log("Hiennnnnnnnn followedTokens", followedTokens);
     accountWallet.addFollowingToken(...followedTokens);
     walletService.saveWallet(wallet);
     refreshTokenList();
