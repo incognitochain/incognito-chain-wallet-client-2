@@ -311,7 +311,6 @@ class CreateToken extends React.Component {
       } else {
         this.handleAlertOpen();
         this.props.onRefreshTokenList();
-        this.props.onClose();
       }
     } catch (e) {
       console.error(e);

@@ -174,6 +174,10 @@ function AccountStaking({
       .subscribe(
         fee => {
           dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee });
+          setTimeout(
+            () => dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee }),
+            200
+          ); // tricky, make Fee textfield re-render to prevent label overlap
         },
         error => {
           dispatch({ type: "LOAD_ESTIMATION_FEE_ERROR" });
