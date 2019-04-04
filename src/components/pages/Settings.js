@@ -7,6 +7,7 @@ import ServerList from "../layout/Setting/ServerList";
 import ServerAddOrEdit from "../layout/Setting/ServerAddOrEdit";
 import Server from "../../services/Server";
 import * as walletService from "../../services/WalletService";
+import { connectWalletContext } from "../../common/context/WalletContext";
 
 import {
   Tooltip,
@@ -205,7 +206,11 @@ class Settings extends React.Component {
   };
 
   showMnemonicWords = async () => {
-    const wallet = await walletService.loadWallet();
+    // const wallet = await walletService.loadWallet();
+    let wallet = this.props.wallet;
+    console.log("Wallet showMnemonicWords: ", wallet);
+    console.log("Wallet showMnemonicWords: ", wallet.Mnemonic);
+
     if (wallet) {
       return <div style={{ padding: "20px" }}>{wallet.Mnemonic}</div>;
     } else {
@@ -251,7 +256,7 @@ class Settings extends React.Component {
           component="nav"
           subheader={<ListSubheader component="div">Preferences</ListSubheader>}
         >
-          <ListItem button onClick={() => this.showInfo("Coming soon")}>
+          <ListItem button onClick={() => this.showInfo("Coming soon!")}>
             <ListItemIcon>
               <IconLanguage />
             </ListItemIcon>
@@ -322,4 +327,4 @@ Settings.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Settings);
+export default withStyles(styles)(connectWalletContext(Settings));
