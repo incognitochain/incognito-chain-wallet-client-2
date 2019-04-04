@@ -50,6 +50,7 @@ const App = ({ history, location }) => {
 
     if (passwordService.hasPassword()) {
       const wallet = await walletService.loadWallet();
+      console.log("Walllet onInit: ", wallet);
 
       if (wallet) {
         dispatch({ type: "SET_WALLET", wallet });

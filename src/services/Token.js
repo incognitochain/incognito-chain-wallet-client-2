@@ -42,6 +42,7 @@ export default class Token {
       submitParam.TokenReceivers.Amount
     );
 
+    console.log(tokenParam);
     // create and send custom token
     let res;
     try {

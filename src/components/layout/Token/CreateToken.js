@@ -39,6 +39,7 @@ class CreateToken extends React.Component {
       tokenSymbol: props.tokenSymbol || "",
       amount: "",
       fee: "",
+      minFee: "",
       balance: -1,
 
       submitParams: [],
@@ -62,6 +63,10 @@ class CreateToken extends React.Component {
     } else if (name === "fee") {
       if (Number(e.target.value) < 0.01) {
         toastr.warning("Fee must be at least 0.01 constant!");
+      } else {
+        if (Number(e.target.value) < this.state.minFee) {
+          toastr.warning("Fee must be greater than min fee!");
+        }
       }
     }
     this.setState({ [name]: e.target.value });
@@ -150,6 +155,7 @@ class CreateToken extends React.Component {
       .subscribe(fee => {
         this.setState({
           fee: Number(fee) / 100,
+          minFee: Number(fee) / 100,
           isLoadingEstimationFee: false
         });
       }, console.error);
@@ -287,7 +293,6 @@ class CreateToken extends React.Component {
       // isCreate = true: init token, else: send token
       const { type } = this.props;
       const { submitParams, fee } = this.state;
-
       //  if type = 0: privacy custom token, else: custom token
       let response;
       if (type === 0) {
@@ -413,7 +418,7 @@ class CreateToken extends React.Component {
           required
           id="fee"
           name="fee"
-          label="Fee"
+          label={"Min Fee " + this.state.minFee}
           className="textField"
           margin="normal"
           variant="outlined"

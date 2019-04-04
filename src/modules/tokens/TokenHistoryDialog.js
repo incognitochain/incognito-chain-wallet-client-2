@@ -94,7 +94,11 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
                   statusText = "Failed";
                   statusClass = "failed";
                 }
-                const image = genImageFromStr(txID, 40);
+
+                let image = "";
+                if (txID && txID.length > 0) {
+                  image = genImageFromStr(txID, 40);
+                }
 
                 let createdTime = "";
                 if (time != undefined && time != null) {
@@ -110,7 +114,10 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
                           <a
                             href={process.env.CONSTANT_EXPLORER + "tx/" + txID}
                           >
-                            <Avatar alt="tx" src={image} />
+                            <Avatar
+                              alt={image && image.length > 0 ? txID : "fail"}
+                              src={image}
+                            />
                           </a>
                         </TxID>
                         <Time>{createdTime}</Time>
