@@ -6,7 +6,6 @@ import Dialog from "../core/Dialog";
 import ServerList from "../layout/Setting/ServerList";
 import ServerAddOrEdit from "../layout/Setting/ServerAddOrEdit";
 import Server from "../../services/Server";
-import * as walletService from "../../services/WalletService";
 import { connectWalletContext } from "../../common/context/WalletContext";
 
 import {
@@ -206,10 +205,9 @@ class Settings extends React.Component {
   };
 
   showMnemonicWords = async () => {
-    // const wallet = await walletService.loadWallet();
     let wallet = this.props.wallet;
-    console.log("Wallet showMnemonicWords: ", wallet);
-    console.log("Wallet showMnemonicWords: ", wallet.Mnemonic);
+    // console.log("Wallet showMnemonicWords: ", wallet);
+    // console.log("Wallet showMnemonicWords: ", wallet.Mnemonic);
 
     if (wallet) {
       return <div style={{ padding: "20px" }}>{wallet.Mnemonic}</div>;
