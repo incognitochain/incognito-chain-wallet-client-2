@@ -28,6 +28,7 @@ import _ from "lodash";
 import * as cacheAccountListService from "../../../services/CacheListAccountService";
 import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
 import * as rpcClientService from "../../../services/RpcClientService";
+import { fadeIn } from "../../../common/animations";
 
 const styles = theme => ({
   key: {
@@ -452,6 +453,7 @@ const Wrapper = styled.div`
   flex: 1;
   flex-direction: column;
   overflow: auto;
+  animation: ${fadeIn} 1s linear;
 `;
 
 const AccountInfoWrapper = styled.div`

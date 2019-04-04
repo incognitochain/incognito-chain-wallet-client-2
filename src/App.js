@@ -30,6 +30,7 @@ import { useDebugReducer } from "./common/hook/useDebugReducer";
 import * as passwordService from "./services/PasswordService";
 import Server from "./services/Server";
 import * as cacheAccountListService from "./services/CacheListAccountService";
+import { fadeIn } from "./common/animations";
 
 toastr.options.positionClass = "toast-bottom-center";
 toastr.options.preventDuplicates = true;
@@ -307,6 +308,7 @@ const Wrapper = styled.div`
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
+  animation: ${fadeIn} 1s linear forwards;
 `;
 
 const AppContainer = styled.div`

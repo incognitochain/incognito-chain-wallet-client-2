@@ -5,9 +5,11 @@ import {
   Input,
   Grid,
   InputLabel,
-  FormControl
+  FormControl,
+  CircularProgress
 } from "@material-ui/core";
 import blue from "@material-ui/core/colors/blue";
+import toastr from "toastr";
 import * as walletService from "../../services/WalletService";
 import { CreateWalletPromptDialog } from "./CreateWalletPromptDialog";
 import { useAppContext } from "../../common/context/AppContext";
@@ -81,13 +83,17 @@ export function Password({ history }) {
   const [password, setPassword] = React.useState("");
   const [isOpenCreateDialog, setIsOpenCreateDialog] = React.useState(false);
   const { listAccounts, appDispatch } = useAppContext();
+  const [isLoading, setLoading] = React.useState(false);
 
   async function onSubmit(e) {
     try {
       e.preventDefault();
+      setLoading(true);
+
       passwordService.savePassword(password);
 
       const wallet = await walletService.loadWallet();
+
       if (wallet) {
         history.push("/");
         listAccounts(wallet);
@@ -96,7 +102,10 @@ export function Password({ history }) {
         setIsOpenCreateDialog(true);
       }
     } catch (e) {
+      toastr.error("Login failed, please try again.");
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -162,16 +171,20 @@ export function Password({ history }) {
               </Grid>
               <Grid item xs={12}>
                 <ButtonWrapper>
-                  <Button
-                    style={{ color: "#fff", backgroundColor: "#4254A4" }}
-                    className={"loginButton"}
-                    disabled={!password}
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                  >
-                    LOG IN
-                  </Button>
+                  {isLoading ? (
+                    <CircularProgress />
+                  ) : (
+                    <Button
+                      style={{ color: "#fff", backgroundColor: "#4254A4" }}
+                      className={"loginButton"}
+                      disabled={!password}
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                    >
+                      LOG IN
+                    </Button>
+                  )}
                 </ButtonWrapper>
               </Grid>
             </Grid>
