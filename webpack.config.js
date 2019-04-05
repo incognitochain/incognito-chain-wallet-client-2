@@ -35,7 +35,7 @@ const optimization = {
 const devConfig = {
   mode: 'development',
   devServer: {
-    host: 'localhost',
+    host: '0.0.0.0',
     watchContentBase: true,
     stats: {
       modules: false,
