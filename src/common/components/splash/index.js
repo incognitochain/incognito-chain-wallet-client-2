@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { keyframes, css } from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const stroke = keyframes`{
   to {
@@ -44,6 +44,27 @@ const color = keyframes`{
 	}
 }`;
 
+const status = keyframes`{
+	0% {
+    opacity: 1;
+    color: black;
+    content: 'Initializing...';
+	}
+	
+	30% {
+    opacity: 1;
+    color: green;
+		content: 'Loading your wallet...';
+	}
+	
+	100% {
+    opacity: 1;
+    color: #2d4cf5;
+    font-weight: bold;
+		content: 'Almost done, please patient...';
+	}
+}`;
+
 const Container = styled.div`
   position: relative;
   background-color: transparent;
@@ -81,7 +102,7 @@ const Circle = styled.circle`
   animation: ${stroke} 1s ease-out forwards, ${color} 2s linear 2s infinite;
 `;
 
-const Title = styled.div`
+const TextContainer = styled.div`
   position: absolute;
   bottom: 10px;
   display: block;
@@ -92,14 +113,41 @@ const Title = styled.div`
   font-size: 25px;
 `;
 
-const SplashScreen = () => (
-  <Container>
-    <SVG height="200" width="200">
-      <Circle cx="100" cy="100" r="95" transform="rotate(45 100 100)" />
-    </SVG>
-    <Round />
-    <Title>Constant Wallet</Title>
-  </Container>
-);
+const Title = styled.div`
+  display: block;
+  text-align: center;
+  font-weight: bold;
+  width: 100%;
+  font-size: 25px;
+`;
+
+const StatusText = styled.div`
+  display: block;
+  text-align: center;
+  font-weight: 400;
+  width: 100%;
+  font-size: 16px;
+
+  &::after {
+    opacity: 0;
+    content: "";
+    animation: ${status} 22s linear 2s forwards;
+  }
+`;
+
+const SplashScreen = () => {
+  return (
+    <Container>
+      <SVG height="200" width="200">
+        <Circle cx="100" cy="100" r="95" transform="rotate(45 100 100)" />
+      </SVG>
+      <Round />
+      <TextContainer>
+        <StatusText />
+        <Title>Constant Wallet</Title>
+      </TextContainer>
+    </Container>
+  );
+};
 
 export default SplashScreen;
