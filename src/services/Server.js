@@ -34,7 +34,7 @@ export default class Server {
       },
       {
         default: true,
-        address: "http://172.104.168.159:9334",
+        address: "https://test-node-constant-chain.constant.money",
         username: "",
         password: "",
         name: "Testnet"
