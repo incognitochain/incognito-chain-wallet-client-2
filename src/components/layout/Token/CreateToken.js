@@ -134,10 +134,11 @@ class CreateToken extends React.Component {
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
-          if (this.state.balance <= 0) {
-            toastr.warning("Balance is zero!");
-            return Promise.resolve(0);
-          }
+          // console.log("this.state.balance: ", this.state.balance);
+          // if (this.state.balance <= 0) {
+          //   toastr.warning("Balance is zero!");
+          //   return Promise.resolve(0);
+          // }
           console.log("Estimate feeeeeeeee");
           this.setState({ isLoadingEstimationFee: true });
           return rpcClientService
@@ -310,6 +311,8 @@ class CreateToken extends React.Component {
           fee
         );
       }
+
+      console.log("response send privacy custom token: ", response);
 
       if (response.err != null) {
         toastr.error(

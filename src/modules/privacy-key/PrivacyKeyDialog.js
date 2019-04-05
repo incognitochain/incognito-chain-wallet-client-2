@@ -12,7 +12,8 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
     PrivateKey,
     ReadonlyKey,
     PublicKey,
-    PublicKeyCheckEncode
+    PublicKeyCheckEncode,
+    PublicKeyBytes
   } = useAccountContext();
   const copyToClipBoard = () => {
     toastr.success("Copied!");
@@ -79,6 +80,29 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
                 ? PublicKeyCheckEncode.substring(0, 20) +
                   "..." +
                   PublicKeyCheckEncode.substring(90)
+                : ""}
+            </div>
+          </div>
+        </CopyToClipboard>
+
+        <CopyToClipboard text={PublicKeyBytes} onCopy={copyToClipBoard}>
+          <div className="wrapperKeys">
+            <div className="titleKeys">
+              <div className="keyNamePublicBytes">PUBLIC KEY BYTES</div>
+              <span className="clickCopy">
+                <CopyPasteSVG />
+              </span>
+            </div>
+            <div className="keyDes">
+              {PublicKeyBytes
+                ? "[ " +
+                  PublicKeyBytes.substring(0, 20) +
+                  "..." +
+                  PublicKeyBytes.substring(
+                    PublicKeyBytes.length - 20,
+                    PublicKeyBytes.length
+                  ) +
+                  "]"
                 : ""}
             </div>
           </div>

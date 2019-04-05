@@ -94,7 +94,8 @@ const App = ({ history, location }) => {
             ReadonlyKey: account.ReadonlyKey,
             PrivateKey: account.PrivateKey,
             PublicKey: account.PublicKey,
-            PublicKeyCheckEncode: account.PublicKeyCheckEncode
+            PublicKeyCheckEncode: account.PublicKeyCheckEncode,
+            PublicKeyBytes: account.PublicKeyBytes
           };
         });
       } catch (e) {
