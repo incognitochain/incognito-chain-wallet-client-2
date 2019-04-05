@@ -25,6 +25,7 @@ import styled from "styled-components";
 import * as rpcClientService from "../../../services/RpcClientService";
 import $ from "jquery";
 import toastr from "toastr";
+import CompletedInfo from "@common/components/completedInfo";
 import { Loading } from "../../../common/components/loading/Loading";
 import Account from "../../../services/Account";
 
@@ -43,7 +44,7 @@ class CreateToken extends React.Component {
       balance: -1,
 
       submitParams: [],
-      alertOpen: false,
+      showCompletedInfo: false,
       isAlert: false,
       error: null
     };
@@ -223,12 +224,12 @@ class CreateToken extends React.Component {
       });
     }
   };
-  handleAlertOpen = () => {
-    this.setState({ alertOpen: true });
+  handleCompletedInfoOpen = () => {
+    this.setState({ showCompletedInfo: true });
   };
 
   handleAlertClose = () => {
-    this.setState({ alertOpen: false });
+    this.setState({ showCompletedInfo: false });
     this.props.onClose();
   };
   renderError() {
@@ -236,33 +237,26 @@ class CreateToken extends React.Component {
     if (!error) return null;
     return <div className="errorField">*{error}</div>;
   }
-  renderAlert() {
+  renderCompletedInfo() {
     const { isCreate } = this.props;
-    const title = isCreate ? "Created Token" : "Sent Token";
-    const message = isCreate ? "The new token is created" : "The token is sent";
+    const { toAddress, amount } = this.state;
+    const title = isCreate ? "Created Token" : "Sent Token Successfully";
+    const trunc = (text = "") => `${text.substr(0, 10)}...${text.substr(-10)}`;
     return (
-      <Dialog
-        open={this.state.alertOpen}
-        onClose={this.handleAlertClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {message}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleAlertClose} color="primary">
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <CompletedInfo title={title} onDone={this.handleAlertClose}>
+        {isCreate ? (
+          <span>The new token is created</span>
+        ) : (
+          <>
+            <span>Amount: {Number(amount) || 0} CONST</span>
+            <span>To: {trunc(toAddress)}</span>
+          </>
+        )}
+      </CompletedInfo>
     );
   }
   showSuccess = () => {
-    this.handleAlertOpen();
+    this.handleCompletedInfoOpen();
   };
   createSendCustomTokenTransaction = async (params, fee) => {
     try {
@@ -320,7 +314,7 @@ class CreateToken extends React.Component {
             response.err.toString()
         );
       } else {
-        this.handleAlertOpen();
+        this.handleCompletedInfoOpen();
         this.props.onRefreshTokenList();
       }
     } catch (e) {
@@ -465,12 +459,15 @@ class CreateToken extends React.Component {
     );
   }
   render() {
+    if (this.state.showCompletedInfo) {
+      return this.renderCompletedInfo();
+    }
+
     return (
       <Wrapper>
         {this.renderForm()}
         {this.renderError()}
         {this.renderConfirmDialog()}
-        {this.renderAlert()}
 
         <Loading fullscreen isShow={this.state.isLoading} />
       </Wrapper>
