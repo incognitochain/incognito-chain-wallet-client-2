@@ -141,7 +141,7 @@ function AccountSend({ classes, isOpen, closeModal }) {
       filter(Boolean),
       debounceTime(750),
       distinctUntilChanged(),
-      startWith(0)
+      startWith(0.01)
     );
     const isPrivacyObservable = fromEvent(isPrivacyRef.current, "change").pipe(
       map(e => e.target.value),
