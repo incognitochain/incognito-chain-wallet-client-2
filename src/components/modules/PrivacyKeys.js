@@ -55,7 +55,10 @@ class PrivacyKeys extends React.Component {
 
         {this.renderRemoveAccount()}
 
-        <SocialShare url="https://myconstant.money" quote={paymentAddress} />
+        <SocialShare
+          url={process.env.CONSTANT_EXPLORER}
+          quote={paymentAddress}
+        />
       </div>
     );
   }

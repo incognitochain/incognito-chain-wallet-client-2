@@ -23,7 +23,7 @@ const SocialShare = ({ url, quote }) => (
 );
 
 SocialShare.defaultProps = {
-  url: "https://myconstant.money"
+  url: "https://www.myconstant.com/"
 };
 
 export default SocialShare;
