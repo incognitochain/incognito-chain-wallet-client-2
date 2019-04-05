@@ -134,7 +134,7 @@ class CreateToken extends React.Component {
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
-          if (this.state.balance <= 0) {
+          if (this.props.balance <= 0) {
             toastr.warning("Balance is zero!");
             return Promise.resolve(0);
           }
