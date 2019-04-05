@@ -26,6 +26,7 @@ import {
   clearAccountBalance
 } from "../../../services/CacheAccountBalanceService";
 import QRScanner from "../../../common/components/qrScanner";
+import CompletedInfo from "../../../common/components/completedInfo";
 
 const styles = theme => ({
   textField: {
@@ -73,7 +74,7 @@ function reducer(state, action) {
 
 const refs = { modalConfirmationRef: null }; //TODO - remove this
 
-function AccountSend({ classes, isOpen }) {
+function AccountSend({ classes, isOpen, closeModal }) {
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
   const isPrivacyRef = React.useRef();
@@ -83,6 +84,7 @@ function AccountSend({ classes, isOpen }) {
   const accounts = useAccountListContext();
   const { appDispatch } = useAppContext();
   const accountWallet = wallet.getAccountByName(account.name);
+  const [txResult, setTxResult] = React.useState(null);
 
   let balance;
   try {
@@ -277,8 +279,7 @@ function AccountSend({ classes, isOpen }) {
 
       if (result.txId) {
         clearAccountBalance(account.name);
-        toastr.success("Completed: ", result.txId);
-        dispatch({ type: "RESET" });
+        setTxResult(result.txId);
       } else {
         console.log("Create tx err: ", result.err);
         toastr.error(
@@ -333,6 +334,21 @@ function AccountSend({ classes, isOpen }) {
       window.chrome.runtime.id
     );
   };
+
+  if (txResult) {
+    const onDone = () => {
+      closeModal();
+      dispatch({ type: "RESET" });
+    };
+    const trunc = (text = "") => `${text.substr(0, 10)}...${text.substr(-10)}`;
+    return (
+      <CompletedInfo title="Sent Successfully" onDone={onDone}>
+        <span>Amount: {Number(state?.amount) || 0} CONST</span>
+        <span>To: {trunc(state?.toAddress)}</span>
+        <span>Tx ID: {trunc(txResult)}</span>
+      </CompletedInfo>
+    );
+  }
 
   return (
     <div style={{ padding: "2rem" }}>
