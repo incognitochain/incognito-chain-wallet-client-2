@@ -76,6 +76,7 @@ module.exports = (env, argv) => {
       alias: {
         '@assets': appPath('src/assets'),
         '@common': appPath('src/common'),
+        '@src': appPath('src'),
       },
       extensions: ['.js', '.jsx', '.css', '.png', '.jpg', '.gif', '.jpeg', '.svg'],
     },
