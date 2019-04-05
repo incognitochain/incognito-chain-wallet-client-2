@@ -25,6 +25,7 @@ import {
   saveAccountBalance,
   clearAccountBalance
 } from "../../../services/CacheAccountBalanceService";
+import QRScanner from "../../../common/components/qrScanner";
 
 const styles = theme => ({
   textField: {
@@ -37,6 +38,14 @@ const styles = theme => ({
   button: {
     marginTop: theme.spacing.unit * 2,
     height: "3rem"
+  },
+  toAddressContent: {
+    position: "relative"
+  },
+  iconQrScanner: {
+    position: "absolute",
+    right: "20px",
+    bottom: "22px"
   }
 });
 
@@ -312,6 +321,19 @@ function AccountSend({ classes, isOpen }) {
     }
   };
 
+  const onQRData = data => {
+    dispatch({ type: "CHANGE_INPUT", name: "toAddress", value: data });
+  };
+
+  const isQREnable = () => {
+    // currently can not access camera on extension, maybe fix later
+    return !(
+      window.chrome &&
+      window.chrome.runtime &&
+      window.chrome.runtime.id
+    );
+  };
+
   return (
     <div style={{ padding: "2rem" }}>
       {state.showAlert}
@@ -355,20 +377,25 @@ function AccountSend({ classes, isOpen }) {
         </div>
       </div>
 
-      <TextField
-        required
-        id="toAddress"
-        label="To"
-        className={classes.textField}
-        margin="normal"
-        variant="outlined"
-        value={state.toAddress}
-        onChange={e => {
-          onChangeInput("toAddress")(e);
-        }}
-        onBlur={e => onValidator("toAddress")(e)}
-        inputProps={{ ref: toInputRef }}
-      />
+      <div className={classes.toAddressContent}>
+        <TextField
+          required
+          id="toAddress"
+          label="To"
+          className={classes.textField}
+          margin="normal"
+          variant="outlined"
+          value={state.toAddress}
+          onChange={e => {
+            onChangeInput("toAddress")(e);
+          }}
+          onBlur={e => onValidator("toAddress")(e)}
+          inputProps={{ ref: toInputRef, style: { paddingRight: "50px" } }}
+        />
+        {isQREnable() && (
+          <QRScanner className={classes.iconQrScanner} onData={onQRData} />
+        )}
+      </div>
 
       <TextField
         required
