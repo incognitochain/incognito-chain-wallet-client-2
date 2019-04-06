@@ -97,6 +97,11 @@ h3 {
   min-width: 320px;
 }
 
+button {
+  cursor: pointer;
+  border-radius: 4px;
+}
+
 button:focus {
   outline: none;
 }

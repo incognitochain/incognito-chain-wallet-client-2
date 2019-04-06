@@ -23,6 +23,7 @@
     "localforage": "^1.7.3",
     "lodash": "^4.17.11",
     "lodash.flow": "^3.5.0",
+    "mobile-detect": "^1.4.3",
     "moment": "^2.24.0",
     "node-sass": "^4.11.0",
     "npm": "^6.5.0",
