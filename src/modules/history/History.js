@@ -13,7 +13,7 @@ import {
 import Avatar from "@material-ui/core/Avatar";
 import moment from "moment";
 
-const url = "http://test-explorer-constant-chain.constant.cash/tx/";
+const url = `${process.env.CONSTANT_EXPLORER}/tx/`;
 
 function truncateMiddle(str = "") {
   return _.truncate(str, { length: 10 }) + str.slice(-4);

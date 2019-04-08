@@ -76,6 +76,10 @@ class CreateToken extends React.Component {
         }
       }
     }
+
+    if (name === "amount") {
+      return this.setState({ [name]: Number.parseInt(e.target.value) });
+    }
     this.setState({ [name]: e.target.value });
   };
 
