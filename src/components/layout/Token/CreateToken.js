@@ -35,8 +35,8 @@ class CreateToken extends React.Component {
         : props.toAddress || "",
       tokenName: props.tokenName || "",
       tokenSymbol: props.tokenSymbol || "",
-      amount: "",
-      fee: "",
+      amount: "1",
+      fee: "0.5",
       minFee: "",
       balance: -1,
 
@@ -130,7 +130,7 @@ class CreateToken extends React.Component {
       filter(Boolean),
       debounceTime(750),
       distinctUntilChanged(),
-      startWith(0)
+      startWith(this.state.amount)
     );
     const accountWallet = this.props.wallet.getAccountByName(
       this.props.account.name
