@@ -244,7 +244,7 @@ class CreateToken extends React.Component {
     return <div className="errorField">*{error}</div>;
   }
   renderCompletedInfo() {
-    const { isCreate } = this.props;
+    const { isCreate, tokenSymbol } = this.props;
     const { toAddress, amount } = this.state;
     const title = isCreate ? "Created Token" : "Sent Token Successfully";
     const trunc = (text = "") => `${text.substr(0, 10)}...${text.substr(-10)}`;
@@ -254,7 +254,9 @@ class CreateToken extends React.Component {
           <span>The new token is created</span>
         ) : (
           <>
-            <span>Amount: {Number(amount) || 0} CONST</span>
+            <span>
+              Amount: {Number(amount) || 0} {tokenSymbol}
+            </span>
             <span>To: {trunc(toAddress)}</span>
           </>
         )}
