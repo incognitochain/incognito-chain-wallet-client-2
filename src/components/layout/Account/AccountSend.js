@@ -26,6 +26,7 @@ import {
   clearAccountBalance
 } from "../../../services/CacheAccountBalanceService";
 import QRScanner from "../../../common/components/qrScanner";
+import detectBrowser from "@src/services/BrowserDetect";
 import CompletedInfo from "../../../common/components/completedInfo";
 
 const styles = theme => ({
@@ -326,15 +327,6 @@ function AccountSend({ classes, isOpen, closeModal }) {
     dispatch({ type: "CHANGE_INPUT", name: "toAddress", value: data });
   };
 
-  const isQREnable = () => {
-    // currently can not access camera on extension, maybe fix later
-    return !(
-      window.chrome &&
-      window.chrome.runtime &&
-      window.chrome.runtime.id
-    );
-  };
-
   if (txResult) {
     const onDone = () => {
       closeModal();
@@ -408,7 +400,7 @@ function AccountSend({ classes, isOpen, closeModal }) {
           onBlur={e => onValidator("toAddress")(e)}
           inputProps={{ ref: toInputRef, style: { paddingRight: "50px" } }}
         />
-        {isQREnable() && (
+        {!detectBrowser.isChromeExtension && (
           <QRScanner className={classes.iconQrScanner} onData={onQRData} />
         )}
       </div>
