@@ -55,8 +55,8 @@ class CreateToken extends React.Component {
         toastr.warning("Receiver's address is invalid!");
       }
     } else if (name === "amount") {
-      if (Number(e.target.value) < 0.01) {
-        toastr.warning("Amount must be at least 0.01 constant!");
+      if (Number(e.target.value) < 1) {
+        toastr.warning("Amount must be at least 1 token!");
       }
 
       if (Number(e.target.value) > MaxUint64) {
@@ -70,6 +70,10 @@ class CreateToken extends React.Component {
           toastr.warning("Fee must be greater than min fee!");
         }
       }
+    }
+
+    if (name === "amount") {
+      return this.setState({ [name]: Number.parseInt(e.target.value) });
     }
     this.setState({ [name]: e.target.value });
   };
@@ -177,7 +181,7 @@ class CreateToken extends React.Component {
     if (isCreate && amount > MaxUint64) return false;
     if (
       toAddress.length > 0 &&
-      amount > 0 &&
+      amount >= 1 &&
       tokenName.length > 0 &&
       tokenSymbol.length > 0
     )
@@ -421,6 +425,7 @@ class CreateToken extends React.Component {
           margin="normal"
           variant="outlined"
           type="number"
+          pattern="\d*"
           value={this.state.amount}
           onChange={this.onChangeInput("amount")}
         />
