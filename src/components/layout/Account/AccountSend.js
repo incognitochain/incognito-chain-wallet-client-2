@@ -119,8 +119,8 @@ function AccountSend({ classes, isOpen, closeModal }) {
     account => ({
       paymentAddress: account.PaymentAddress,
       toAddress: "",
-      amount: "0.01",
-      fee: "0.00",
+      amount: "1",
+      fee: "0.5",
       minFee: "0.00",
       showAlert: "",
       isAlert: false,
@@ -142,7 +142,7 @@ function AccountSend({ classes, isOpen, closeModal }) {
       filter(Boolean),
       debounceTime(750),
       distinctUntilChanged(),
-      startWith(0.01)
+      startWith(1)
     );
     const isPrivacyObservable = fromEvent(isPrivacyRef.current, "change").pipe(
       map(e => e.target.value),
