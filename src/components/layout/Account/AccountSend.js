@@ -467,7 +467,7 @@ function AccountSend({ classes, isOpen, closeModal }) {
         <div>Are you sure to transfer out {state.amount} CONSTANT?</div>
       </ConfirmDialog>
 
-      <Loading fullscreen isShow={state.isLoading} />
+      {state.isLoading && <Loading fullscreen />}
     </div>
   );
 }
