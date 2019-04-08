@@ -132,7 +132,8 @@ function renderBalance(balance, isInit) {
   if (typeof balance !== "number" || isInit) {
     return <CircularProgress size={20} />;
   }
-  return numeral(parseFloat(balance)).format("0,0");
+  // return numeral(parseFloat(balance)).format("0,0");
+  return Math.round(balance).toLocaleString();
 }
 
 const Wrapper = styled.div`

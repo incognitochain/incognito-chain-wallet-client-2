@@ -29,6 +29,8 @@ import CompletedInfo from "@common/components/completedInfo";
 import { Loading } from "../../../common/components/loading/Loading";
 import Account from "../../../services/Account";
 
+const MaxUint64 = 18446744073709551615;
+
 class CreateToken extends React.Component {
   constructor(props) {
     super(props);
@@ -60,6 +62,10 @@ class CreateToken extends React.Component {
     } else if (name === "amount") {
       if (Number(e.target.value) < 0.01) {
         toastr.warning("Amount must be at least 0.01 constant!");
+      }
+
+      if (Number(e.target.value) > MaxUint64) {
+        toastr.warning("Amount must be less than ", MaxUint64);
       }
     } else if (name === "fee") {
       if (Number(e.target.value) < 0.01) {
@@ -173,6 +179,7 @@ class CreateToken extends React.Component {
   validate = ({ toAddress, amount, tokenName, tokenSymbol }) => {
     const { balance, isCreate } = this.props;
     if (!isCreate && amount > balance) return false;
+    if (isCreate && amount > MaxUint64) return false;
     if (
       toAddress.length > 0 &&
       amount > 0 &&
@@ -219,7 +226,7 @@ class CreateToken extends React.Component {
     } else {
       this.setState({
         error: isCreate
-          ? `Please fill all fields.`
+          ? `Please fill all fields and amount limit in ${MaxUint64} token`
           : `Please fill all fields and amount limit in ${balance} token.`
       });
     }
@@ -311,7 +318,9 @@ class CreateToken extends React.Component {
         toastr.error(
           (this.props.isCreate ? "Create" : "Send") +
             " Token fail. Please try again later! " +
-            response.err.toString()
+            (response.err.Message
+              ? response.err.Message.toString()
+              : response.err.toString())
         );
       } else {
         this.handleCompletedInfoOpen();
