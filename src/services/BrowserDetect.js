@@ -33,6 +33,10 @@ class BrowserDetect {
     return this.browserDetect.is("Safari");
   }
 
+  get isChromeExtension() {
+    return window.chrome && window.chrome.runtime && window.chrome.runtime.id;
+  }
+
   /**
    * check is tablet
    *
