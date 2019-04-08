@@ -335,8 +335,8 @@ function AccountSend({ classes, isOpen, closeModal }) {
     const trunc = (text = "") => `${text.substr(0, 10)}...${text.substr(-10)}`;
     return (
       <CompletedInfo title="Sent Successfully" onDone={onDone}>
-        <span>Amount: {Number(state?.amount) || 0} CONST</span>
-        <span>To: {trunc(state?.toAddress)}</span>
+        <span>Amount: {Number(state.amount) || 0} CONST</span>
+        <span>To: {trunc(state.toAddress)}</span>
         <span>Tx ID: {trunc(txResult)}</span>
       </CompletedInfo>
     );

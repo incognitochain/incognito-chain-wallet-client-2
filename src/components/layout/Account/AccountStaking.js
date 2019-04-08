@@ -193,13 +193,15 @@ function AccountStaking({
   const confirmStaking = () => {
     const {
       toAddress,
-      amount,
       fee,
       minFee,
       EstimateTxSizeInKb,
       GOVFeePerKbTx,
       stakingType
     } = state;
+
+    let { amount } = state;
+    amount = Number(amount);
 
     if (stakingType != "0" && stakingType != "1") {
       toastr.warning("Staking type is invalid!");
