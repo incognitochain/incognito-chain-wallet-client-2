@@ -4,14 +4,6 @@ import styled from "styled-components";
 
 import Account from "../../../services/Account";
 
-// export function Loading({ isShow, fullscreen }) {
-//   return isShow ? (
-//     <Wrapper className={cls({ fullscreen })}>
-//       <CircularProgress color="secondary" />
-//     </Wrapper>
-//   ) : null;
-// }
-
 const Wrapper = styled.div`
   position: absolute;
   top: 0;
@@ -32,18 +24,16 @@ export class Loading extends React.Component {
     completed: 0
   };
 
-  componentWillReceiveProps = nextProps => {
-    const { isShow } = nextProps;
-    if (isShow) {
-      var that = this;
-      clearInterval(this.timer);
-      this.timer = setInterval(function() {
-        that.progress(isShow);
-      }, 90);
-    } else if (isShow == false) {
-      clearInterval(this.timer);
-    }
-  };
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      this.progress();
+    }, 90);
+  }
+
+  componentWillUnmount() {
+    console.log("clearInterval");
+    clearInterval(this.timer);
+  }
 
   progress = () => {
     const completed = Account.getProgressTx();
@@ -51,28 +41,17 @@ export class Loading extends React.Component {
   };
 
   render() {
-    const { fullscreen, isShow } = this.props;
-    if (isShow) {
-      return (
-        <Wrapper style={{ flexFlow: "column" }}>
-          <CircularProgress
-            className={fullscreen.progress}
-            variant="determinate"
-            value={this.state.completed}
-            color="secondary"
-          />
-          <div>{this.state.completed}%</div>
-          {/* <CircularProgress
-
-            className={classes.progress}
-            variant="determinate"
-            value={this.state.completed}
-            color="secondary"
-          /> */}
-        </Wrapper>
-      );
-    }
-
-    return null;
+    const { fullscreen } = this.props;
+    return (
+      <Wrapper style={{ flexFlow: "column" }}>
+        <CircularProgress
+          className={fullscreen.progress}
+          variant="determinate"
+          value={this.state.completed}
+          color="secondary"
+        />
+        <div>{this.state.completed}%</div>
+      </Wrapper>
+    );
   }
 }

@@ -452,7 +452,7 @@ function AccountStaking({
         <div>Are you sure to stake {state.amount} CONSTANT?</div>
       </ConfirmDialog>
 
-      <Loading fullscreen isShow={state.isLoading} />
+      {state.isLoading && <Loading fullscreen />}
     </div>
   );
 }

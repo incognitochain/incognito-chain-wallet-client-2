@@ -487,7 +487,7 @@ class CreateToken extends React.Component {
         {this.renderError()}
         {this.renderConfirmDialog()}
 
-        <Loading fullscreen isShow={this.state.isLoading} />
+        {this.state.isLoading && <Loading fullscreen />}
       </Wrapper>
     );
   }

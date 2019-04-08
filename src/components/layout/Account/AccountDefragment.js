@@ -393,7 +393,7 @@ function AccountDefragment({ classes, isOpen }) {
         <div>Are you sure to defragment wallet?</div>
       </ConfirmDialog>
 
-      <Loading fullscreen isShow={state.isLoading} />
+      {state.isLoading && <Loading fullscreen />}
     </div>
   );
 }
