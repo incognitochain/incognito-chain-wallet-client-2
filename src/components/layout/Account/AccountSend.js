@@ -124,84 +124,37 @@ function AccountSend({ classes, isOpen, closeModal }) {
       minFee: "0.00",
       showAlert: "",
       isAlert: false,
-      isPrivacy: "1"
+      isPrivacy: "0"
     })
   );
 
   React.useEffect(() => {
-    const toAddressObservable = fromEvent(toInputRef.current, "keyup").pipe(
-      map(e => e.target.value),
-      filter(Boolean),
-      debounceTime(750),
-      distinctUntilChanged(),
-      startWith("")
-    );
-
-    const amountObservable = fromEvent(amountInputRef.current, "keyup").pipe(
-      map(e => Number(e.target.value)),
-      filter(Boolean),
-      debounceTime(750),
-      distinctUntilChanged(),
-      startWith(1)
-    );
-    const isPrivacyObservable = fromEvent(isPrivacyRef.current, "change").pipe(
-      map(e => e.target.value),
-      filter(Boolean),
-      debounceTime(750),
-      distinctUntilChanged(),
-      startWith("")
-    );
-
-    const subscription = combineLatest(
-      toAddressObservable,
-      amountObservable,
-      isPrivacyObservable
-    )
-      .pipe(
-        filter(
-          ([toAddress, amount, isPrivacy]) =>
-            Account.checkPaymentAddress(toAddress) && Number(amount) >= 0.01
-        ),
-        switchMap(([toAddress, amount, isPrivacy]) => {
-          dispatch({ type: "LOAD_ESTIMATION_FEE" });
-          console.log(
-            "isPrivacy when estimate fee: ",
-            isPrivacyRef.current.value
-          );
-          if (balance <= 0) {
-            toastr.warning("Balance is zero!");
-            return Promise.resolve(0);
-          }
-          return rpcClientService
-            .getEstimateFee(
-              account.PaymentAddress,
-              toAddress,
-              Number(amount) * 100,
-              account.PrivateKey,
-              accountWallet,
-              Number(isPrivacyRef.current.value)
-            )
-            .catch(e => {
-              console.error(e);
-              toastr.error("Error on get estimation fee!");
-              return Promise.resolve(0);
-            });
-        })
-      )
-      .subscribe(
-        fee => {
+    if (
+      Account.checkPaymentAddress(state.toAddress) &&
+      Number(state.amount) >= 0.01
+    ) {
+      dispatch({ type: "LOAD_ESTIMATION_FEE" });
+      if (balance <= 0) {
+        toastr.warning("Balance is zero!");
+      }
+      rpcClientService
+        .getEstimateFee(
+          account.PaymentAddress,
+          state.toAddress,
+          Number(state.amount) * 100,
+          account.PrivateKey,
+          accountWallet,
+          Number(isPrivacyRef.current.value)
+        )
+        .then(fee => {
           dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee });
-        },
-        error => {
+        })
+        .catch(e => {
           dispatch({ type: "LOAD_ESTIMATION_FEE_ERROR" });
-          console.error(error);
-        }
-      );
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+          toastr.error("Error on get estimation fee!");
+        });
+    }
+  }, [state.toAddress, state.amount, state.isPrivacy]);
 
   const confirmSendCoin = () => {
     const {
@@ -296,10 +249,13 @@ function AccountSend({ classes, isOpen, closeModal }) {
   }
 
   const onChangeInput = name => e => {
+    let value = e.target.value;
     if (name === "isPrivacy") {
-      e.target.value = e.target.value == "0" ? "1" : "0";
+      value = value === "0" ? "1" : "0";
+    } else if (name === "amount") {
+      value = Number(value) || 0;
     }
-    dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
+    dispatch({ type: "CHANGE_INPUT", name, value });
   };
 
   const onValidator = name => e => {
