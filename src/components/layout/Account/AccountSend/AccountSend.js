@@ -27,7 +27,7 @@ import {
 } from "@src/services/CacheAccountBalanceService";
 import QRScanner from "@src/common/components/qrScanner";
 import detectBrowser from "@src/services/BrowserDetect";
-import CompletedInfo from "@src/common/components/completedInfo";
+import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
 
 const styles = theme => ({
   textField: {
@@ -282,18 +282,18 @@ function AccountSend({ classes, isOpen, closeModal }) {
   };
 
   if (txResult) {
-    const onDone = () => {
+    const onClose = () => {
       closeModal();
       dispatch({ type: "RESET" });
     };
-    const trunc = (text = "") => `${text.substr(0, 10)}...${text.substr(-10)}`;
     return (
-      <CompletedInfo title="Sent Successfully" onDone={onDone}>
-        <span>Amount: {Number(state.amount) || 0} CONST</span>
-        <span>To: {trunc(state.toAddress)}</span>
-        <span>Tx ID: {trunc(txResult?.txId)}</span>
-        <span>Create at: {new Date(txResult?.lockTime)?.toLocaleString()}</span>
-      </CompletedInfo>
+      <SendCoinCompletedInfo
+        onClose={onClose}
+        amount={state.amount}
+        toAddress={state.toAddress}
+        txId={txResult?.txId}
+        createdAt={txResult?.lockTime}
+      />
     );
   }
 

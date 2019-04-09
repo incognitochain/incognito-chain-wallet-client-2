@@ -5,12 +5,13 @@ import _ from "lodash";
 import { useAccountContext } from "../../common/context/AccountContext";
 import { useWalletContext } from "../../common/context/WalletContext";
 import {
-  FailedTx,
   SuccessTx,
   ConfirmedTx,
   genImageFromStr
 } from "constant-chain-web-js/build/wallet";
 import Avatar from "@material-ui/core/Avatar";
+import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
+import Dialog from "@src/components/core/Dialog";
 import moment from "moment";
 
 const url = `${process.env.CONSTANT_EXPLORER}/tx/`;
@@ -35,6 +36,8 @@ function reducer(state, action) {
  * NOTE: Only show sending history for now
  */
 export function History() {
+  const [dialogContent, setDialogContent] = React.useState(null);
+  const [dialog, setDialog] = React.useState(null);
   const [state, dispatch] = React.useReducer(reducer, {
     history: []
   });
@@ -59,6 +62,19 @@ export function History() {
     if (a.time < b.time) return 1;
     if (a.time > b.time) return -1;
     return 0;
+  }
+
+  function showHistoryDialog(history, receiverAddress) {
+    setDialogContent(
+      <SendCoinCompletedInfo
+        onClose={() => null}
+        amount={history?.amount}
+        toAddress={receiverAddress}
+        txId={history?.txID}
+        createdAt={history?.time}
+      />
+    );
+    dialog && dialog.open();
   }
 
   let history = state.history;
@@ -111,7 +127,11 @@ export function History() {
                   <Left>
                     {(item.receivers || []).map((receiverItem, i) => {
                       return (
-                        <Receiver title={receiverItem} key={i}>
+                        <Receiver
+                          title={receiverItem}
+                          key={i}
+                          onClick={() => showHistoryDialog(item, receiverItem)}
+                        >
                           To: {truncateMiddle(receiverItem)}
                         </Receiver>
                       );
@@ -137,6 +157,9 @@ export function History() {
           );
         })}
       </Container>
+      <Dialog title="History" onRef={setDialog} className={{ margin: 0 }}>
+        {dialogContent}
+      </Dialog>
     </Wrapper>
   );
 }
