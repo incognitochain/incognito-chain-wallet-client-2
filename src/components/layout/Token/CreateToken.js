@@ -43,7 +43,8 @@ class CreateToken extends React.Component {
       submitParams: [],
       showCompletedInfo: false,
       isAlert: false,
-      error: null
+      error: null,
+      txResult: null
     };
   }
 
@@ -245,7 +246,7 @@ class CreateToken extends React.Component {
   }
   renderCompletedInfo() {
     const { isCreate, tokenSymbol } = this.props;
-    const { toAddress, amount } = this.state;
+    const { toAddress, amount, txResult } = this.state;
     const title = isCreate ? "Created Token" : "Sent Token Successfully";
     const trunc = (text = "") => `${text.substr(0, 10)}...${text.substr(-10)}`;
     return (
@@ -258,6 +259,9 @@ class CreateToken extends React.Component {
               Amount: {Number(amount) || 0} {tokenSymbol}
             </span>
             <span>To: {trunc(toAddress)}</span>
+            <span>
+              Created at: {new Date(txResult?.lockTime)?.toLocaleString()}
+            </span>
           </>
         )}
       </CompletedInfo>
@@ -326,7 +330,7 @@ class CreateToken extends React.Component {
               : response.err.toString())
         );
       } else {
-        this.handleCompletedInfoOpen();
+        this.setState({ txResult: response }, this.handleCompletedInfoOpen);
         this.props.onRefreshTokenList();
       }
     } catch (e) {

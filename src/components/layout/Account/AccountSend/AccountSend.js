@@ -233,7 +233,7 @@ function AccountSend({ classes, isOpen, closeModal }) {
 
       if (result.txId) {
         clearAccountBalance(account.name);
-        setTxResult(result.txId);
+        setTxResult(result);
       } else {
         console.log("Create tx err: ", result.err);
         toastr.error(
@@ -291,7 +291,8 @@ function AccountSend({ classes, isOpen, closeModal }) {
       <CompletedInfo title="Sent Successfully" onDone={onDone}>
         <span>Amount: {Number(state.amount) || 0} CONST</span>
         <span>To: {trunc(state.toAddress)}</span>
-        <span>Tx ID: {trunc(txResult)}</span>
+        <span>Tx ID: {trunc(txResult?.txId)}</span>
+        <span>Create at: {new Date(txResult?.lockTime)?.toLocaleString()}</span>
       </CompletedInfo>
     );
   }
