@@ -252,8 +252,6 @@ function AccountSend({ classes, isOpen, closeModal }) {
     let value = e.target.value;
     if (name === "isPrivacy") {
       value = value === "0" ? "1" : "0";
-    } else if (name === "amount") {
-      value = Number(value) || 0;
     }
     dispatch({ type: "CHANGE_INPUT", name, value });
   };
