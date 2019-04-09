@@ -26,6 +26,7 @@ import {
   clearAccountBalance
 } from "../../../services/CacheAccountBalanceService";
 import QRScanner from "../../../common/components/qrScanner";
+import detectBrowser from "@src/services/BrowserDetect";
 import CompletedInfo from "../../../common/components/completedInfo";
 
 const styles = theme => ({
@@ -118,89 +119,42 @@ function AccountSend({ classes, isOpen, closeModal }) {
     account => ({
       paymentAddress: account.PaymentAddress,
       toAddress: "",
-      amount: "0.01",
-      fee: "0.00",
+      amount: "1",
+      fee: "0.5",
       minFee: "0.00",
       showAlert: "",
       isAlert: false,
-      isPrivacy: "1"
+      isPrivacy: "0"
     })
   );
 
   React.useEffect(() => {
-    const toAddressObservable = fromEvent(toInputRef.current, "keyup").pipe(
-      map(e => e.target.value),
-      filter(Boolean),
-      debounceTime(750),
-      distinctUntilChanged(),
-      startWith("")
-    );
-
-    const amountObservable = fromEvent(amountInputRef.current, "keyup").pipe(
-      map(e => Number(e.target.value)),
-      filter(Boolean),
-      debounceTime(750),
-      distinctUntilChanged(),
-      startWith(0.01)
-    );
-    const isPrivacyObservable = fromEvent(isPrivacyRef.current, "change").pipe(
-      map(e => e.target.value),
-      filter(Boolean),
-      debounceTime(750),
-      distinctUntilChanged(),
-      startWith("")
-    );
-
-    const subscription = combineLatest(
-      toAddressObservable,
-      amountObservable,
-      isPrivacyObservable
-    )
-      .pipe(
-        filter(
-          ([toAddress, amount, isPrivacy]) =>
-            Account.checkPaymentAddress(toAddress) && Number(amount) >= 0.01
-        ),
-        switchMap(([toAddress, amount, isPrivacy]) => {
-          dispatch({ type: "LOAD_ESTIMATION_FEE" });
-          console.log(
-            "isPrivacy when estimate fee: ",
-            isPrivacyRef.current.value
-          );
-          if (balance <= 0) {
-            toastr.warning("Balance is zero!");
-            return Promise.resolve(0);
-          }
-          return rpcClientService
-            .getEstimateFee(
-              account.PaymentAddress,
-              toAddress,
-              Number(amount) * 100,
-              account.PrivateKey,
-              accountWallet,
-              Number(isPrivacyRef.current.value)
-            )
-            .catch(e => {
-              console.error(e);
-              toastr.error("Error on get estimation fee!");
-              return Promise.resolve(0);
-            });
-        })
-      )
-      .subscribe(
-        fee => {
+    if (
+      Account.checkPaymentAddress(state.toAddress) &&
+      Number(state.amount) >= 0.01
+    ) {
+      dispatch({ type: "LOAD_ESTIMATION_FEE" });
+      if (balance <= 0) {
+        toastr.warning("Balance is zero!");
+      }
+      rpcClientService
+        .getEstimateFee(
+          account.PaymentAddress,
+          state.toAddress,
+          Number(state.amount) * 100,
+          account.PrivateKey,
+          accountWallet,
+          Number(isPrivacyRef.current.value)
+        )
+        .then(fee => {
           dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee });
-        },
-        error => {
+        })
+        .catch(e => {
           dispatch({ type: "LOAD_ESTIMATION_FEE_ERROR" });
-          console.error(error);
-        }
-      );
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+          toastr.error("Error on get estimation fee!");
+        });
+    }
+  }, [state.toAddress, state.amount, state.isPrivacy]);
 
   const confirmSendCoin = () => {
     const {
@@ -295,10 +249,11 @@ function AccountSend({ classes, isOpen, closeModal }) {
   }
 
   const onChangeInput = name => e => {
+    let value = e.target.value;
     if (name === "isPrivacy") {
-      e.target.value = e.target.value == "0" ? "1" : "0";
+      value = value === "0" ? "1" : "0";
     }
-    dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
+    dispatch({ type: "CHANGE_INPUT", name, value });
   };
 
   const onValidator = name => e => {
@@ -324,15 +279,6 @@ function AccountSend({ classes, isOpen, closeModal }) {
 
   const onQRData = data => {
     dispatch({ type: "CHANGE_INPUT", name: "toAddress", value: data });
-  };
-
-  const isQREnable = () => {
-    // currently can not access camera on extension, maybe fix later
-    return !(
-      window.chrome &&
-      window.chrome.runtime &&
-      window.chrome.runtime.id
-    );
   };
 
   if (txResult) {
@@ -408,7 +354,7 @@ function AccountSend({ classes, isOpen, closeModal }) {
           onBlur={e => onValidator("toAddress")(e)}
           inputProps={{ ref: toInputRef, style: { paddingRight: "50px" } }}
         />
-        {isQREnable() && (
+        {!detectBrowser.isChromeExtension && (
           <QRScanner className={classes.iconQrScanner} onData={onQRData} />
         )}
       </div>
