@@ -1,6 +1,6 @@
 import CryptoJS from "crypto-js";
 
-const CACHE_ACCOUNT_BALANCE_TIME = 1 * 60 * 1000; // 1 minutes
+const CACHE_ACCOUNT_BALANCE_TIME = 5 * 1000; // 1 minutes
 const CACHE_ACCOUNT_BALANCE_SECRET_KEY = "FJexuTITEw";
 
 export function clearAllAccountBalance(accountNames, tokenID = "") {

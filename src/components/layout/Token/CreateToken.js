@@ -1,14 +1,7 @@
 import React from "react";
 import { TextField, Button } from "@material-ui/core";
 import ConfirmDialog from "../../core/ConfirmDialog";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-
 import Token from "../../../services/Token";
-
 import { fromEvent, combineLatest } from "rxjs";
 import {
   map,
@@ -26,6 +19,8 @@ import * as rpcClientService from "../../../services/RpcClientService";
 import $ from "jquery";
 import toastr from "toastr";
 import CompletedInfo from "@common/components/completedInfo";
+import detectBrowser from "@src/services/BrowserDetect";
+import QRScanner from "@src/common/components/qrScanner";
 import { Loading } from "../../../common/components/loading/Loading";
 import Account from "../../../services/Account";
 
@@ -40,8 +35,8 @@ class CreateToken extends React.Component {
         : props.toAddress || "",
       tokenName: props.tokenName || "",
       tokenSymbol: props.tokenSymbol || "",
-      amount: "",
-      fee: "",
+      amount: "1",
+      fee: "0.5",
       minFee: "",
       balance: -1,
 
@@ -135,7 +130,7 @@ class CreateToken extends React.Component {
       filter(Boolean),
       debounceTime(750),
       distinctUntilChanged(),
-      startWith(0)
+      startWith(this.state.amount)
     );
     const accountWallet = this.props.wallet.getAccountByName(
       this.props.account.name
@@ -249,7 +244,7 @@ class CreateToken extends React.Component {
     return <div className="errorField">*{error}</div>;
   }
   renderCompletedInfo() {
-    const { isCreate } = this.props;
+    const { isCreate, tokenSymbol } = this.props;
     const { toAddress, amount } = this.state;
     const title = isCreate ? "Created Token" : "Sent Token Successfully";
     const trunc = (text = "") => `${text.substr(0, 10)}...${text.substr(-10)}`;
@@ -259,7 +254,9 @@ class CreateToken extends React.Component {
           <span>The new token is created</span>
         ) : (
           <>
-            <span>Amount: {Number(amount) || 0} CONST</span>
+            <span>
+              Amount: {Number(amount) || 0} {tokenSymbol}
+            </span>
             <span>To: {trunc(toAddress)}</span>
           </>
         )}
@@ -295,6 +292,8 @@ class CreateToken extends React.Component {
       throw e;
     }
   };
+
+  onQRData = data => this.setState({ toAddress: data });
 
   createOrSendToken = async () => {
     this.setState({ isLoading: true });
@@ -399,18 +398,23 @@ class CreateToken extends React.Component {
           value={this.props.account.PaymentAddress}
         />
 
-        <TextField
-          required
-          id="toAddress"
-          name="toAddress"
-          label="To"
-          className="textField"
-          inputRef={this.toAddressRef}
-          margin="normal"
-          variant="outlined"
-          value={this.state.toAddress}
-          onChange={this.onChangeInput("toAddress")}
-        />
+        <ToAddressWrapper>
+          <TextField
+            required
+            id="toAddress"
+            name="toAddress"
+            label="To"
+            className="textField"
+            inputRef={this.toAddressRef}
+            margin="normal"
+            variant="outlined"
+            value={this.state.toAddress}
+            onChange={this.onChangeInput("toAddress")}
+          />
+          {!detectBrowser.isChromeExtension && (
+            <QRScannerIcon onData={this.onQRData} />
+          )}
+        </ToAddressWrapper>
 
         {this.renderTokenName()}
         <TextField
@@ -504,4 +508,13 @@ const Wrapper = styled.div`
     color: red;
     margin-top: 10px;
   }
+`;
+
+const ToAddressWrapper = styled.div`
+  position: relative;
+`;
+const QRScannerIcon = styled(QRScanner)`
+  position: absolute;
+  right: 20px;
+  bottom: 22px;
 `;
