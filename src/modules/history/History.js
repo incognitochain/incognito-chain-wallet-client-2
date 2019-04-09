@@ -82,80 +82,86 @@ export function History() {
   return (
     <Wrapper>
       <Container>
-        {history.map(item => {
-          let createdTime = "";
-          if (item.time != undefined && item.time != null) {
-            item.time = moment(item.time);
-            createdTime = item.time.format("DD/MM/YYYY - hh:mm:ss");
-          }
-          console.log("Time:", createdTime);
-          const { status } = item;
-          let statusText;
-          let statusClass;
+        {history.length ? (
+          history.map(item => {
+            let createdTime = "";
+            if (item.time != undefined && item.time != null) {
+              item.time = moment(item.time);
+              createdTime = item.time.format("DD/MM/YYYY - hh:mm:ss");
+            }
+            console.log("Time:", createdTime);
+            const { status } = item;
+            let statusText;
+            let statusClass;
 
-          if (status === ConfirmedTx) {
-            statusText = "Confirmed";
-            statusClass = "confirmed";
-          } else if (status === SuccessTx) {
-            statusText = "Success";
-            statusClass = "success";
-          } else {
-            statusText = "Failed";
-            statusClass = "failed";
-          }
-          var image = "";
-          if (item.txID && item.txID.length > 0) {
-            image = genImageFromStr(item.txID, 40);
-          }
-          return (
-            <HistoryItem key={item.txID}>
-              <Div>
-                <Row1>
-                  <TxID>
-                    <a href={url + item.txID} target="_blank">
-                      <Avatar
-                        alt={image && image.length > 0 ? item.txID : "fail"}
-                        src={image}
-                      />
-                    </a>
-                  </TxID>
+            if (status === ConfirmedTx) {
+              statusText = "Confirmed";
+              statusClass = "confirmed";
+            } else if (status === SuccessTx) {
+              statusText = "Success";
+              statusClass = "success";
+            } else {
+              statusText = "Failed";
+              statusClass = "failed";
+            }
+            var image = "";
+            if (item.txID && item.txID.length > 0) {
+              image = genImageFromStr(item.txID, 40);
+            }
+            return (
+              <HistoryItem key={item.txID}>
+                <Div>
+                  <Row1>
+                    <TxID>
+                      <a href={url + item.txID} target="_blank">
+                        <Avatar
+                          alt={image && image.length > 0 ? item.txID : "fail"}
+                          src={image}
+                        />
+                      </a>
+                    </TxID>
 
-                  <Time>{createdTime}</Time>
-                </Row1>
+                    <Time>{createdTime}</Time>
+                  </Row1>
 
-                <Row2>
-                  <Left>
-                    {(item.receivers || []).map((receiverItem, i) => {
-                      return (
-                        <Receiver
-                          title={receiverItem}
-                          key={i}
-                          onClick={() => showHistoryDialog(item, receiverItem)}
-                        >
-                          To: {truncateMiddle(receiverItem)}
-                        </Receiver>
-                      );
-                    })}
-                  </Left>
-                  <Right>
-                    {item.isIn ? "+" : "-"} {item.amount} CONST
-                  </Right>
-                </Row2>
+                  <Row2>
+                    <Left>
+                      {(item.receivers || []).map((receiverItem, i) => {
+                        return (
+                          <Receiver
+                            title={receiverItem}
+                            key={i}
+                            onClick={() =>
+                              showHistoryDialog(item, receiverItem)
+                            }
+                          >
+                            To: {truncateMiddle(receiverItem)}
+                          </Receiver>
+                        );
+                      })}
+                    </Left>
+                    <Right>
+                      {item.isIn ? "+" : "-"} {item.amount} CONST
+                    </Right>
+                  </Row2>
 
-                <Row3>
-                  <Left>
-                    <Fee>Fee: {item.fee}</Fee>
-                  </Left>
-                  <Right>
-                    <Status className={statusClass}>
-                      <p>{statusText}</p>
-                    </Status>
-                  </Right>
-                </Row3>
-              </Div>
-            </HistoryItem>
-          );
-        })}
+                  <Row3>
+                    <Left>
+                      <Fee>Fee: {item.fee}</Fee>
+                    </Left>
+                    <Right>
+                      <Status className={statusClass}>
+                        <p>{statusText}</p>
+                      </Status>
+                    </Right>
+                  </Row3>
+                </Div>
+              </HistoryItem>
+            );
+          })
+        ) : (
+          <NoData>No data to display</NoData>
+        )}
       </Container>
       <Dialog title="History" onRef={setDialog} className={{ margin: 0 }}>
         {dialogContent}
@@ -204,6 +210,11 @@ const Receiver = styled.div`
 const Div = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const NoData = styled.div`
+  text-align: center;
+  margin: 20px;
 `;
 
 const Right = styled.div`
