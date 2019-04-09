@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const appPath = filepath => path.resolve(__dirname, filepath);
 
@@ -30,6 +31,30 @@ const optimization = {
   ],
   nodeEnv: 'production',
   sideEffects: true,
+  concatenateModules: true,
+  runtimeChunk: 'single',
+  splitChunks: {
+    chunks: 'all',
+    maxInitialRequests: Infinity,
+    minSize: 30000,
+    maxSize: 0,
+    cacheGroups: {
+      vendor: {
+        test: /[\\/]node_modules[\\/]/,
+        name(module) {
+          // get the name. E.g. node_modules/packageName/not/this/part.js
+          // or node_modules/packageName
+          const packageName = module.context.match(
+            /[\\/]node_modules[\\/](.*?)([\\/]|$)/,
+          )[1];
+
+          // npm package names are URL-safe, but some servers don't like @ symbols
+          return `npm.${packageName.replace('@', '')}`;
+        },
+        chunks: 'all'
+      },
+    },
+  },
 };
 
 const devConfig = {
@@ -65,11 +90,10 @@ module.exports = (env, argv) => {
   return {
     entry: './src/index.js',
     output: {
-      // path: appPath('../dist'),
+      path: path.resolve(__dirname, 'dist/'),
       filename: '[name].js?v=[hash]',
       chunkFilename: '[name].chunk.js?v=[hash]',
       publicPath: '/',
-      // globalObject: 'this',
     },
     devtool: 'inline-source-map',
     resolve: {
@@ -90,7 +114,6 @@ module.exports = (env, argv) => {
         }),
       }),
       new HtmlWebpackPlugin({
-        chunks: ['main', 'vendors~main'],
         minify: isProduction
           ? {
             collapseWhitespace: true,
@@ -105,8 +128,9 @@ module.exports = (env, argv) => {
       new CopyWebpackPlugin([
         // relative path is from src
         {from: './public/manifest.json', to: './'}, // <- your path to manifest
-        {from: './public/img', to: './img'}, // <- your path to manifest
-      ])
+        {from: './public/img', to: './img'},
+      ]),
+      ...isProduction ? [new CleanWebpackPlugin()] : [],
     ],
     module: {
       rules: [
