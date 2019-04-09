@@ -1,12 +1,12 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import ConfirmDialog from "../../core/ConfirmDialog";
-import Account from "../../../services/Account";
+import ConfirmDialog from "@src/components/core/ConfirmDialog";
+import Account from "@src/services/Account";
 import { Button, TextField, Select, MenuItem } from "@material-ui/core";
-import { useAccountContext } from "../../../common/context/AccountContext";
+import { useAccountContext } from "@src/common/context/AccountContext";
 import toastr from "toastr";
-import { useWalletContext } from "../../../common/context/WalletContext";
-import { useAccountListContext } from "../../../common/context/AccountListContext";
+import { useWalletContext } from "@src/common/context/WalletContext";
+import { useAccountListContext } from "@src/common/context/AccountListContext";
 import { fromEvent, combineLatest } from "rxjs";
 import {
   map,
@@ -16,15 +16,15 @@ import {
   filter,
   startWith
 } from "rxjs/operators";
-import * as rpcClientService from "../../../services/RpcClientService";
-import { useDebugReducer } from "../../../common/hook/useDebugReducer";
-import { useAppContext } from "../../../common/context/AppContext";
-import { Loading } from "../../../common/components/loading/Loading";
+import * as rpcClientService from "@src/services/RpcClientService";
+import { useDebugReducer } from "@src/common/hook/useDebugReducer";
+import { useAppContext } from "@src/common/context/AppContext";
+import { Loading } from "@src/common/components/loading/Loading";
 import {
   getAccountBalance,
   saveAccountBalance,
   clearAccountBalance
-} from "../../../services/CacheAccountBalanceService";
+} from "@src/services/CacheAccountBalanceService";
 
 const BurnAddress =
   "1NHp2EKw7ALdXUzBfoRJvKrBBM9nkejyDcHVPvUjDcWRyG22dHHyiBKQGL1c";
@@ -341,7 +341,7 @@ function AccountStaking({
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
+    <div style={{ padding: "2rem", width: "100%" }}>
       {state.showAlert}
       <TextField
         disabled
