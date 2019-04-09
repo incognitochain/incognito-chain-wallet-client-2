@@ -9,15 +9,15 @@ import {
   Tooltip,
   CircularProgress
 } from "@material-ui/core";
-import AccountSend from "./AccountSend";
+import AccountSend from "@src/components/layout/Account/AccountSend";
 
 import { Send as IconSend } from "@material-ui/icons";
-import Dialog from "../../core/Dialog";
+import Dialog from "@src/components/core/Dialog";
 import img1 from "@assets/images/img1.png";
-import "./List.scss";
+import "@src/components/layout/Account/List.scss";
 import _ from "lodash";
-import { connectWalletContext } from "../../../common/context/WalletContext";
-import { connectAccountContext } from "../../../common/context/AccountContext";
+import { connectWalletContext } from "@src/common/context/WalletContext";
+import { connectAccountContext } from "@src/common/context/AccountContext";
 import styled from "styled-components";
 import cls from "classnames";
 

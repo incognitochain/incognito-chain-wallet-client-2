@@ -1,12 +1,29 @@
 import React from "react";
-import { Wrapper, Button, InfoWrapper, Title, Icon } from "./styled";
+import {
+  Wrapper,
+  Button,
+  InfoWrapper,
+  Title,
+  IconSuccessed,
+  IconFailed
+} from "./styled";
 
-const CompletedInfo = ({ children, title, onDone }) => (
+export const STATUS = {
+  SUCCESSED: "SUCCESS",
+  FAILED: "FAILED"
+};
+
+const CompletedInfo = ({
+  children,
+  title,
+  onClose,
+  type = STATUS.SUCCESSED
+}) => (
   <Wrapper>
-    <Icon />
+    {type == STATUS.SUCCESSED ? <IconSuccessed /> : <IconFailed />}
     <Title>{title}</Title>
     <InfoWrapper>{children}</InfoWrapper>
-    <Button onClick={onDone}>Done</Button>
+    {onClose && <Button onClick={onClose}>Done</Button>}
   </Wrapper>
 );
 

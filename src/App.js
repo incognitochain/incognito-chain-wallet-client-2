@@ -20,6 +20,7 @@ import styled from "styled-components";
 import * as walletService from "./services/WalletService";
 import { AppRoute } from "./AppRoute";
 import { HashRouter, withRouter } from "react-router-dom";
+import loadable from "@src/common/utils/loadable";
 import { AppContext } from "./common/context/AppContext";
 import {
   WalletContext,
@@ -31,6 +32,7 @@ import * as passwordService from "./services/PasswordService";
 import Server from "./services/Server";
 import * as cacheAccountListService from "./services/CacheListAccountService";
 import { fadeIn } from "./common/animations";
+import { Facebook } from "react-content-loader";
 
 toastr.options.positionClass = "toast-bottom-center";
 toastr.options.preventDuplicates = true;

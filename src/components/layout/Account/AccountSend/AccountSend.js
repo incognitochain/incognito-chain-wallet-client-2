@@ -1,12 +1,12 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import ConfirmDialog from "../../core/ConfirmDialog";
-import Account from "../../../services/Account";
-import { Button, TextField, Select, MenuItem } from "@material-ui/core";
-import { useAccountContext } from "../../../common/context/AccountContext";
+import ConfirmDialog from "@src/components/core/ConfirmDialog";
+import Account from "@src/services/Account";
+import { Button, TextField, Checkbox } from "@material-ui/core";
+import { useAccountContext } from "@src/common/context/AccountContext";
 import toastr from "toastr";
-import { useWalletContext } from "../../../common/context/WalletContext";
-import { useAccountListContext } from "../../../common/context/AccountListContext";
+import { useWalletContext } from "@src/common/context/WalletContext";
+import { useAccountListContext } from "@src/common/context/AccountListContext";
 import { fromEvent, combineLatest } from "rxjs";
 import {
   map,
@@ -16,18 +16,18 @@ import {
   filter,
   startWith
 } from "rxjs/operators";
-import * as rpcClientService from "../../../services/RpcClientService";
-import { useDebugReducer } from "../../../common/hook/useDebugReducer";
-import { useAppContext } from "../../../common/context/AppContext";
-import { Loading } from "../../../common/components/loading/Loading";
+import * as rpcClientService from "@src/services/RpcClientService";
+import { useDebugReducer } from "@src/common/hook/useDebugReducer";
+import { useAppContext } from "@src/common/context/AppContext";
+import { Loading } from "@src/common/components/loading/Loading";
 import {
   getAccountBalance,
   saveAccountBalance,
   clearAccountBalance
-} from "../../../services/CacheAccountBalanceService";
-
-const BurnAddress =
-  "1NHp2EKw7ALdXUzBfoRJvKrBBM9nkejyDcHVPvUjDcWRyG22dHHyiBKQGL1c";
+} from "@src/services/CacheAccountBalanceService";
+import QRScanner from "@src/common/components/qrScanner";
+import detectBrowser from "@src/services/BrowserDetect";
+import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
 
 const styles = theme => ({
   textField: {
@@ -41,8 +41,13 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 2,
     height: "3rem"
   },
-  select: {
-    "font-size": "13px"
+  toAddressContent: {
+    position: "relative"
+  },
+  iconQrScanner: {
+    position: "absolute",
+    right: "20px",
+    bottom: "22px"
   }
 });
 
@@ -70,22 +75,17 @@ function reducer(state, action) {
 
 const refs = { modalConfirmationRef: null }; //TODO - remove this
 
-function AccountStaking({
-  classes,
-  isOpen,
-  amountStakingShard,
-  amountStakingBeacon
-}) {
-  console.log("BurnAddress: ", BurnAddress);
+function AccountSend({ classes, isOpen, closeModal }) {
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
-  let stakingTypeRef = React.useRef();
+  const isPrivacyRef = React.useRef();
 
   const { wallet } = useWalletContext();
   const account = useAccountContext();
   const accounts = useAccountListContext();
   const { appDispatch } = useAppContext();
   const accountWallet = wallet.getAccountByName(account.name);
+  const [txResult, setTxResult] = React.useState(null);
 
   let balance;
   try {
@@ -118,103 +118,56 @@ function AccountStaking({
     account,
     account => ({
       paymentAddress: account.PaymentAddress,
-      toAddress: BurnAddress,
-      amount: (Number(amountStakingShard) / 100).toLocaleString(
-        navigator.language,
-        {
-          minimumFractionDigits: 2
-        }
-      ),
-      fee: "",
-      minFee: "",
+      toAddress: "",
+      amount: "1",
+      fee: "0.5",
+      minFee: "0.00",
       showAlert: "",
       isAlert: false,
-      isPrivacy: "0",
-      stakingType: "0" // default is shard
+      isPrivacy: "0"
     })
   );
 
   React.useEffect(() => {
-    const stakingTypeObservable = fromEvent(stakingTypeRef.node, "change").pipe(
-      map(e => e.target.value),
-      filter(Boolean),
-      debounceTime(750),
-      distinctUntilChanged(),
-      startWith("")
-    );
-
-    const subscription = combineLatest(stakingTypeObservable)
-      .pipe(
-        filter(([stakingType]) => {
-          return true;
-        }),
-        switchMap(([stakingType]) => {
-          if (balance <= 0) {
-            toastr.warning("Balance is zero!");
-            return Promise.resolve(0);
-          }
-          dispatch({ type: "LOAD_ESTIMATION_FEE" });
-          console.log("Estimate fee .......");
-          return rpcClientService
-            .getEstimateFee(
-              account.PaymentAddress,
-              state.toAddress,
-              Number(amountInputRef.current.value) * 100,
-              account.PrivateKey,
-              accountWallet,
-              false
-            )
-            .catch(e => {
-              console.error(e);
-              toastr.error("Error on get estimation fee! " + e.toString());
-              return Promise.resolve(0);
-            });
-        })
-      )
-      .subscribe(
-        fee => {
+    if (
+      Account.checkPaymentAddress(state.toAddress) &&
+      Number(state.amount) >= 0.01
+    ) {
+      dispatch({ type: "LOAD_ESTIMATION_FEE" });
+      if (balance <= 0) {
+        toastr.warning("Balance is zero!");
+      }
+      rpcClientService
+        .getEstimateFee(
+          account.PaymentAddress,
+          state.toAddress,
+          Number(state.amount) * 100,
+          account.PrivateKey,
+          accountWallet,
+          Number(isPrivacyRef.current.value)
+        )
+        .then(fee => {
           dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee });
-          setTimeout(
-            () => dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee }),
-            200
-          ); // tricky, make Fee textfield re-render to prevent label overlap
-        },
-        error => {
+        })
+        .catch(e => {
           dispatch({ type: "LOAD_ESTIMATION_FEE_ERROR" });
-          console.error(error);
-        }
-      );
+          toastr.error("Error on get estimation fee!");
+        });
+    }
+  }, [state.toAddress, state.amount, state.isPrivacy]);
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  const confirmStaking = () => {
+  const confirmSendCoin = () => {
     const {
       toAddress,
+      amount,
       fee,
       minFee,
       EstimateTxSizeInKb,
-      GOVFeePerKbTx,
-      stakingType
+      GOVFeePerKbTx
     } = state;
-
-    let { amount } = state;
-    amount = Number(amount);
-
-    if (stakingType != "0" && stakingType != "1") {
-      toastr.warning("Staking type is invalid!");
-      return;
-    }
 
     if (!toAddress) {
       toastr.warning("To address is required!");
-      return;
-    }
-
-    if (toAddress != BurnAddress) {
-      toastr.warning("To address must be burning address!");
       return;
     }
 
@@ -233,6 +186,11 @@ function AccountStaking({
       return;
     }
 
+    if (Number(amount) > Number(balance)) {
+      toastr.warning("Insufficient this account balance!");
+      return;
+    }
+
     if (isNaN(fee)) {
       toastr.warning("Fee is invalid!");
       return;
@@ -247,19 +205,6 @@ function AccountStaking({
       }
     }
 
-    if (Number(amount) >= Number(balance)) {
-      toastr.warning("Insufficient this account balance!");
-      return;
-    }
-
-    if (
-      (stakingType == "0" && amount != amountStakingShard / 100) ||
-      (stakingType == "1" && amount != amountStakingBeacon / 100)
-    ) {
-      toastr.warning("Amount is invalid!");
-      return;
-    }
-
     if (Number(fee) / EstimateTxSizeInKb < GOVFeePerKbTx) {
       toastr.warning(
         `Fee per Tx (Fee/${EstimateTxSizeInKb}) must not lesser then GOV Fee per KbTx (${GOVFeePerKbTx})`
@@ -269,59 +214,51 @@ function AccountStaking({
     refs.modalConfirmationRef.open();
   };
 
-  async function staking() {
+  async function sendCoin() {
     dispatch({ type: "SHOW_LOADING", isShow: true });
 
     // isPrivacy in state is string
-    let { fee, stakingType } = state;
+    let { toAddress, amount, fee, isPrivacy } = state;
+
+    console.log("isPrivacy when create tx: ", isPrivacy);
 
     try {
-      var result = await Account.staking(
-        { type: Number(stakingType), burningAddress: BurnAddress },
+      var result = await Account.sendConstant(
+        [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
         Number(fee) * 100,
+        Number(isPrivacy),
         account,
         wallet
       );
 
       if (result.txId) {
         clearAccountBalance(account.name);
-        toastr.success("Completed: ", result.txId);
-        dispatch({ type: "RESET" });
+        setTxResult(result);
       } else {
         console.log("Create tx err: ", result.err);
         toastr.error(
-          "Staking failed. Please try again! Err:" + result.err.Message
+          "Send failed. Please try again! Err:" + result.err.Message
         );
       }
     } catch (e) {
-      console.log("Create tx err: ", e.toString());
-      toastr.error("Staking failed. Please try again! Err:" + e.toString());
+      console.log("Create tx err: ", e);
+      toastr.error("Create and send failed. Please try again! Err:" + e);
     }
 
     dispatch({ type: "SHOW_LOADING", isShow: false });
   }
 
   const onChangeInput = name => e => {
-    if (name === "stakingType") {
-      const amountVal =
-        e.target.value == "0"
-          ? (Number(amountStakingShard) / 100).toLocaleString(
-              navigator.language,
-              { minimumFractionDigits: 2 }
-            )
-          : (Number(amountStakingBeacon) / 100).toLocaleString(
-              navigator.language,
-              { minimumFractionDigits: 2 }
-            );
-      dispatch({ type: "CHANGE_INPUT", name: "amount", value: amountVal });
+    let value = e.target.value;
+    if (name === "isPrivacy") {
+      value = value === "0" ? "1" : "0";
     }
-    dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
+    dispatch({ type: "CHANGE_INPUT", name, value });
   };
 
   const onValidator = name => e => {
     if (name === "toAddress") {
       let isValid = Account.checkPaymentAddress(e.target.value);
-      console.log("isValid: ", isValid);
       if (!isValid) {
         toastr.warning("Receiver's address is invalid!");
       }
@@ -340,11 +277,30 @@ function AccountStaking({
     }
   };
 
+  const onQRData = data => {
+    dispatch({ type: "CHANGE_INPUT", name: "toAddress", value: data });
+  };
+
+  if (txResult) {
+    const onClose = () => {
+      closeModal();
+      dispatch({ type: "RESET" });
+    };
+    return (
+      <SendCoinCompletedInfo
+        onClose={onClose}
+        amount={state.amount}
+        toAddress={state.toAddress}
+        txId={txResult?.txId}
+        createdAt={txResult?.lockTime}
+      />
+    );
+  }
+
   return (
-    <div style={{ padding: "2rem" }}>
+    <div style={{ padding: "2rem", width: "100%" }}>
       {state.showAlert}
       <TextField
-        disabled
         required
         id="fromAddress"
         label="From"
@@ -352,27 +308,25 @@ function AccountStaking({
         margin="normal"
         variant="outlined"
         value={state.paymentAddress}
+        disabled
         onChange={onChangeInput("paymentAddress")}
       />
 
       <div className="row">
         <div className="col-sm">
           <div>
-            <Select
-              label="Staking Type"
-              id="stakingType"
-              onChange={e => onChangeInput("stakingType")(e)}
-              inputRef={select => {
-                stakingTypeRef = select;
-              }}
-              value={state.stakingType}
-            >
-              <MenuItem value="0">Shard Type</MenuItem>
-              <MenuItem value="1">Beacon Type</MenuItem>
-            </Select>
+            <Checkbox
+              label="Is Privacy"
+              id="isPrivacy"
+              checked={state.isPrivacy == "1" ? true : false}
+              value={state.isPrivacy}
+              onChange={onChangeInput("isPrivacy")}
+              color="primary"
+              inputProps={{ ref: isPrivacyRef }}
+            />
+            Is Privacy
           </div>
         </div>
-        {console.log("state.stakingType: ", state.stakingType)}
         <div className="col-sm">
           <div className="text-right">
             Balance:{" "}
@@ -386,29 +340,35 @@ function AccountStaking({
         </div>
       </div>
 
-      <TextField
-        required
-        disabled
-        id="toAddress"
-        label="To"
-        className={classes.textField}
-        margin="normal"
-        variant="outlined"
-        value={state.toAddress}
-        onChange={e => onChangeInput("toAddress")(e)}
-        onBlur={e => onValidator("toAddress")(e)}
-        inputProps={{ ref: toInputRef }}
-      />
+      <div className={classes.toAddressContent}>
+        <TextField
+          required
+          id="toAddress"
+          label="To"
+          className={classes.textField}
+          margin="normal"
+          variant="outlined"
+          value={state.toAddress}
+          onChange={e => {
+            onChangeInput("toAddress")(e);
+          }}
+          onBlur={e => onValidator("toAddress")(e)}
+          inputProps={{ ref: toInputRef, style: { paddingRight: "50px" } }}
+        />
+        {!detectBrowser.isChromeExtension && (
+          <QRScanner className={classes.iconQrScanner} onData={onQRData} />
+        )}
+      </div>
 
       <TextField
         required
-        disabled
         id="amount"
         label="Amount"
         className={classes.textField}
         margin="normal"
         variant="outlined"
         value={state.amount}
+        delayTimeout={1000}
         onChange={e => onChangeInput("amount")(e)}
         onBlur={e => onValidator("amount")(e)}
         inputProps={{ ref: amountInputRef }}
@@ -432,9 +392,9 @@ function AccountStaking({
         color="primary"
         className={classes.button}
         fullWidth
-        onClick={() => confirmStaking()}
+        onClick={() => confirmSendCoin()}
       >
-        Staking
+        Send
       </Button>
       <div className="badge badge-pill badge-light mt-3">
         * Only send CONSTANT to a CONSTANT address.
@@ -448,10 +408,10 @@ function AccountStaking({
       <ConfirmDialog
         title="Confirmation"
         onRef={modal => (refs.modalConfirmationRef = modal)}
-        onOK={() => staking()}
+        onOK={() => sendCoin()}
         className={{ margin: 0 }}
       >
-        <div>Are you sure to stake {state.amount} CONSTANT?</div>
+        <div>Are you sure to transfer out {state.amount} CONSTANT?</div>
       </ConfirmDialog>
 
       {state.isLoading && <Loading fullscreen />}
@@ -459,4 +419,4 @@ function AccountStaking({
   );
 }
 
-export default withStyles(styles)(AccountStaking);
+export default withStyles(styles)(AccountSend);
