@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Modal } from "../../common/components/modal";
-import _ from "lodash";
+import { truncate } from "lodash";
 import { useAccountWallet } from "./hook/useAccountWallet";
 import { useDebugReducer } from "../../common/hook/useDebugReducer";
 import {
@@ -14,7 +14,7 @@ import Avatar from "@material-ui/core/Avatar";
 import moment from "moment";
 
 function truncateMiddle(str = "") {
-  return _.truncate(str, { length: 10 }) + str.slice(-4);
+  return truncate(str, { length: 10 }) + str.slice(-4);
 }
 
 const initialState = {

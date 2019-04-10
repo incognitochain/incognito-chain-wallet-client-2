@@ -24,7 +24,7 @@ import { connectAccountContext } from "@src/common/context/AccountContext";
 import { connectWalletContext } from "@src/common/context/WalletContext";
 import { connectAccountListContext } from "@src/common/context/AccountListContext";
 import * as passwordService from "@src/services/PasswordService";
-import _ from "lodash";
+import { flow } from "lodash";
 import * as cacheAccountListService from "@src/services/CacheListAccountService";
 import * as cacheAccountBalanceService from "@src/services/CacheAccountBalanceService";
 import * as rpcClientService from "@src/services/RpcClientService";
@@ -449,7 +449,7 @@ AccountDetail.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default _.flow([
+export default flow([
   withStyles(styles),
   connectWalletContext,
   connectAccountContext,

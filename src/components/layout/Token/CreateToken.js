@@ -13,7 +13,7 @@ import {
 } from "rxjs/operators";
 import { connectAccountContext } from "@common/context/AccountContext";
 import { connectWalletContext } from "@common/context/WalletContext";
-import _ from "lodash";
+import { flow } from "lodash";
 import styled from "styled-components";
 import * as rpcClientService from "../../../services/RpcClientService";
 import $ from "jquery";
@@ -496,9 +496,7 @@ class CreateToken extends React.Component {
     );
   }
 }
-export default _.flow([connectWalletContext, connectAccountContext])(
-  CreateToken
-);
+export default flow([connectWalletContext, connectAccountContext])(CreateToken);
 
 const Wrapper = styled.div`
   padding: 20px 20px;

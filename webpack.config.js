@@ -140,7 +140,7 @@ module.exports = (env, argv) => {
       rules: [
         {
           test: /\.js$/,
-          exclude: [/node_modules/, /constant-chain-web-js/],
+          exclude: [/node_modules/],
           use: 'babel-loader'
         },
         {

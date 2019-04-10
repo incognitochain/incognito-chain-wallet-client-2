@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { FollowTokenDialog } from "../../modules/tokens/FollowTokenDialog";
 import { connectWalletContext } from "../../common/context/WalletContext";
 import { connectAccountContext } from "../../common/context/AccountContext";
-import _ from "lodash";
+import { flow } from "lodash";
 import { TokenHistoryDialog } from "../../modules/tokens/TokenHistoryDialog";
 import * as passwordService from "../../services/PasswordService";
 
@@ -180,7 +180,7 @@ class TokenTabs extends React.Component {
   }
 }
 
-export default _.flow([connectWalletContext, connectAccountContext])(TokenTabs);
+export default flow([connectWalletContext, connectAccountContext])(TokenTabs);
 
 const Wrapper = styled.div`
   flex: 1;
