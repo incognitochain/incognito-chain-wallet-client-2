@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const appPath = filepath => path.resolve(__dirname, filepath);
 
@@ -85,6 +86,7 @@ const prodConfig = {
 
 module.exports = (env, argv) => {
   const isProduction = (argv.mode === 'production');
+  const isAnalyzer = env && env.analyzer;
   console.log("build mode:", argv.mode)
   const appEnv = require('./.env.' + argv.mode + '.js');
 
@@ -132,6 +134,7 @@ module.exports = (env, argv) => {
         {from: './public/img', to: './img'},
       ]),
       ...isProduction ? [new CleanWebpackPlugin()] : [],
+      ...(isAnalyzer ? [new BundleAnalyzerPlugin()] : []),
     ],
     module: {
       rules: [

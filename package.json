@@ -62,7 +62,8 @@
     "electron-dev": "yarn build && yarn electron-only",
     "electron-only": "electron electron.js",
     "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "analyzer": "webpack --mode production --env.analyzer true"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -107,6 +108,7 @@
     "react-svg-loader": "^2.1.0",
     "style-loader": "^0.23.1",
     "svg-inline-loader": "^0.8.0",
+    "webpack-bundle-analyzer": "^3.2.0",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1"
   }
