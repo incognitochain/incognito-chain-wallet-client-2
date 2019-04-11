@@ -8,6 +8,7 @@ import numeral from "numeral";
 import { PopoverMenu } from "../../common/components/popover-menu/PopoverMenu";
 import { getPassphrase } from "../../services/PasswordService";
 import { useWalletContext } from "../../common/context/WalletContext";
+import { formatTokenAmount } from "@src/common/utils/format";
 
 export function TokenItem({
   tab,
@@ -132,7 +133,7 @@ function renderBalance(balance, isInit) {
   if (typeof balance !== "number" || isInit) {
     return <CircularProgress size={20} />;
   }
-  return Math.round(balance).toLocaleString();
+  return formatTokenAmount(balance);
 }
 
 const Wrapper = styled.div`

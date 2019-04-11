@@ -23,6 +23,7 @@ import detectBrowser from "@src/services/BrowserDetect";
 import QRScanner from "@src/common/components/qrScanner";
 import { Loading } from "../../../common/components/loading/Loading";
 import Account from "../../../services/Account";
+import { formatTokenAmount } from "@src/common/utils/format";
 
 const MaxUint64 = 18446744073709551615;
 
@@ -381,8 +382,7 @@ class CreateToken extends React.Component {
     if (isCreate) return null;
     return (
       <div className="text-right">
-        Balance: {balance > 0 ? Math.round(balance).toLocaleString() : balance}{" "}
-        TOKEN
+        Balance: {balance > 0 ? formatTokenAmount(balance) : balance} TOKEN
       </div>
     );
   }

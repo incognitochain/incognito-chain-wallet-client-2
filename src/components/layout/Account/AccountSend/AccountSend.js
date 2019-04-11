@@ -28,6 +28,7 @@ import {
 import QRScanner from "@src/common/components/qrScanner";
 import detectBrowser from "@src/services/BrowserDetect";
 import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
+import { formatConstantBalance } from "@src/common/utils/format";
 
 const styles = theme => ({
   textField: {
@@ -329,13 +330,7 @@ function AccountSend({ classes, isOpen, closeModal }) {
         </div>
         <div className="col-sm">
           <div className="text-right">
-            Balance:{" "}
-            {balance
-              ? (Number(balance) / 100).toLocaleString(navigator.language, {
-                  minimumFractionDigits: 2
-                })
-              : 0}{" "}
-            CONST
+            Balance: {balance ? formatConstantBalance(balance) : 0} CONST
           </div>
         </div>
       </div>
