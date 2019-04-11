@@ -4,14 +4,14 @@ import { withStyles } from "@material-ui/core/styles";
 import { Divider, Snackbar, Button, CircularProgress } from "@material-ui/core";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import QRCode from "qrcode.react";
-import ConfirmDialog from "../../core/ConfirmDialog";
-import Dialog from "../../core/Dialog";
-import Account from "../../../services/Account";
-import AccountSend from "./AccountSend";
-import AccountStaking from "./AccountStaking";
-import AccountDefragment from "./AccountDefragment";
-import CreateToken from "../../layout/Token/CreateToken";
-import MainTabs from "../../modules/MainTabs";
+import ConfirmDialog from "@src/components/core/ConfirmDialog";
+import Dialog from "@src/components/core/Dialog";
+import Account from "@src/services/Account";
+import AccountSend from "@src/components/layout/Account/AccountSend";
+import AccountStaking from "@src/components/layout/Account/AccountStaking";
+import AccountDefragment from "@src/components/layout/Account/AccountDefragment";
+import CreateToken from "@src/components/layout/Token/CreateToken";
+import MainTabs from "@src/components/modules/MainTabs";
 import {
   Error as IconError,
   CheckCircle as IconSuccess,
@@ -20,15 +20,15 @@ import {
 import { ReactComponent as CopyPasteSVG } from "@assets/images/copy-paste.svg";
 import toastr from "toastr";
 import styled from "styled-components";
-import { connectAccountContext } from "../../../common/context/AccountContext";
-import { connectWalletContext } from "../../../common/context/WalletContext";
-import { connectAccountListContext } from "../../../common/context/AccountListContext";
-import * as passwordService from "../../../services/PasswordService";
+import { connectAccountContext } from "@src/common/context/AccountContext";
+import { connectWalletContext } from "@src/common/context/WalletContext";
+import { connectAccountListContext } from "@src/common/context/AccountListContext";
+import * as passwordService from "@src/services/PasswordService";
 import _ from "lodash";
-import * as cacheAccountListService from "../../../services/CacheListAccountService";
-import * as cacheAccountBalanceService from "../../../services/CacheAccountBalanceService";
-import * as rpcClientService from "../../../services/RpcClientService";
-import { fadeIn } from "../../../common/animations";
+import * as cacheAccountListService from "@src/services/CacheListAccountService";
+import * as cacheAccountBalanceService from "@src/services/CacheAccountBalanceService";
+import * as rpcClientService from "@src/services/RpcClientService";
+import { fadeIn } from "@src/common/animations";
 
 const styles = theme => ({
   key: {

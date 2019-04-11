@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import CheckCircleOutline from "@material-ui/icons/DoneOutline";
+import CloseOutline from "@material-ui/icons/Close";
 
 export const Wrapper = styled.div`
   background-color: #2d4cf5;
@@ -34,7 +35,12 @@ export const Title = styled.span`
   color: white;
 `;
 
-export const Icon = styled(CheckCircleOutline)`
+export const IconSuccessed = styled(CheckCircleOutline)`
+  font-size: 100px !important;
+  color: white;
+`;
+
+export const IconFailed = styled(CloseOutline)`
   font-size: 100px !important;
   color: white;
 `;
