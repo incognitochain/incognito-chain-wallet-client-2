@@ -72,6 +72,9 @@ export function History() {
         toAddress={receiverAddress}
         txId={history?.txID}
         createdAt={history?.time}
+        completedInfoProps={{
+          isPrivacy: history.isPrivacy === "1"
+        }}
       />
     );
     dialog && dialog.open();

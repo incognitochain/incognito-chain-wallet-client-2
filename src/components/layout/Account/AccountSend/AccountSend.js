@@ -221,7 +221,6 @@ function AccountSend({ classes, isOpen, closeModal }) {
         account,
         wallet
       );
-
       if (result.txId) {
         clearAccountBalance(account.name);
         setTxResult(result);
@@ -284,6 +283,9 @@ function AccountSend({ classes, isOpen, closeModal }) {
         toAddress={state.toAddress}
         txId={txResult?.txId}
         createdAt={txResult?.lockTime}
+        completedInfoProps={{
+          isPrivacy: state.isPrivacy === "1"
+        }}
       />
     );
   }
