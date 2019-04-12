@@ -7,15 +7,6 @@ import { useAccountContext } from "@src/common/context/AccountContext";
 import toastr from "toastr";
 import { useWalletContext } from "@src/common/context/WalletContext";
 import { useAccountListContext } from "@src/common/context/AccountListContext";
-import { fromEvent, combineLatest } from "rxjs";
-import {
-  map,
-  debounceTime,
-  switchMap,
-  distinctUntilChanged,
-  filter,
-  startWith
-} from "rxjs/operators";
 import * as rpcClientService from "@src/services/RpcClientService";
 import { useDebugReducer } from "@src/common/hook/useDebugReducer";
 import { useAppContext } from "@src/common/context/AppContext";
@@ -47,7 +38,7 @@ const styles = theme => ({
   iconQrScanner: {
     position: "absolute",
     right: "20px",
-    bottom: "22px"
+    bottom: "21px"
   }
 });
 
@@ -353,7 +344,7 @@ function AccountSend({ classes, isOpen, closeModal }) {
             onChangeInput("toAddress")(e);
           }}
           onBlur={e => onValidator("toAddress")(e)}
-          inputProps={{ ref: toInputRef, style: { paddingRight: "50px" } }}
+          inputProps={{ ref: toInputRef, style: { paddingRight: "110px" } }}
         />
         {!detectBrowser.isChromeExtension && (
           <QRScanner className={classes.iconQrScanner} onData={onQRData} />
