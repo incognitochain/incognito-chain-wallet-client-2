@@ -411,6 +411,7 @@ class CreateToken extends React.Component {
             variant="outlined"
             value={this.state.toAddress}
             onChange={this.onChangeInput("toAddress")}
+            inputProps={{ style: { paddingRight: "110px" } }}
           />
           {!detectBrowser.isChromeExtension && (
             <QRScannerIcon onData={this.onQRData} />

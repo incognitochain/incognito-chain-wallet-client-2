@@ -2,9 +2,12 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div``;
 
-export const TriggerIcon = styled.div`
+export const Trigger = styled.button`
   cursor: pointer;
   width: fit-content;
+  background: rgba(63, 81, 181, 0.8);
+  color: white;
+  font-weight: 500;
 `;
 
 export const QrWrapper = styled.div`
@@ -32,15 +35,18 @@ export const Info = styled.span`
 `;
 
 export const Button = styled.button`
-  background-color: #2c4cf5;
-  padding: 10px 20px;
+  background: transparent;
+  padding: 0px 20px;
+  border-radius: 2px;
   margin: auto;
-  border-radius: 4px;
-  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 50px;
+
+  svg {
+    margin-right: 10px;
+  }
 `;
 
 export const ChooseNewImage = styled.button`
