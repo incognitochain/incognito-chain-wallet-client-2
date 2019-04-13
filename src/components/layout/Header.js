@@ -41,7 +41,7 @@ import AccountList from "../layout/Account/AccountList";
 import styled from "styled-components";
 import { connectAppContext } from "../../common/context/AppContext";
 import { connectWalletContext } from "../../common/context/WalletContext";
-import _ from "lodash";
+import { get, flow } from "lodash";
 import { Subject } from "rxjs";
 import { debounceTime, switchMap } from "rxjs/operators";
 import { HeaderSelectedAccount } from "../../modules/account/HeaderSelectedAccount";
@@ -84,7 +84,7 @@ class Header extends React.Component {
   }
 
   componentDidMount() {
-    if (_.get(this, "props.accounts.length")) {
+    if (get(this, "props.accounts.length")) {
       this.resetRegisterBalanceSubjects();
     }
   }
@@ -436,7 +436,7 @@ Header.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default _.flow([
+export default flow([
   withStyles(styles),
   connectAppContext,
   connectWalletContext

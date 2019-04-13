@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 // import { useAccountContext } from "../../common/context/AccountContext";
-import _ from "lodash";
+import { truncate } from "lodash";
 import { useAccountContext } from "../../common/context/AccountContext";
 import { useWalletContext } from "../../common/context/WalletContext";
 import {
@@ -17,7 +17,7 @@ import moment from "moment";
 const url = `${process.env.CONSTANT_EXPLORER}/tx/`;
 
 function truncateMiddle(str = "") {
-  return _.truncate(str, { length: 10 }) + str.slice(-4);
+  return truncate(str, { length: 10 }) + str.slice(-4);
 }
 
 function reducer(state, action) {

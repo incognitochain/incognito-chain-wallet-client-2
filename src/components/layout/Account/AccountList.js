@@ -15,7 +15,7 @@ import { Send as IconSend } from "@material-ui/icons";
 import Dialog from "@src/components/core/Dialog";
 import img1 from "@assets/images/img1.png";
 import "@src/components/layout/Account/List.scss";
-import _ from "lodash";
+import { flow } from "lodash";
 import { connectWalletContext } from "@src/common/context/WalletContext";
 import { connectAccountContext } from "@src/common/context/AccountContext";
 import styled from "styled-components";
@@ -175,7 +175,7 @@ AccountList.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default _.flow([
+export default flow([
   withStyles(styles),
   connectWalletContext,
   connectAccountContext

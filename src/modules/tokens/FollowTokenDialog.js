@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Modal } from "../../common/components/modal";
 import { Button, TextField } from "@material-ui/core";
 import * as rpcClientService from "../../services/RpcClientService";
-import _ from "lodash";
+import { truncate } from "lodash";
 import cls from "classnames";
 import { WithContext as ReactTags } from "react-tag-input";
 import { useWalletContext } from "../../common/context/WalletContext";
@@ -15,7 +15,7 @@ import { useDebugReducer } from "../../common/hook/useDebugReducer";
 const renderIf = cond => cmp => (cond ? cmp : null);
 
 function truncateMiddle(str = "") {
-  return _.truncate(str, { length: 15 }) + str.slice(-4);
+  return truncate(str, { length: 15 }) + str.slice(-4);
 }
 
 function getIsSelected(token, selectedId) {
