@@ -20,6 +20,7 @@ import { connectWalletContext } from "@src/common/context/WalletContext";
 import { connectAccountContext } from "@src/common/context/AccountContext";
 import styled from "styled-components";
 import cls from "classnames";
+import { formatConstantBalance } from "@src/common/utils/format";
 
 const styles = theme => ({
   root: {
@@ -90,11 +91,6 @@ class AccountList extends React.Component {
     );
   }
 
-  formatAmount = amount => {
-    return (Number(amount) / 100).toLocaleString(navigator.language, {
-      minimumFractionDigits: 2
-    });
-  };
   isSelectedAccount = account => {
     return account.name === this.props.account.name;
   };
@@ -132,7 +128,7 @@ class AccountList extends React.Component {
                     {a.value === -1 || isNaN(a.value) ? (
                       <CircularProgress size={20} />
                     ) : (
-                      this.formatAmount(a.value)
+                      formatConstantBalance(a.value)
                     )}
                   </Balance>
                 </div>

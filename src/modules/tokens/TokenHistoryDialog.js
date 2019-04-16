@@ -12,6 +12,7 @@ import {
 } from "constant-chain-web-js/build/wallet";
 import Avatar from "@material-ui/core/Avatar";
 import moment from "moment";
+import { formatTokenAmount } from "@src/common/utils/format";
 
 function truncateMiddle(str = "") {
   return truncate(str, { length: 10 }) + str.slice(-4);
@@ -135,7 +136,8 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
                         </Left>
                         <Right>
                           {" "}
-                          {isIn ? "+" : "-"} {amount} {tokenName}
+                          {isIn ? "+" : "-"} {formatTokenAmount(amount)}{" "}
+                          {tokenName}
                         </Right>
                       </Row2>
 

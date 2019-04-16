@@ -25,6 +25,7 @@ import {
   saveAccountBalance,
   clearAccountBalance
 } from "@src/services/CacheAccountBalanceService";
+import { formatConstantBalance } from "@src/common/utils/format";
 
 const BurnAddress =
   "1NHp2EKw7ALdXUzBfoRJvKrBBM9nkejyDcHVPvUjDcWRyG22dHHyiBKQGL1c";
@@ -119,12 +120,7 @@ function AccountStaking({
     account => ({
       paymentAddress: account.PaymentAddress,
       toAddress: BurnAddress,
-      amount: (Number(amountStakingShard) / 100).toLocaleString(
-        navigator.language,
-        {
-          minimumFractionDigits: 2
-        }
-      ),
+      amount: formatConstantBalance(amountStakingShard),
       fee: "",
       minFee: "",
       showAlert: "",
@@ -305,14 +301,8 @@ function AccountStaking({
     if (name === "stakingType") {
       const amountVal =
         e.target.value == "0"
-          ? (Number(amountStakingShard) / 100).toLocaleString(
-              navigator.language,
-              { minimumFractionDigits: 2 }
-            )
-          : (Number(amountStakingBeacon) / 100).toLocaleString(
-              navigator.language,
-              { minimumFractionDigits: 2 }
-            );
+          ? formatConstantBalance(amountStakingShard)
+          : formatConstantBalance(amountStakingBeacon);
       dispatch({ type: "CHANGE_INPUT", name: "amount", value: amountVal });
     }
     dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
@@ -375,13 +365,7 @@ function AccountStaking({
         {console.log("state.stakingType: ", state.stakingType)}
         <div className="col-sm">
           <div className="text-right">
-            Balance:{" "}
-            {balance
-              ? (Number(balance) / 100).toLocaleString(navigator.language, {
-                  minimumFractionDigits: 2
-                })
-              : 0}{" "}
-            CONST
+            Balance: {balance ? formatConstantBalance(balance) : 0} CONST
           </div>
         </div>
       </div>

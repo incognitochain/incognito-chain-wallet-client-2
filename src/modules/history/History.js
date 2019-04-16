@@ -13,6 +13,7 @@ import Avatar from "@material-ui/core/Avatar";
 import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
 import Dialog from "@src/components/core/Dialog";
 import moment from "moment";
+import { formatConstantBalance } from "@src/common/utils/format";
 
 const url = `${process.env.CONSTANT_EXPLORER}/tx/`;
 
@@ -144,7 +145,8 @@ export function History() {
                       })}
                     </Left>
                     <Right>
-                      {item.isIn ? "+" : "-"} {item.amount} CONST
+                      {item.isIn ? "+" : "-"}{" "}
+                      {formatConstantBalance(item.amount)} CONST
                     </Right>
                   </Row2>
 
