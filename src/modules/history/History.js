@@ -13,7 +13,7 @@ import Avatar from "@material-ui/core/Avatar";
 import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
 import Dialog from "@src/components/core/Dialog";
 import moment from "moment";
-import { formatConstantBalance } from "@src/common/utils/format";
+import { formatConstantBalance, formatDate } from "@src/common/utils/format";
 
 const url = `${process.env.CONSTANT_EXPLORER}/tx/`;
 
@@ -90,8 +90,7 @@ export function History() {
           history.map(item => {
             let createdTime = "";
             if (item.time != undefined && item.time != null) {
-              item.time = moment(item.time);
-              createdTime = item.time.format("DD/MM/YYYY - hh:mm:ss");
+              createdTime = formatDate(item.time);
             }
             console.log("Time:", createdTime);
             const { status } = item;
