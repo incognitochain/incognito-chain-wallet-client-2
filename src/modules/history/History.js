@@ -69,12 +69,12 @@ export function History() {
     setDialogContent(
       <SendCoinCompletedInfo
         onClose={() => null}
-        amount={history?.amount}
+        amount={formatConstantBalance(history?.amount)}
         toAddress={receiverAddress}
         txId={history?.txID}
         createdAt={history?.time}
         completedInfoProps={{
-          isPrivacy: history.isPrivacy === "1"
+          isPrivacy: history.isPrivacy === 1
         }}
       />
     );

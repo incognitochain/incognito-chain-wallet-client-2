@@ -283,7 +283,7 @@ function AccountSend({ classes, isOpen, closeModal }) {
         amount={state.amount}
         toAddress={state.toAddress}
         txId={txResult?.txId}
-        createdAt={txResult?.lockTime}
+        createdAt={txResult?.lockTime * 1000}
         completedInfoProps={{
           isPrivacy: state.isPrivacy === "1"
         }}
