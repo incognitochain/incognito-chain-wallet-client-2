@@ -17,12 +17,13 @@ import { flow } from "lodash";
 import styled from "styled-components";
 import * as rpcClientService from "../../../services/RpcClientService";
 import toastr from "toastr";
-import CompletedInfo from "@common/components/completedInfo";
+import SendTokenCompletedInfo from "@common/components/completedInfo/sendToken";
+import CreateTokenCompletedInfo from "@common/components/completedInfo/createToken";
 import detectBrowser from "@src/services/BrowserDetect";
 import QRScanner from "@src/common/components/qrScanner";
 import { Loading } from "../../../common/components/loading/Loading";
 import Account from "../../../services/Account";
-import { formatTokenAmount } from "@src/common/utils/format";
+import { formatTokenAmount, formatDate } from "@src/common/utils/format";
 
 const MaxUint64 = 18446744073709551615;
 
@@ -245,24 +246,17 @@ class CreateToken extends React.Component {
   renderCompletedInfo() {
     const { isCreate, tokenSymbol } = this.props;
     const { toAddress, amount, txResult } = this.state;
-    const title = isCreate ? "Created Token" : "Sent Token Successfully";
-    const trunc = (text = "") => `${text.substr(0, 10)}...${text.substr(-10)}`;
+    if (isCreate) {
+      return <CreateTokenCompletedInfo />;
+    }
     return (
-      <CompletedInfo title={title} onDone={this.handleAlertClose}>
-        {isCreate ? (
-          <span>The new token is created</span>
-        ) : (
-          <>
-            <span>
-              Amount: {Number(amount) || 0} {tokenSymbol}
-            </span>
-            <span>To: {trunc(toAddress)}</span>
-            <span>
-              Created at: {new Date(txResult?.lockTime)?.toLocaleString()}
-            </span>
-          </>
-        )}
-      </CompletedInfo>
+      <SendTokenCompletedInfo
+        tokenSymbol={tokenSymbol}
+        amount={amount}
+        toAddress={toAddress}
+        txId={txResult?.txId}
+        createdAt={txResult?.lockTime * 1000}
+      />
     );
   }
   showSuccess = () => {
