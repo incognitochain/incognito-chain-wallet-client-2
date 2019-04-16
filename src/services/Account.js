@@ -1,6 +1,7 @@
 import { KeyWallet, Wallet } from "constant-chain-web-js/build/wallet";
 import { getPassphrase } from "./PasswordService";
 import localforage from "localforage";
+import { getActiveShard } from "./RpcClientService";
 
 export default class Account {
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
@@ -35,6 +36,11 @@ export default class Account {
       result = await wallet.MasterAccount.child[
         indexAccount
       ].createAndSendConstant(param, fee, isPrivacy);
+
+      console.log(
+        "Spendingcoin after sendConstant: ",
+        wallet.MasterAccount.child[indexAccount].spendingCoins
+      );
 
       // save wallet
       wallet.save(getPassphrase());
@@ -90,7 +96,13 @@ export default class Account {
 
   // create new account
   static async createAccount(accountName, wallet) {
-    return wallet.createNewAccount(accountName, process.env.SHARD_ID);
+    let activeShardNumber = await getActiveShard();
+    let shardID = process.env.SHARD_ID;
+    if (process.env.SHARD_ID) {
+      shardID = Math.floor(Math.random() * (activeShardNumber - 1));
+    }
+
+    return wallet.createNewAccount(accountName, shardID);
   }
 
   // get progress tx
