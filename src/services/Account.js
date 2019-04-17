@@ -1,6 +1,5 @@
 import { KeyWallet, Wallet } from "constant-chain-web-js/build/wallet";
 import { getPassphrase } from "./PasswordService";
-import localforage from "localforage";
 import { getActiveShard } from "./RpcClientService";
 
 export default class Account {
