@@ -13,17 +13,17 @@ import {
 } from "rxjs/operators";
 import { connectAccountContext } from "@common/context/AccountContext";
 import { connectWalletContext } from "@common/context/WalletContext";
-import _ from "lodash";
+import { flow } from "lodash";
 import styled from "styled-components";
 import * as rpcClientService from "../../../services/RpcClientService";
-import $ from "jquery";
 import toastr from "toastr";
-import CompletedInfo from "@common/components/completedInfo";
+import SendTokenCompletedInfo from "@common/components/completedInfo/sendToken";
+import CreateTokenCompletedInfo from "@common/components/completedInfo/createToken";
 import detectBrowser from "@src/services/BrowserDetect";
 import QRScanner from "@src/common/components/qrScanner";
 import { Loading } from "../../../common/components/loading/Loading";
 import Account from "../../../services/Account";
-import { formatTokenAmount } from "@src/common/utils/format";
+import { formatTokenAmount, formatDate } from "@src/common/utils/format";
 
 const MaxUint64 = 18446744073709551615;
 
@@ -50,6 +50,13 @@ class CreateToken extends React.Component {
   }
 
   onChangeInput = name => e => {
+    if (name === "amount") {
+      return this.setState({ [name]: Number.parseInt(e.target.value) });
+    }
+    this.setState({ [name]: e.target.value });
+  };
+
+  onValidate = name => e => {
     if (name === "toAddress") {
       let isValid = Account.checkPaymentAddress(e.target.value);
       console.log("isValid: ", isValid);
@@ -73,11 +80,6 @@ class CreateToken extends React.Component {
         }
       }
     }
-
-    if (name === "amount") {
-      return this.setState({ [name]: Number.parseInt(e.target.value) });
-    }
-    this.setState({ [name]: e.target.value });
   };
 
   toAddressRef = React.createRef();
@@ -109,10 +111,8 @@ class CreateToken extends React.Component {
   };
 
   autoFocus = () => {
-    $(this.toAddressRef.current).focus(function() {
-      $(this).select();
-    });
-    this.toAddressRef.current.focus();
+    this.toAddressRef?.current?.select();
+    this.toAddressRef?.current?.focus();
   };
 
   getEstimateFee = () => {
@@ -248,24 +248,17 @@ class CreateToken extends React.Component {
   renderCompletedInfo() {
     const { isCreate, tokenSymbol } = this.props;
     const { toAddress, amount, txResult } = this.state;
-    const title = isCreate ? "Created Token" : "Sent Token Successfully";
-    const trunc = (text = "") => `${text.substr(0, 10)}...${text.substr(-10)}`;
+    if (isCreate) {
+      return <CreateTokenCompletedInfo />;
+    }
     return (
-      <CompletedInfo title={title} onDone={this.handleAlertClose}>
-        {isCreate ? (
-          <span>The new token is created</span>
-        ) : (
-          <>
-            <span>
-              Amount: {Number(amount) || 0} {tokenSymbol}
-            </span>
-            <span>To: {trunc(toAddress)}</span>
-            <span>
-              Created at: {new Date(txResult?.lockTime)?.toLocaleString()}
-            </span>
-          </>
-        )}
-      </CompletedInfo>
+      <SendTokenCompletedInfo
+        tokenSymbol={tokenSymbol}
+        amount={amount}
+        toAddress={toAddress}
+        txId={txResult?.txId}
+        createdAt={txResult?.lockTime * 1000}
+      />
     );
   }
   showSuccess = () => {
@@ -359,6 +352,7 @@ class CreateToken extends React.Component {
           variant="outlined"
           defaultValue={tokenName || ""}
           onChange={this.onChangeInput("tokenName")}
+          onBlur={this.onValidate("tokenName")}
           disabled={isCreate ? false : true}
         />
         <TextField
@@ -371,6 +365,7 @@ class CreateToken extends React.Component {
           variant="outlined"
           defaultValue={tokenSymbol || ""}
           onChange={this.onChangeInput("tokenSymbol")}
+          onBlur={this.onValidate("tokenSymbol")}
           disabled={isCreate ? false : true}
         />
       </div>
@@ -414,6 +409,8 @@ class CreateToken extends React.Component {
             variant="outlined"
             value={this.state.toAddress}
             onChange={this.onChangeInput("toAddress")}
+            onBlur={this.onValidate("toAddress")}
+            inputProps={{ style: { paddingRight: "110px" } }}
           />
           {!detectBrowser.isChromeExtension && (
             <QRScannerIcon onData={this.onQRData} />
@@ -434,6 +431,7 @@ class CreateToken extends React.Component {
           pattern="\d*"
           value={this.state.amount}
           onChange={this.onChangeInput("amount")}
+          onBlur={this.onValidate("amount")}
         />
 
         <TextField
@@ -447,6 +445,7 @@ class CreateToken extends React.Component {
           type="number"
           value={this.state.fee}
           onChange={this.onChangeInput("fee")}
+          onBlur={this.onValidate("fee")}
         />
 
         <Button
@@ -496,9 +495,7 @@ class CreateToken extends React.Component {
     );
   }
 }
-export default _.flow([connectWalletContext, connectAccountContext])(
-  CreateToken
-);
+export default flow([connectWalletContext, connectAccountContext])(CreateToken);
 
 const Wrapper = styled.div`
   padding: 20px 20px;

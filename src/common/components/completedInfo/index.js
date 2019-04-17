@@ -9,7 +9,7 @@ import {
 } from "./styled";
 
 export const STATUS = {
-  SUCCESSED: "SUCCESS",
+  SUCCESSED: "SUCCESSED",
   FAILED: "FAILED"
 };
 
@@ -17,10 +17,11 @@ const CompletedInfo = ({
   children,
   title,
   onClose,
-  type = STATUS.SUCCESSED
+  type = STATUS.SUCCESSED,
+  isPrivacy
 }) => (
-  <Wrapper>
-    {type == STATUS.SUCCESSED ? <IconSuccessed /> : <IconFailed />}
+  <Wrapper isPrivacy={isPrivacy}>
+    {type === STATUS.SUCCESSED ? <IconSuccessed /> : <IconFailed />}
     <Title>{title}</Title>
     <InfoWrapper>{children}</InfoWrapper>
     {onClose && <Button onClick={onClose}>Done</Button>}

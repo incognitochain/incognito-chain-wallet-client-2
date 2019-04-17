@@ -3,7 +3,7 @@ import CheckCircleOutline from "@material-ui/icons/DoneOutline";
 import CloseOutline from "@material-ui/icons/Close";
 
 export const Wrapper = styled.div`
-  background-color: #2d4cf5;
+  background-color: ${props => (props.isPrivacy ? "black" : " #2d4cf5")};
   min-width: 100%;
   min-height: 100vh;
   display: flex;
@@ -32,6 +32,12 @@ export const InfoWrapper = styled.div`
 
 export const Title = styled.span`
   font-size: 25px;
+  color: white;
+`;
+
+export const BigDate = styled.span`
+  display: block;
+  font-size: 30px;
   color: white;
 `;
 

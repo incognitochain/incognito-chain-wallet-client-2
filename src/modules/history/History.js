@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 // import { useAccountContext } from "../../common/context/AccountContext";
-import _ from "lodash";
+import { truncate } from "lodash";
 import { useAccountContext } from "../../common/context/AccountContext";
 import { useWalletContext } from "../../common/context/WalletContext";
 import {
@@ -13,12 +13,12 @@ import Avatar from "@material-ui/core/Avatar";
 import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
 import Dialog from "@src/components/core/Dialog";
 import moment from "moment";
-import { formatConstantBalance } from "@src/common/utils/format";
+import { formatConstantBalance, formatDate } from "@src/common/utils/format";
 
 const url = `${process.env.CONSTANT_EXPLORER}/tx/`;
 
 function truncateMiddle(str = "") {
-  return _.truncate(str, { length: 10 }) + str.slice(-4);
+  return truncate(str, { length: 10 }) + str.slice(-4);
 }
 
 function reducer(state, action) {
@@ -69,10 +69,13 @@ export function History() {
     setDialogContent(
       <SendCoinCompletedInfo
         onClose={() => null}
-        amount={history?.amount}
+        amount={formatConstantBalance(history?.amount)}
         toAddress={receiverAddress}
         txId={history?.txID}
         createdAt={history?.time}
+        completedInfoProps={{
+          isPrivacy: history.isPrivacy === 1
+        }}
       />
     );
     dialog && dialog.open();
@@ -87,8 +90,7 @@ export function History() {
           history.map(item => {
             let createdTime = "";
             if (item.time != undefined && item.time != null) {
-              item.time = moment(item.time);
-              createdTime = item.time.format("DD/MM/YYYY - hh:mm:ss");
+              createdTime = formatDate(item.time);
             }
             console.log("Time:", createdTime);
             const { status } = item;

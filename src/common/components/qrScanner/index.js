@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import QrReader from "react-qr-reader";
 import Dialog from "@src/components/core/Dialog";
-import Icon from "@material-ui/icons/CropFree";
 import BrowserDetect from "@src/services/BrowserDetect";
+import SwitchIcon from "@material-ui/icons/Cached";
 import {
   Wrapper,
-  TriggerIcon,
+  Trigger,
   QrWrapper,
   Error,
   Button,
@@ -100,9 +100,7 @@ class QRScanner extends Component {
     const { error, info, legacyMode } = this.state;
     return (
       <Wrapper className={className}>
-        <TriggerIcon onClick={this.onTrigger}>
-          <Icon />
-        </TriggerIcon>
+        <Trigger onClick={this.onTrigger}>Scan QR</Trigger>
         <Dialog title="Scan QR" onRef={modal => (this.dialog = modal)}>
           <QrWrapper hide={legacyMode}>
             <QrReader
@@ -115,6 +113,7 @@ class QRScanner extends Component {
             />
           </QrWrapper>
           <Button onClick={this.toggleMode}>
+            <SwitchIcon />
             {legacyMode ? "Switch to Scan QR" : "Switch to Choose QR Image"}
           </Button>
           {legacyMode && (
