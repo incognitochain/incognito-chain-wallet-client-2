@@ -1,6 +1,5 @@
 import { KeyWallet, Wallet } from "constant-chain-web-js/build/wallet";
 import { getPassphrase } from "./PasswordService";
-import localforage from "localforage";
 
 export default class Account {
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {

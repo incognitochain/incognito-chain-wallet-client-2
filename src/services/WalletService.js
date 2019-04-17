@@ -35,6 +35,8 @@ export async function loadWallet() {
   // update status history
   updateStatusHistory(wallet);
 
+  wallet.updateSpendingList();
+
   if (wallet.Name) {
     console.timeEnd("loadWallet");
     return wallet;
@@ -57,6 +59,8 @@ export async function initWallet() {
       localforage,
       process.env.SHARD_ID
     );
+
+    // wallet.updateSpendingList();
 
     await wallet.save(passphrase);
     console.timeEnd("initWallet");
