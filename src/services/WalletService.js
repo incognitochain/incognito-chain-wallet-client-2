@@ -63,8 +63,6 @@ export async function initWallet() {
 
     // wallet.updateSpendingList();
 
-    // wallet.updateSpendingList();
-
     await wallet.save(passphrase);
     console.timeEnd("initWallet");
     return wallet;
