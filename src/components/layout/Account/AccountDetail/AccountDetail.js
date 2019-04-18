@@ -273,11 +273,14 @@ class AccountDetail extends React.Component {
     );
   }
 
-  openAccountSend = account => {
+  openAccountSend = (account, defaultPaymentInfo) => {
     this.setState({
       modalAccountDetail: "",
       modalAccountSend: (
-        <AccountSend closeModal={this.modalAccountSendRef.close} />
+        <AccountSend
+          closeModal={this.modalAccountSendRef.close}
+          defaultPaymentInfo={defaultPaymentInfo}
+        />
       )
     });
     this.modalAccountSendRef.open();
@@ -418,7 +421,8 @@ class AccountDetail extends React.Component {
       readonlyKey,
       onSendToken: this.handleSendToken,
       onCreateToken: this.handleCreateToken,
-      onRemoveAccount: this.handleRemoveAccount
+      onRemoveAccount: this.handleRemoveAccount,
+      onSendConstant: this.openAccountSend
     };
     return <MainTabs {...props} tokenListRef={this.tokenListRef} />;
   }

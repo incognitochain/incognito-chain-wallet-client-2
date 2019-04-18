@@ -76,7 +76,7 @@ function reducer(state, action) {
 
 const refs = { modalConfirmationRef: null }; //TODO - remove this
 
-function AccountSend({ classes, isOpen, closeModal }) {
+function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
   const isPrivacyRef = React.useRef();
@@ -96,23 +96,6 @@ function AccountSend({ classes, isOpen, closeModal }) {
     balance = -1;
   }
 
-  React.useEffect(() => {
-    reloadBalance();
-  }, []);
-
-  async function reloadBalance() {
-    let balance = getAccountBalance(account.name);
-    if (balance == -1) {
-      balance = await wallet.getAccountByName(account.name).getBalance();
-      saveAccountBalance(balance, account.name);
-    }
-    appDispatch({
-      type: "SET_ACCOUNT_BALANCE",
-      accountName: account.name,
-      balance
-    });
-  }
-
   let [state, dispatch] = useDebugReducer(
     "AccountSend",
     reducer,
@@ -128,6 +111,33 @@ function AccountSend({ classes, isOpen, closeModal }) {
       isPrivacy: "0"
     })
   );
+
+  function setDefaultPaymentInfo(defaultPaymentInfo, dispatch) {
+    const entries =
+      (defaultPaymentInfo && Object.entries(defaultPaymentInfo)) || [];
+    entries.forEach(([name, value]) => {
+      dispatch({ type: "CHANGE_INPUT", name, value });
+    });
+  }
+
+  React.useEffect(() => {
+    reloadBalance();
+    console.log("defaultPaymentInfo: ", defaultPaymentInfo);
+    setDefaultPaymentInfo(defaultPaymentInfo, dispatch);
+  }, []);
+
+  async function reloadBalance() {
+    let balance = getAccountBalance(account.name);
+    if (balance == -1) {
+      balance = await wallet.getAccountByName(account.name).getBalance();
+      saveAccountBalance(balance, account.name);
+    }
+    appDispatch({
+      type: "SET_ACCOUNT_BALANCE",
+      accountName: account.name,
+      balance
+    });
+  }
 
   React.useEffect(() => {
     if (

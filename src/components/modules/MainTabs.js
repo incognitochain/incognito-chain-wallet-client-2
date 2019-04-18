@@ -68,7 +68,7 @@ class MainTabs extends React.Component {
   };
 
   renderHistory = () => {
-    return <History />;
+    return <History onSendConstant={this.props.onSendConstant} />;
   };
 
   render() {

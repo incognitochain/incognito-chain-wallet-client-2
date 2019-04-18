@@ -9,6 +9,7 @@ import { PopoverMenu } from "../../common/components/popover-menu/PopoverMenu";
 import { getPassphrase } from "../../services/PasswordService";
 import { useWalletContext } from "../../common/context/WalletContext";
 import { formatTokenAmount } from "@src/common/utils/format";
+import { OptionMenu } from "@src/common/components/popover-menu/OptionMenu";
 
 export function TokenItem({
   tab,
@@ -75,23 +76,26 @@ export function TokenItem({
     }
   }
 
-  const onClickSendMenuItem = closeMenu => () => {
+  const onClickSendMenuItem = () => {
     onSendToken(item, tab);
-    closeMenu();
   };
 
-  const onClickUnfollowMenuItem = closeMenu => () => {
+  const onClickUnfollowMenuItem = () => {
     handleUnfollow(item);
-    closeMenu();
   };
 
-  const onClickHistoryMenuItem = closeMenu => () => {
+  const onClickHistoryMenuItem = () => {
     onClickHistory(item);
-    closeMenu();
   };
 
   const { Image, ID, Name } = item;
   console.log("Image: ", Image);
+
+  const items = [
+    { onclick: onClickSendMenuItem, text: "Send" },
+    { onclick: onClickUnfollowMenuItem, text: "Unfollow" },
+    { onclick: onClickHistoryMenuItem, text: "History" }
+  ];
 
   return (
     <Wrapper className="wrapperToken">
@@ -106,8 +110,9 @@ export function TokenItem({
           </div>
         </CopyableTooltip>
       </Details>
+      <OptionMenu items={items} />
 
-      <Buttons>
+      {/* <Buttons>
         <PopoverMenu
           renderItems={closeMenu => {
             const { MenuItem } = PopoverMenu;
@@ -124,7 +129,7 @@ export function TokenItem({
             ];
           }}
         />
-      </Buttons>
+      </Buttons> */}
     </Wrapper>
   );
 }
@@ -148,9 +153,4 @@ const Details = styled.div`
   flex: 1;
   display: flex;
   cursor: pointer;
-`;
-
-const Buttons = styled.div`
-  display: flex;
-  flex-direction: column;
 `;

@@ -112,4 +112,9 @@ export default class Account {
       return true;
     }
   }
+
+  // async resendConsant(toAddress, amount,  fee, isPrivacy, account, wallet){
+  //   let payemntInfos = [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }];
+  //   this.sendConstant(payemntInfos, fee, isPrivacy, account, wallet);
+  // }
 }
