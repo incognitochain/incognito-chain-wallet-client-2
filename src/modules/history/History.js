@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-// import { useAccountContext } from "../../common/context/AccountContext";
 import { truncate } from "lodash";
 import { useAccountContext } from "../../common/context/AccountContext";
 import { useWalletContext } from "../../common/context/WalletContext";
@@ -14,6 +13,7 @@ import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin
 import Dialog from "@src/components/core/Dialog";
 import moment from "moment";
 import { formatConstantBalance, formatDate } from "@src/common/utils/format";
+import { OptionMenu } from "@src/common/components/popover-menu/OptionMenu";
 
 const url = `${process.env.CONSTANT_EXPLORER}/tx/`;
 
@@ -36,7 +36,7 @@ function reducer(state, action) {
 /**
  * NOTE: Only show sending history for now
  */
-export function History() {
+export function History({ onSendConstant }) {
   const [dialogContent, setDialogContent] = React.useState(null);
   const [dialog, setDialog] = React.useState(null);
   const [state, dispatch] = React.useReducer(reducer, {
@@ -81,6 +81,17 @@ export function History() {
     dialog && dialog.open();
   }
 
+  function onClickResendMenuItem(history) {
+    if (!history) {
+      return;
+    }
+    let props = {
+      toAddress: history.receivers[0],
+      amount: formatConstantBalance(history.amount)
+    };
+    onSendConstant(account, props);
+  }
+
   let history = state.history;
   history.sort(compare);
   return (
@@ -88,6 +99,10 @@ export function History() {
       <Container>
         {history.length ? (
           history.map(item => {
+            const items = [
+              { onclick: () => onClickResendMenuItem(item), text: "Resend" }
+            ];
+
             let createdTime = "";
             if (item.time != undefined && item.time != null) {
               createdTime = formatDate(item.time);
@@ -115,16 +130,19 @@ export function History() {
               <HistoryItem key={item.txID}>
                 <Div>
                   <Row1>
-                    <TxID>
-                      <a href={url + item.txID} target="_blank">
-                        <Avatar
-                          alt={image && image.length > 0 ? item.txID : "fail"}
-                          src={image}
-                        />
-                      </a>
-                    </TxID>
+                    <div style={{ display: "flex" }}>
+                      <TxID>
+                        <a href={url + item.txID} target="_blank">
+                          <Avatar
+                            alt={image && image.length > 0 ? item.txID : "fail"}
+                            src={image}
+                          />
+                        </a>
+                      </TxID>
 
-                    <Time>{createdTime}</Time>
+                      <Time>{createdTime}</Time>
+                    </div>
+                    <OptionMenu items={items} />
                   </Row1>
 
                   <Row2>
@@ -263,13 +281,16 @@ const Time = styled.div`
   color: #050c33;
   margin: 10px 0px 0px 10px;
   font-size: 13px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Row1 = styled.div`
   color: #00529b;
-  display: flex;
   flex-direction: row;
   height: 50px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Row2 = styled.div`
