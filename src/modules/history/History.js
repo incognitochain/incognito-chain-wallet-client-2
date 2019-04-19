@@ -87,7 +87,8 @@ export function History({ onSendConstant }) {
     }
     let props = {
       toAddress: history.receivers[0],
-      amount: formatConstantBalance(history.amount)
+      amount: formatConstantBalance(history.amount),
+      isPrivacy: Number(history.isPrivacy).toString()
     };
     onSendConstant(account, props);
   }
