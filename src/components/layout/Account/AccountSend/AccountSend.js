@@ -153,6 +153,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
         })
         .catch(e => {
           dispatch({ type: "LOAD_ESTIMATION_FEE_ERROR" });
+          console.log(e);
           toastr.error("Error on get estimation fee!");
         });
     }
