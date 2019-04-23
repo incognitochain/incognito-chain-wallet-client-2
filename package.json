@@ -53,7 +53,7 @@
     "start": "webpack-dev-server --open --mode production",
     "start:dev": "webpack-dev-server --open --mode development",
     "start:test": "webpack-dev-server --open --mode test",
-    "build": "webpack --config ./webpack.config.js --progress --mode production",
+    "build": "node --max-old-space-size=4096 node_modules/webpack/bin/webpack.js --config ./webpack.config.js --progress --mode production",
     "build:dev": "webpack --config ./webpack.config.js --progress --mode development",
     "build:test": "webpack --config ./webpack.config.js --progress --mode test",
     "test": "react-scripts test",
