@@ -125,8 +125,10 @@ export function History({ onSendConstant }) {
               statusClass = "failed";
             }
             var image = "";
-            if (item.txID && item.txID.length > 0) {
-              image = hashToIdenticon(item.txID);
+            {
+              /* if (item.txID && item.txID.length > 0) {
+              hashToIdenticon(item.txID).then((res) => {image = res; console.log("Image: ", image); console.log("res: ", res);});
+            } */
             }
             return (
               <HistoryItem key={item.txID}>
