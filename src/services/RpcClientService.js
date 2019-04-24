@@ -140,11 +140,13 @@ export async function hashToIdenticon(hashStrs) {
   try {
     resp = await getRpcClient().hashToIdenticon(hashStrs);
   } catch (e) {
+    console.log("Error 1: ", e);
     throw e;
   }
 
   if (resp.err != null) {
+    console.log("Error 2: ", resp.err);
     throw resp.err;
   }
-  return resp.images[0];
+  return resp.images;
 }

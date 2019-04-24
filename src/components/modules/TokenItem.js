@@ -4,8 +4,6 @@ import styled from "styled-components";
 import { CopyableTooltip } from "@common/components/copyable-tooltip";
 import { useAccountWallet } from "../../modules/tokens/hook/useAccountWallet";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import numeral from "numeral";
-import { PopoverMenu } from "../../common/components/popover-menu/PopoverMenu";
 import { getPassphrase } from "../../services/PasswordService";
 import { useWalletContext } from "../../common/context/WalletContext";
 import { formatTokenAmount } from "@src/common/utils/format";
@@ -92,9 +90,9 @@ export function TokenItem({
   console.log("Image: ", Image);
 
   const items = [
-    { onclick: onClickSendMenuItem, text: "Send" },
-    { onclick: onClickUnfollowMenuItem, text: "Unfollow" },
-    { onclick: onClickHistoryMenuItem, text: "History" }
+    { key: 1, onclick: onClickSendMenuItem, text: "Send" },
+    { key: 2, onclick: onClickUnfollowMenuItem, text: "Unfollow" },
+    { key: 3, onclick: onClickHistoryMenuItem, text: "History" }
   ];
 
   return (
@@ -111,25 +109,6 @@ export function TokenItem({
         </CopyableTooltip>
       </Details>
       <OptionMenu items={items} />
-
-      {/* <Buttons>
-        <PopoverMenu
-          renderItems={closeMenu => {
-            const { MenuItem } = PopoverMenu;
-            return [
-              <MenuItem key={1} onClick={onClickSendMenuItem(closeMenu)}>
-                Send
-              </MenuItem>,
-              <MenuItem key={2} onClick={onClickUnfollowMenuItem(closeMenu)}>
-                Unfollow
-              </MenuItem>,
-              <MenuItem key={3} onClick={onClickHistoryMenuItem(closeMenu)}>
-                History
-              </MenuItem>
-            ];
-          }}
-        />
-      </Buttons> */}
     </Wrapper>
   );
 }
