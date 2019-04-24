@@ -99,7 +99,10 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
 
                 let image = "";
                 if (txID && txID.length > 0) {
-                  image = hashToIdenticon(txID);
+                  hashToIdenticon(txID).then(res => {
+                    image = res;
+                    console.log("Image: ", image);
+                  });
                 }
 
                 let createdTime = "";

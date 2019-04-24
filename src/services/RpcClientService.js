@@ -135,10 +135,10 @@ export async function getMaxShardNumber() {
   return resp.shardNumber;
 }
 
-export async function hashToIdenticon() {
+export async function hashToIdenticon(hashStrs) {
   let resp;
   try {
-    resp = await getRpcClient().hashToIdenticon();
+    resp = await getRpcClient().hashToIdenticon(hashStrs);
   } catch (e) {
     throw e;
   }

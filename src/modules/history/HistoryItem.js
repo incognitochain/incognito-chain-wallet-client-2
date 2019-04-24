@@ -37,7 +37,7 @@ function reducer(state, action) {
 /**
  * NOTE: Only show sending history for now
  */
-export function History({ onSendConstant }) {
+export function HistoryItem({ history, onSendConstant }) {
   const [dialogContent, setDialogContent] = React.useState(null);
   const [dialog, setDialog] = React.useState(null);
   const [state, dispatch] = React.useReducer(reducer, {
@@ -49,7 +49,7 @@ export function History({ onSendConstant }) {
 
   React.useEffect(() => {
     loadHistory();
-  }, [account]);
+  }, [history]);
 
   async function loadHistory() {
     console.log("Load history when change account!!!!");
@@ -97,103 +97,55 @@ export function History({ onSendConstant }) {
   let history = state.history;
   history.sort(compare);
   return (
-    <Wrapper>
-      <Container>
-        {history.length ? (
-          history.map(item => {
-            const items = [
-              { onclick: () => onClickResendMenuItem(item), text: "Resend" }
-            ];
+    <Item key={item.txID}>
+      <Div>
+        <Row1>
+          <div style={{ display: "flex" }}>
+            <TxID>
+              <a href={url + item.txID} target="_blank">
+                <Avatar
+                  alt={image && image.length > 0 ? item.txID : "fail"}
+                  src={image}
+                />
+              </a>
+            </TxID>
 
-            let createdTime = "";
-            if (item.time != undefined && item.time != null) {
-              createdTime = formatDate(item.time);
-            }
-            console.log("Time:", createdTime);
-            const { status } = item;
-            let statusText;
-            let statusClass;
+            <Time>{createdTime}</Time>
+          </div>
+          <OptionMenu items={items} />
+        </Row1>
 
-            if (status === ConfirmedTx) {
-              statusText = "Confirmed";
-              statusClass = "confirmed";
-            } else if (status === SuccessTx) {
-              statusText = "Success";
-              statusClass = "success";
-            } else {
-              statusText = "Failed";
-              statusClass = "failed";
-            }
-            var image = "";
-            if (item.txID && item.txID.length > 0) {
-              {
-                /* hashToIdenticon(item.txID).then((res) => {image = res; console.log("Image: ", image); console.log("res: ", res);}); */
-              }
-              hashToIdenticon(item.txID);
-            }
-            return (
-              <HistoryItem key={item.txID}>
-                <Div>
-                  <Row1>
-                    <div style={{ display: "flex" }}>
-                      <TxID>
-                        <a href={url + item.txID} target="_blank">
-                          <Avatar
-                            alt={image && image.length > 0 ? item.txID : "fail"}
-                            src={image}
-                          />
-                        </a>
-                      </TxID>
+        <Row2>
+          <Left>
+            {(item.receivers || []).map((receiverItem, i) => {
+              return (
+                <Receiver
+                  title={receiverItem}
+                  key={i}
+                  onClick={() => showHistoryDialog(item, receiverItem)}
+                >
+                  To: {truncateMiddle(receiverItem)}
+                </Receiver>
+              );
+            })}
+          </Left>
+          <Right>
+            {item.isIn ? "+" : "-"} {formatConstantBalance(item.amount)} CONST
+          </Right>
+        </Row2>
 
-                      <Time>{createdTime}</Time>
-                    </div>
-                    <OptionMenu items={items} />
-                  </Row1>
-
-                  <Row2>
-                    <Left>
-                      {(item.receivers || []).map((receiverItem, i) => {
-                        return (
-                          <Receiver
-                            title={receiverItem}
-                            key={i}
-                            onClick={() =>
-                              showHistoryDialog(item, receiverItem)
-                            }
-                          >
-                            To: {truncateMiddle(receiverItem)}
-                          </Receiver>
-                        );
-                      })}
-                    </Left>
-                    <Right>
-                      {item.isIn ? "+" : "-"}{" "}
-                      {formatConstantBalance(item.amount)} CONST
-                    </Right>
-                  </Row2>
-
-                  <Row3>
-                    <Left>
-                      <Fee>Fee: {item.fee}</Fee>
-                    </Left>
-                    <Right>
-                      <Status className={statusClass}>
-                        <p>{statusText}</p>
-                      </Status>
-                    </Right>
-                  </Row3>
-                </Div>
-              </HistoryItem>
-            );
-          })
-        ) : (
-          <NoData>No data to display</NoData>
-        )}
-      </Container>
-      <Dialog title="History" onRef={setDialog} className={{ margin: 0 }}>
-        {dialogContent}
-      </Dialog>
-    </Wrapper>
+        <Row3>
+          <Left>
+            <Fee>Fee: {item.fee}</Fee>
+          </Left>
+          <Right>
+            <Status className={statusClass}>
+              <p>{statusText}</p>
+            </Status>
+          </Right>
+        </Row3>
+      </Div>
+    </Item>
   );
 }
 
@@ -202,17 +154,7 @@ const Fee = styled.div`
   font-size: 12px;
 `;
 
-const Wrapper = styled.div`
-  flex: 1;
-  padding: 12px 20px;
-  display: flex;
-`;
-
-const Container = styled.div`
-  flex: 1;
-`;
-
-const HistoryItem = styled.div`
+const Item = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -237,11 +179,6 @@ const Receiver = styled.div`
 const Div = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const NoData = styled.div`
-  text-align: center;
-  margin: 20px;
 `;
 
 const Right = styled.div`
