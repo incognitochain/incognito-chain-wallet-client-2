@@ -174,6 +174,7 @@ class TokenTabs extends React.Component {
           tabName={mapTabIndexToName[this.state.value]}
           isOpen={this.state.isOpenTokenHistory}
           onClose={() => this.setState({ isOpenTokenHistory: false })}
+          onSendConstant={null}
         />
       </Wrapper>
     );

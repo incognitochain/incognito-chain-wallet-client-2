@@ -2,19 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import { truncate } from "lodash";
 import { useAccountContext } from "../../common/context/AccountContext";
-import { useWalletContext } from "../../common/context/WalletContext";
-import {
-  SuccessTx,
-  ConfirmedTx,
-  getTokenImage
-} from "constant-chain-web-js/build/wallet";
+import { SuccessTx, ConfirmedTx } from "constant-chain-web-js/build/wallet";
 import Avatar from "@material-ui/core/Avatar";
 import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
-import Dialog from "@src/components/core/Dialog";
-import moment from "moment";
-import { formatConstantBalance, formatDate } from "@src/common/utils/format";
+import {
+  formatConstantBalance,
+  formatDate,
+  formatTokenAmount
+} from "@src/common/utils/format";
 import { OptionMenu } from "@src/common/components/popover-menu/OptionMenu";
 import { hashToIdenticon } from "@src/services/RpcClientService";
+import Dialog from "@src/components/core/Dialog";
 
 const url = `${process.env.CONSTANT_EXPLORER}/tx/`;
 
@@ -22,49 +20,25 @@ function truncateMiddle(str = "") {
   return truncate(str, { length: 10 }) + str.slice(-4);
 }
 
-function reducer(state, action) {
-  switch (action.type) {
-    case "SET_HISTORY":
-      return {
-        ...state,
-        history: action.history
-      };
-    default:
-      throw new Error();
-  }
-}
-
 /**
  * NOTE: Only show sending history for now
  */
 export function HistoryItem({ history, onSendConstant }) {
   const [dialogContent, setDialogContent] = React.useState(null);
+  const [identicon, setIdenticon] = React.useState(null);
   const [dialog, setDialog] = React.useState(null);
-  const [state, dispatch] = React.useReducer(reducer, {
-    history: []
-  });
 
   let account = useAccountContext();
-  let { wallet } = useWalletContext();
 
   React.useEffect(() => {
-    loadHistory();
-  }, [history]);
-
-  async function loadHistory() {
-    console.log("Load history when change account!!!!");
-    let history = await wallet.getHistoryByAccount(account.name);
-    dispatch({
-      type: "SET_HISTORY",
-      history
-    });
-  }
-
-  function compare(a, b) {
-    if (a.time < b.time) return 1;
-    if (a.time > b.time) return -1;
-    return 0;
-  }
+    async function getIdenticon() {
+      if (history.txID && history.txID.length > 0) {
+        let res = await hashToIdenticon([history.txID]);
+        setIdenticon(res[0]);
+      }
+    }
+    getIdenticon();
+  }, []);
 
   function showHistoryDialog(history, receiverAddress) {
     setDialogContent(
@@ -94,35 +68,62 @@ export function HistoryItem({ history, onSendConstant }) {
     onSendConstant(account, props);
   }
 
-  let history = state.history;
-  history.sort(compare);
+  const items = [
+    { key: 1, onclick: () => onClickResendMenuItem(history), text: "Resend" }
+  ];
+
+  let createdTime = "";
+  if (history.time !== undefined && history.time != null) {
+    createdTime = formatDate(history.time);
+  }
+  // console.log("Time:", createdTime);
+  const { status } = history;
+  let statusText;
+  let statusClass;
+
+  if (status === ConfirmedTx) {
+    statusText = "Confirmed";
+    statusClass = "confirmed";
+  } else if (status === SuccessTx) {
+    statusText = "Success";
+    statusClass = "success";
+  } else {
+    statusText = "Failed";
+    statusClass = "failed";
+  }
+
+  // console.log("Image: ", identicon);
+  // console.log("history.tokenName: ", history.tokenName);
+
   return (
-    <Item key={item.txID}>
+    <Item key={history.txID}>
       <Div>
         <Row1>
           <div style={{ display: "flex" }}>
             <TxID>
-              <a href={url + item.txID} target="_blank">
+              <a href={url + history.txID} target="_blank">
                 <Avatar
-                  alt={image && image.length > 0 ? item.txID : "fail"}
-                  src={image}
+                  alt={
+                    identicon && identicon.length > 0 ? history.txID : "fail"
+                  }
+                  src={identicon}
                 />
               </a>
             </TxID>
 
             <Time>{createdTime}</Time>
           </div>
-          <OptionMenu items={items} />
+          {!history.tokenName ? <OptionMenu items={items} /> : null}
         </Row1>
 
         <Row2>
           <Left>
-            {(item.receivers || []).map((receiverItem, i) => {
+            {(history.receivers || []).map((receiverItem, i) => {
               return (
                 <Receiver
                   title={receiverItem}
                   key={i}
-                  onClick={() => showHistoryDialog(item, receiverItem)}
+                  onClick={() => showHistoryDialog(history, receiverItem)}
                 >
                   To: {truncateMiddle(receiverItem)}
                 </Receiver>
@@ -130,13 +131,17 @@ export function HistoryItem({ history, onSendConstant }) {
             })}
           </Left>
           <Right>
-            {item.isIn ? "+" : "-"} {formatConstantBalance(item.amount)} CONST
+            {history.isIn ? "+" : "-"}{" "}
+            {history.tokenName
+              ? formatTokenAmount(history.amount)
+              : formatConstantBalance(history.amount)}{" "}
+            {history.tokenName ? history.tokenName : "CONST"}
           </Right>
         </Row2>
 
         <Row3>
           <Left>
-            <Fee>Fee: {item.fee}</Fee>
+            <Fee>Fee: {history.fee}</Fee>
           </Left>
           <Right>
             <Status className={statusClass}>
@@ -145,6 +150,9 @@ export function HistoryItem({ history, onSendConstant }) {
           </Right>
         </Row3>
       </Div>
+      <Dialog title="History" onRef={setDialog} className={{ margin: 0 }}>
+        {dialogContent}
+      </Dialog>
     </Item>
   );
 }

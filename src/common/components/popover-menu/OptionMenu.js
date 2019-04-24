@@ -16,7 +16,7 @@ export function OptionMenu({ items }) {
                 closeMenu();
               };
               return (
-                <MenuItem key={1} onClick={onClick}>
+                <MenuItem key={item.key} onClick={onClick}>
                   {item.text}
                 </MenuItem>
               );
