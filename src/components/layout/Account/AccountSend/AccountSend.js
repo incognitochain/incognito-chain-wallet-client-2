@@ -323,7 +323,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
             <Checkbox
               label="Is Privacy"
               id="isPrivacy"
-              checked={state.isPrivacy == "1" ? true : false}
+              checked={state.isPrivacy === "1" ? true : false}
               value={state.isPrivacy}
               onChange={onChangeInput("isPrivacy")}
               color="primary"

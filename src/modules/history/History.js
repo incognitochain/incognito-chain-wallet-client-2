@@ -6,7 +6,7 @@ import { useWalletContext } from "../../common/context/WalletContext";
 import {
   SuccessTx,
   ConfirmedTx,
-  genImageFromStr
+  getTokenImage
 } from "constant-chain-web-js/build/wallet";
 import Avatar from "@material-ui/core/Avatar";
 import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
@@ -14,6 +14,7 @@ import Dialog from "@src/components/core/Dialog";
 import moment from "moment";
 import { formatConstantBalance, formatDate } from "@src/common/utils/format";
 import { OptionMenu } from "@src/common/components/popover-menu/OptionMenu";
+import { hashToIdenticon } from "@src/services/RpcClientService";
 
 const url = `${process.env.CONSTANT_EXPLORER}/tx/`;
 
@@ -87,7 +88,8 @@ export function History({ onSendConstant }) {
     }
     let props = {
       toAddress: history.receivers[0],
-      amount: formatConstantBalance(history.amount)
+      amount: formatConstantBalance(history.amount),
+      isPrivacy: Number(history.isPrivacy).toString()
     };
     onSendConstant(account, props);
   }
@@ -124,7 +126,7 @@ export function History({ onSendConstant }) {
             }
             var image = "";
             if (item.txID && item.txID.length > 0) {
-              image = genImageFromStr(item.txID, 40);
+              image = hashToIdenticon(item.txID);
             }
             return (
               <HistoryItem key={item.txID}>

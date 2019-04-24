@@ -8,11 +8,12 @@ import {
   FailedTx,
   SuccessTx,
   ConfirmedTx,
-  genImageFromStr
+  getTokenImage
 } from "constant-chain-web-js/build/wallet";
 import Avatar from "@material-ui/core/Avatar";
 import moment from "moment";
 import { formatTokenAmount } from "@src/common/utils/format";
+import { hashToIdenticon } from "@src/services/RpcClientService";
 
 function truncateMiddle(str = "") {
   return truncate(str, { length: 10 }) + str.slice(-4);
@@ -98,7 +99,7 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
 
                 let image = "";
                 if (txID && txID.length > 0) {
-                  image = genImageFromStr(txID, 40);
+                  image = hashToIdenticon(txID);
                 }
 
                 let createdTime = "";
