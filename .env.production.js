@@ -1,6 +1,6 @@
 module.exports = {
   INLINE_RUNTIME_CHUNK: 'false',
   NODE_PATH: 'src /',
-  CONSTANT_EXPLORER: 'http://explorer-constant-chain.constant.cash',
+  CONSTANT_EXPLORER: 'https://test-explorer-constant-chain.constant.money',
   SHARD_ID: null
 }
