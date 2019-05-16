@@ -10,6 +10,7 @@ const {app, BrowserWindow} = electron;
 
 // download node
 const downloadLink = 'https://github.com/constant-money/constant-chain/releases/download/20190515_1/constant_macos';
+let downloadPercent = 0;
 let downloaded = false;
 let downloadFinished = false;
 const userHome = process.env.HOME || process.env.USERPROFILE;
@@ -56,17 +57,26 @@ function createWindow() {
 
   if (!downloaded) {
     console.log("Downloading constant node into:" + storePath);
-    mainWindow.loadFile(path.resolve(__dirname, 'downloading.html'));
+    mainWindow.loadFile(path.resolve(__dirname, 'downloading.html'), {
+      search: "downloadPecent=" + downloadPercent
+    });
     download(mainWindow, downloadLink, {
       directory: storePath,
+      showBadge: true,
+      onProgress: (percent) => {
+        downloadPercent = parseInt(percent * 100)
+        mainWindow.loadFile(path.resolve(__dirname, 'downloading.html'), {
+          search: "downloadPecent=" + downloadPercent
+        });
+      }
+    }).then(dl => {
+      console.log(dl)
+      downloadFinished = true;
+      fs.chmodSync(dl.getSavePath(), '0755');
+      runChain();
+      mainWindow.loadFile(path.resolve(__dirname, '../dist/index.html'));
+      console.log(dl.getSavePath());
     })
-      .then(dl => {
-        downloadFinished = true;
-        fs.chmodSync(dl.getSavePath(), '0755');
-        runChain();
-        mainWindow.loadFile(path.resolve(__dirname, '../dist/index.html'));
-        console.log(dl.getSavePath());
-      })
       .catch(console.error);
   } else {
     downloadFinished = true;
