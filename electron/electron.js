@@ -1,12 +1,42 @@
 const electron = require('electron');
+const {download} = require('electron-dl/index');
 const path = require('path');
+const fs = require('fs');
+const {exec} = require('child_process');
+
 
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = electron;
 
+// download node
+const downloadLink = 'https://github.com/constant-money/constant-chain/releases/download/20190515_1/constant_macos';
+let downloaded = false;
+let downloadFinished = false;
+const userHome = process.env.HOME || process.env.USERPROFILE;
+const storePath = path.resolve(userHome, '.constant');
+console.log(storePath)
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+
+try {
+  fs.accessSync(storePath, fs.F_OK);
+} catch (e) {
+  fs.mkdirSync(storePath);
+}
+
+if (fs.existsSync(path.resolve(storePath, 'constant_macos'))) {
+  downloaded = true;
+}
+
+function runChain() {
+  exec(`${path.resolve(storePath, 'constant_macos')} --datadir "${path.resolve(storePath, 'data/node-0')}" --testnet`, (error, stdout, stderr) => {
+    if (error) {
+      runChain();
+    }
+  });
+}
 
 function createWindow() {
   console.log("Init window");
@@ -24,7 +54,25 @@ function createWindow() {
   mainWindow.setPosition(width - 414, 0);
   mainWindow.setMenu(null);
 
-  mainWindow.loadFile(path.resolve(__dirname, 'dist/index.html'));
+  if (!downloaded) {
+    console.log("Downloading constant node into:" + storePath);
+    mainWindow.loadFile(path.resolve(__dirname, 'downloading.html'));
+    download(mainWindow, downloadLink, {
+      directory: storePath,
+    })
+      .then(dl => {
+        downloadFinished = true;
+        fs.chmodSync(dl.getSavePath(), '0755');
+        runChain();
+        mainWindow.loadFile(path.resolve(__dirname, '../dist/index.html'));
+        console.log(dl.getSavePath());
+      })
+      .catch(console.error);
+  } else {
+    downloadFinished = true;
+    runChain();
+    mainWindow.loadFile(path.resolve(__dirname, '../dist/index.html'));
+  }
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
@@ -51,7 +99,7 @@ app.on('window-all-closed', function () {
 
 app.commandLine.appendSwitch('disable-pinch');
 app.setName('Constant desktop wallet');
-app.dock.setIcon(path.relative(__dirname, 'icons/512x512.png'));
+app.dock.setIcon(path.resolve(__dirname, '../icons/512x512.png'));
 app.on('ready', createWindow);
 app.on('activate', function () {
   // On macOS it's common to re-create a window in the app when the

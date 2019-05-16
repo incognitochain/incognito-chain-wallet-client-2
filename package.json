@@ -58,12 +58,12 @@
     "build:test": "webpack --config ./webpack.config.js --progress --mode test",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "yarn build:dev && yarn electron-only",
-    "electron": "yarn build && yarn electron-only",
-    "electron-only": "electron electron.js",
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public",
-    "analyzer": "webpack --mode production --env.analyzer true"
+    "analyzer": "webpack --mode production --env.analyzer true",
+    "electron-dev": "yarn build:dev && yarn electron-only",
+    "electron": "yarn build && yarn electron-only",
+    "electron-only": "electron electron/electron.js"
   },
   "eslintConfig": {
     "extends": "react-app"

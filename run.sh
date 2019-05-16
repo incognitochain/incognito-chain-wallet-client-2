@@ -25,6 +25,7 @@ if which node > /dev/null
 
     fi
 
-npm install
+npm install electron@5.0.1
+npm install electron-dl@1.14.0
 
-yarn electron-dev
+electron ./electron/electron.js
