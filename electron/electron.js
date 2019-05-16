@@ -6,13 +6,10 @@ const {exec} = require('child_process');
 
 
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = electron;
+const {app, BrowserWindow, ipcMain} = electron;
 
 // download node
-const downloadLink = 'https://github.com/constant-money/constant-chain/releases/download/20190515_1/constant_macos';
-let downloadPercent = 0;
 let downloaded = false;
-let downloadFinished = false;
 const userHome = process.env.HOME || process.env.USERPROFILE;
 const storePath = path.resolve(userHome, '.constant');
 console.log(storePath)
@@ -27,14 +24,18 @@ try {
   fs.mkdirSync(storePath);
 }
 
-if (fs.existsSync(path.resolve(storePath, 'constant_macos'))) {
-  downloaded = true;
+function checkDownload() {
+  if (fs.existsSync(path.resolve(storePath, 'constant_macos'))) {
+    downloaded = true;
+  }
 }
 
-function runChain() {
-  exec(`${path.resolve(storePath, 'constant_macos')} --datadir "${path.resolve(storePath, 'data/node-0')}" --testnet`, (error, stdout, stderr) => {
+function runChain(info) {
+  console.log(info.privateKey)
+  exec(`${path.resolve(storePath, 'constant_macos')} --datadir "${path.resolve(storePath, 'data/node-0')}" --testnet --privatekey "${info.privateKey}"`, (error, stdout, stderr) => {
     if (error) {
-      runChain();
+      console.log(error);
+      runChain(info);
     }
   });
 }
@@ -45,44 +46,48 @@ function createWindow() {
     fullscreen: false,
     icon: path.join(__dirname, 'icons/64x64.png'),
     title: 'Constant desktop wallet',
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
   console.log("Config window");
   mainWindow.maximize();
-  mainWindow.setSize(414, mainWindow.getBounds().height);
+  // mainWindow.setSize(414, mainWindow.getBounds().height);
   mainWindow.setResizable(false);
   const {width} = electron.screen.getPrimaryDisplay().bounds;
   mainWindow.setPosition(width - 414, 0);
   mainWindow.setMenu(null);
 
-  if (!downloaded) {
-    console.log("Downloading constant node into:" + storePath);
-    mainWindow.loadFile(path.resolve(__dirname, 'downloading.html'), {
-      search: "downloadPecent=" + downloadPercent
-    });
-    download(mainWindow, downloadLink, {
-      directory: storePath,
-      showBadge: true,
-      onProgress: (percent) => {
-        downloadPercent = parseInt(percent * 100)
-        mainWindow.loadFile(path.resolve(__dirname, 'downloading.html'), {
-          search: "downloadPecent=" + downloadPercent
-        });
-      }
-    }).then(dl => {
-      console.log(dl)
-      downloadFinished = true;
-      fs.chmodSync(dl.getSavePath(), '0755');
-      runChain();
-      mainWindow.loadFile(path.resolve(__dirname, '../dist/index.html'));
-      console.log(dl.getSavePath());
-    })
-      .catch(console.error);
-  } else {
-    downloadFinished = true;
-    runChain();
-    mainWindow.loadFile(path.resolve(__dirname, '../dist/index.html'));
-  }
+  mainWindow.loadFile(path.resolve(__dirname, 'main.html'));
+  mainWindow.show();
+
+  // process event
+  ipcMain.on("download", (event, info) => {
+    checkDownload()
+    if (!downloaded) {
+      console.log("Downloading constant node into: " + storePath + " from:" + info.url);
+      download(mainWindow, info.url, {
+        directory: storePath,
+        showBadge: true,
+        onProgress: (percent) => {
+          mainWindow.webContents.send("download-progress", percent);
+        }
+      }).then(dl => {
+        console.log(dl)
+        fs.chmodSync(dl.getSavePath(), '0755');
+        mainWindow.webContents.send("download-complete", dl.getSavePath());
+        console.log(dl.getSavePath());
+      }).catch(console.error);
+    } else {
+      mainWindow.webContents.send("downloaded", null);
+    }
+  })
+  ipcMain.on('startNode', (event, info) => {
+    console.log(info);
+    runChain(info);
+  });
+  // end
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
@@ -94,10 +99,7 @@ function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = null
   })
-
-  mainWindow.show();
 }
-
 
 app.on('window-all-closed', function () {
   // On macOS it is common for applications and their menu bar
