@@ -96,7 +96,7 @@ module.exports = (env, argv) => {
       path: path.resolve(__dirname, 'dist/'),
       filename: '[name].js?v=[hash]',
       chunkFilename: '[name].chunk.js?v=[hash]',
-      publicPath: '/',
+      publicPath: './',
     },
     devtool: 'inline-source-map',
     resolve: {

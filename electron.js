@@ -9,15 +9,14 @@ const {app, BrowserWindow} = electron;
 let mainWindow;
 
 function createWindow() {
+  console.log("Init window");
   mainWindow = new BrowserWindow({
     fullscreen: false,
     icon: path.join(__dirname, 'icons/64x64.png'),
     title: 'Constant desktop wallet',
-    webPreferences: {
-      nodeIntegration: true
-    }
   });
 
+  console.log("Config window");
   mainWindow.maximize();
   mainWindow.setSize(414, mainWindow.getBounds().height);
   mainWindow.setResizable(false);
@@ -25,11 +24,10 @@ function createWindow() {
   mainWindow.setPosition(width - 414, 0);
   mainWindow.setMenu(null);
 
-  // mainWindow.loadFile(path.resolve(__dirname, 'dist/index.html'));
-  mainWindow.loadURL("http://localhost:8080")
+  mainWindow.loadFile(path.resolve(__dirname, 'dist/index.html'));
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
