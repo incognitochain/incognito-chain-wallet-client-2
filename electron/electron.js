@@ -117,6 +117,8 @@ function createWindow() {
     if (!checkDownload()) {
       mainWindow.webContents.send("startNodeError", {error: "Please download node to continue"});
       return;
+    } else {
+      alert("Please download latest version of node to continue")
     }
     console.log(info);
     runNode(info);
@@ -154,4 +156,4 @@ app.on('activate', function () {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow()
-})
+});
