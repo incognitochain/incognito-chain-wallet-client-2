@@ -2,43 +2,102 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Hello World!</title>
+
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') {
+      window.module = module;
+      module = undefined;
+    }</script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- Insert this line after script imports -->
+    <script>if (window.module) module = window.module;</script>
 </head>
 <body>
 <h1>Constant Chain</h1>
-<div>
-    <button id="openWallet">Open Wallet</button>
+<div class="row">
+    <form class="col s12">
+        <div class="row">
+            <div class="input-field col s6">
+                <div>
+                    <a class="waves-effect waves-light btn" id="openWallet">Open Wallet</a>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
-<div>
-    <button id="downloadNode">Download node</button>
-    Download <span id="downloadPercent"></span>%
+<div class="row">
+    <form class="col s12">
+        <div class="row">
+            <div class="input-field col s6">
+                <div>
+                    <a class="waves-effect waves-light btn" id="downloadNode">Download node</a>
+                    Download <span id="downloadPercent"></span>%
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
-<div>
-    <button id="startNode">Start Node</button>
-    <button id="stopNode">Stop Node</button>
-    <input id="privateKey"
-           value="112t8s4JZF8RQ9wvUWc63nj7v7tZkw2ejXnvfmoLK9Dwo6Sv6Bnk4i3A7F3hjfLFYRBwkYNBYtV1z1N3pftYmGa8iBae6hTMyLMN1e1jNMjL"/>
-</div>
-<div>
-    Log info
-    <textarea cols="50" rows="20" id="logInfo"></textarea>
-</div>
-<div>
-    Log err
-    <textarea cols="50" rows="20" id="logErr"></textarea>
-</div>
-<div>
-
+<div class="row">
+    <form class="col s12">
+        <div class="row">
+            <div class="input-field col s12">
+                <div>
+                    <a class="waves-effect waves-light btn" id="startNode">Start Node</a>
+                    <a class="waves-effect waves-light btn" id="stopNode">Stop Node</a>
+                    <input id="privateKey"
+                           value="112t8s4JZF8RQ9wvUWc63nj7v7tZkw2ejXnvfmoLK9Dwo6Sv6Bnk4i3A7F3hjfLFYRBwkYNBYtV1z1N3pftYmGa8iBae6hTMyLMN1e1jNMjL"/>
+                </div>
+                <div>
+                    <ul class="collapsible">
+                        <li>
+                            <div class="collapsible-header"><i class="material-icons">filter_drama</i>Logger</div>
+                            <div class="collapsible-body">
+                                <div class="row">
+                                    <form class="col s12">
+                                        <div class="row">
+                                            <div class="input-field col s6">
+                                                <div>
+                                                    Log info
+                                                    <textarea cols="50" rows="20" id="logInfo"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="input-field col s6">
+                                                <div>
+                                                    Log err
+                                                    <textarea cols="50" rows="20" id="logErr"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 </body>
 <!-- Compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('.collapsible').collapsible();
+  });
+  $(document).ready(function () {
+    $('.tabs').tabs();
+  });
+</script>
 <script>
   require('./main.js')
 </script>
