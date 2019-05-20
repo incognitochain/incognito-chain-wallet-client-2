@@ -37,7 +37,18 @@ downloadNode.addEventListener('click', (event) => {
 
 const startNode = document.getElementById("startNode");
 startNode.addEventListener("click", (event) => {
-  ipcRenderer.send("startNode", {privateKey: document.getElementById("privateKey").value});
+  ipcRenderer.send("startNode", {
+    privateKey: document.getElementById("privateKey").value,
+    nodemode: 'auto',
+    discoverpeersaddress: '172.104.39.6:9330',
+    datadir: 'data/node-0',
+    testnet: true,
+  });
+});
+
+const stopNode = document.getElementById("stopNode");
+stopNode.addEventListener("click", (ev) => {
+  ipcRenderer.send("stopNode", {});
 });
 
 ipcRenderer.on("downloaded", (event, file) => {
@@ -55,4 +66,21 @@ ipcRenderer.on("download-progress", (event, progress) => {
   const cleanProgressInPercentages = Math.floor(progress * 100); // Without decimal point
   console.log(cleanProgressInPercentages);
   document.getElementById("downloadPercent").innerText = cleanProgressInPercentages;
+});
+
+ipcRenderer.on("startNodeError", (event, info) => {
+  console.log(info);
+  alert(info.error);
+})
+
+ipcRenderer.on('stdout', (event, info) => {
+  let logInfo = document.getElementById('logInfo')
+  logInfo.value += info;
+  logInfo.scrollTop = logInfo.scrollHeight;
+});
+
+ipcRenderer.on('stderr', (event, info) => {
+  let logErr = document.getElementById('logErr');
+  logErr.value += info;
+  logErr.scrollTop = logErr.scrollHeight;
 });

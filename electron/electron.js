@@ -2,14 +2,13 @@ const electron = require('electron');
 const {download} = require('electron-dl/index');
 const path = require('path');
 const fs = require('fs');
-const {exec} = require('child_process');
+const {spawn} = require('child_process');
 
 
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, ipcMain} = electron;
 
 // download node
-let downloaded = false;
 const userHome = process.env.HOME || process.env.USERPROFILE;
 const storePath = path.resolve(userHome, '.constant');
 console.log(storePath)
@@ -17,6 +16,7 @@ console.log(storePath)
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let processNode;
 
 try {
   fs.accessSync(storePath, fs.F_OK);
@@ -26,18 +26,49 @@ try {
 
 function checkDownload() {
   if (fs.existsSync(path.resolve(storePath, 'constant_macos'))) {
-    downloaded = true;
+    return true;
+  }
+  return false;
+}
+
+function stopNode() {
+  if (processNode) {
+    console.log('kill');
+    processNode.stdin.pause();
+    processNode.kill();
   }
 }
 
-function runChain(info) {
-  console.log(info.privateKey)
-  exec(`${path.resolve(storePath, 'constant_macos')} --datadir "${path.resolve(storePath, 'data/node-0')}" --testnet --privatekey "${info.privateKey}"`, (error, stdout, stderr) => {
-    if (error) {
-      console.log(error);
-      runChain(info);
-    }
+function runNode(info) {
+  let cmdLine = `${path.resolve(storePath, 'constant_macos')}`;
+  processNode = spawn(cmdLine, [
+      '--datadir', `${path.resolve(storePath, `${info.datadir}`)}`,
+      '--discoverpeersaddress', `${info.discoverpeersaddress}`,
+      info.testnet ? '--testnet' : '',
+      '--privatekey', `${info.privateKey}`,
+      '--nodemode', `${info.nodemode}`,
+      // '--relayshards', 'all',
+      // '-l', `${path.resolve(storePath, 'logs')}`,
+    ]
+  );
+  // console.log(process);
+  processNode.stdout.on('data', async (data) => {
+    console.log(`stdout: ${data}`);
+    mainWindow.webContents.send('stdout', data);
   });
+  processNode.stderr.on('data', async (data) => {
+    console.log(`stderr: ${data}`);
+    mainWindow.webContents.send('stderr', data);
+  });
+  processNode.on('close', async (code) => {
+    console.log(`Node exited with code ${code}`);
+    mainWindow.webContents.send('exit', `Node exited with code ${code}`);
+  });
+  processNode.on("exit", (code, signal) => {
+    console.log("Exit");
+    console.log(code);
+    mainWindow.webContents.send("startNodeError", {error: code});
+  })
 }
 
 function createWindow() {
@@ -64,8 +95,7 @@ function createWindow() {
 
   // process event
   ipcMain.on("download", (event, info) => {
-    checkDownload()
-    if (!downloaded) {
+    if (!checkDownload()) {
       console.log("Downloading constant node into: " + storePath + " from:" + info.url);
       download(mainWindow, info.url, {
         directory: storePath,
@@ -84,8 +114,15 @@ function createWindow() {
     }
   })
   ipcMain.on('startNode', (event, info) => {
+    if (!checkDownload()) {
+      mainWindow.webContents.send("startNodeError", {error: "Please download node to continue"});
+      return;
+    }
     console.log(info);
-    runChain(info);
+    runNode(info);
+  });
+  ipcMain.on('stopNode', (event, info) => {
+    stopNode();
   });
   // end
 
