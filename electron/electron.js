@@ -117,8 +117,6 @@ function createWindow() {
     if (!checkDownload()) {
       mainWindow.webContents.send("startNodeError", {error: "Please download node to continue"});
       return;
-    } else {
-      alert("Please download latest version of node to continue")
     }
     console.log(info);
     runNode(info);
