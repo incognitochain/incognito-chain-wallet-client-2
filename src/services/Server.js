@@ -34,7 +34,7 @@ export default class Server {
       },
       {
         default: true,
-        address: "https://test-node-constant-chain.constant.money",
+        address: "https://test-node.incognito.org",
         username: "",
         password: "",
         name: "Testnet"
