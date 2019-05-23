@@ -90,7 +90,7 @@ const App = ({ history, location }) => {
         accountList = (await wallet.listAccount()).map(account => {
           return {
             default: false,
-            name: account["Account Name"],
+            name: account.AccountName,
             value: -1,
             PaymentAddress: account.PaymentAddress,
             ReadonlyKey: account.ReadonlyKey,
