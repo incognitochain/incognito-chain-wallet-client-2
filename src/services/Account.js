@@ -16,9 +16,9 @@ export default class Account {
     }
   }
 
-  static async removeAccount(privateKeyStr, accountName, passPhrase, wallet) {
+  static async removeAccount(privateKeyStr, passPhrase, wallet) {
     try {
-      let result = wallet.removeAccount(privateKeyStr, accountName, passPhrase);
+      let result = wallet.removeAccount(privateKeyStr, passPhrase);
       return result;
     } catch (e) {
       return e;

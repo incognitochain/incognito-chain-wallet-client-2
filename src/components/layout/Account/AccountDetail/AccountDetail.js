@@ -137,7 +137,6 @@ class AccountDetail extends React.Component {
       try {
         await Account.removeAccount(
           privateKey,
-          account.name,
           passwordService.getPassphrase(),
           this.props.wallet
         );
