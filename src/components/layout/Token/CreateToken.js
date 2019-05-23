@@ -87,7 +87,7 @@ class CreateToken extends React.Component {
 
   componentDidMount() {
     this.autoFocus();
-    this.getEstimateFee();
+    this.getEstimateFeeService();
     if (!this.props.isCreate) {
       this.reloadBalance();
     }
@@ -149,7 +149,7 @@ class CreateToken extends React.Component {
           console.log("Estimate feeeeeeeee");
           this.setState({ isLoadingEstimationFee: true });
           return rpcClientService
-            .getEstimateFeeForSendingToken(
+            .getEstimateFeeForSendingTokenService(
               this.props.account.PaymentAddress,
               toAddress,
               amount,
