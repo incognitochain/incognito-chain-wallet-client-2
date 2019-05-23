@@ -153,7 +153,7 @@ function AccountStaking({
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
           console.log("Estimate fee .......");
           return rpcClientService
-            .getEstimateFee(
+            .getEstimateFeeService(
               account.PaymentAddress,
               state.toAddress,
               Number(amountInputRef.current.value) * 100,

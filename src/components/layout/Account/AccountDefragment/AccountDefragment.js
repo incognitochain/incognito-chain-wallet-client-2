@@ -147,7 +147,7 @@ function AccountDefragment({ classes, isOpen }) {
 
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
           return rpcClientService
-            .getEstimateFeeToDefragment(
+            .getEstimateFeeToDefragmentService(
               account.PaymentAddress,
               Number(amountInputRef.current.value) * 100,
               account.PrivateKey,

@@ -41,10 +41,10 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
 
     dispatch({ type: "RESET" });
     if (tabName === "privacy") {
-      const history = accountWallet.getPrivacyCustomTokenTrxByTokenID(tokenId);
+      const history = accountWallet.getPrivacyCustomTokenTxByTokenID(tokenId);
       dispatch({ type: "SET_HISTORY", history });
     } else if (tabName === "custom") {
-      const history = accountWallet.getCustomTokenTrxByTokenID(tokenId);
+      const history = accountWallet.getCustomTokenTxByTokenID(tokenId);
       dispatch({ type: "SET_HISTORY", history });
     }
   }

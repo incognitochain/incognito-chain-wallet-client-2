@@ -141,7 +141,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
         toastr.warning("Balance is zero!");
       }
       rpcClientService
-        .getEstimateFee(
+        .getEstimateFeeService(
           account.PaymentAddress,
           state.toAddress,
           Number(state.amount) * 100,
