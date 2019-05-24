@@ -26,22 +26,23 @@ export async function loadWallet() {
   console.log("Wallet when load wallet:", Wallet);
   console.time("loadWallet");
   const passphrase = getPassphrase();
+
+  console.log(" aaaaaaaa passphrase: ", passphrase);
   let wallet = new Wallet();
   wallet.Storage = localforage;
 
   await wallet.loadWallet(passphrase);
-  console.log("Load Wallet", wallet.MasterAccount.child);
-
-  // update status history
-  updateStatusHistory(wallet);
-
-  wallet.updateSpendingList();
 
   if (wallet.Name) {
     console.timeEnd("loadWallet");
+    wallet.Storage = localforage;
+    // update status history
+    await updateStatusHistory(wallet);
+    wallet.updateSpendingList();
     return wallet;
   }
   console.timeEnd("loadWallet");
+
   return false;
 }
 
@@ -78,6 +79,7 @@ export function saveWallet(wallet) {
 export async function updateStatusHistory(wallet) {
   console.log("UPDATING HISTORY STATUS....");
   await wallet.updateStatusHistory();
+  console.log("wallet.Storage", wallet.Storage);
   wallet.save(getPassphrase());
 }
 

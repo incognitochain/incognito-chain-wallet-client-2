@@ -87,7 +87,7 @@ class CreateToken extends React.Component {
 
   componentDidMount() {
     this.autoFocus();
-    this.getEstimateFeeService();
+    this.getEstimateFee();
     if (!this.props.isCreate) {
       this.reloadBalance();
     }
