@@ -11,7 +11,6 @@
     "@material-ui/styles": "^3.0.0-alpha.10",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
-    "constant-chain-web-js": "git://github.com/constant-money/constant-chain-web-js.git#20190520_1",
     "crypto-js": "^3.1.9-1",
     "electron": "^5.0.1",
     "electron-dl": "^1.14.0",

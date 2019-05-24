@@ -13,6 +13,15 @@ import {
 function loadBalance(wallet, accountName) {
   let balance = getAccountBalance(accountName);
   if (balance == -1) {
+    console.log("wallet when load balance: ", wallet);
+    console.log("accountName when load balance: ", accountName);
+
+    // let accountWallet = wallet.getAccountByName(accountName);
+    // console.log("accountWallet when load balance: ", accountWallet)
+    // let balance = accountWallet.getBalance();
+    // saveAccountBalance(balance, accountName);
+    // return [accountName, balance];
+
     return wallet
       .getAccountByName(accountName)
       .getBalance()
