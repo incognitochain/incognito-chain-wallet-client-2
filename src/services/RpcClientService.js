@@ -38,8 +38,6 @@ export async function getEstimateFeeService(
       to,
       amount,
       privateKey,
-      null,
-      null,
       accountWallet,
       isPrivacy,
       getRpcClient()

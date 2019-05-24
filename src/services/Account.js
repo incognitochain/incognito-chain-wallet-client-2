@@ -5,7 +5,14 @@ import { getActiveShard } from "./RpcClientService";
 export default class Account {
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
     // console.log("Wallet when import account: ", wallet);
-    let account = wallet.importAccount(privakeyStr, accountName, passPhrase);
+
+    let account;
+    try {
+      account = wallet.importAccount(privakeyStr, accountName, passPhrase);
+    } catch (e) {
+      console.log("Error when importing account: ", e);
+      return false;
+    }
 
     if (account.isImport === false) {
       console.log("Account is not imported");
