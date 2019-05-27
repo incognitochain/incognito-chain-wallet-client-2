@@ -39,11 +39,27 @@ export async function loadWallet() {
     // update status history
     await updateStatusHistory(wallet);
     wallet.updateSpendingList();
+
+    // console.log("wallet.MasterAccount.child[0].spentCoinCached: ", wallet.MasterAccount.child[0].spentCoinCached);
+    // console.log("wallet.MasterAccount.child[1].spentCoinCached: ", wallet.MasterAccount.child[1].spentCoinCached);
+    // console.log("wallet.MasterAccount.child[2].spentCoinCached: ", wallet.MasterAccount.child[2].spentCoinCached);
+    console.log("HHHHH Wallet after loading: ", wallet);
     return wallet;
   }
   console.timeEnd("loadWallet");
 
   return false;
+}
+
+export async function loadAccountCached(wallet) {
+  console.log("Loading account cached................................");
+
+  let password = getPassphrase();
+  await wallet.MasterAccount.loadAccountCached(password);
+
+  for (let i = 0; i < wallet.MasterAccount.child.length; i++) {
+    await wallet.MasterAccount.child[i].loadAccountCached(password);
+  }
 }
 
 export async function initWallet() {
