@@ -313,7 +313,7 @@ class CreateToken extends React.Component {
         );
       }
 
-      console.log("response send privacy custom token: ", response);
+      console.log("response send token: ", response);
 
       if (response.err != null) {
         toastr.error(

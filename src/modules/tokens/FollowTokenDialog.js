@@ -77,7 +77,7 @@ export function FollowTokenDialog({
     dispatch({ type: "RESET" });
     if (tabName === "privacy") {
       const result = await rpcClientService.listPrivacyTokens();
-      dispatch({ type: "SET_TOKENS", tokens: result.listCustomToken });
+      dispatch({ type: "SET_TOKENS", tokens: result.listPrivacyToken });
     } else if (tabName === "custom") {
       const result = await rpcClientService.listCustomTokens();
       dispatch({ type: "SET_TOKENS", tokens: result.listCustomToken });
