@@ -199,8 +199,8 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
       return;
     }
 
-    if (Number(fee) < 0.01) {
-      toastr.warning("Fee must be at least 0.01 constant!");
+    if (Number(fee) < 0) {
+      toastr.warning("Fee must be at least 0 constant!");
       return;
     } else {
       if (Number(fee) < minFee) {
@@ -269,8 +269,8 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
         toastr.warning("Amount must be at least 0.01 constant!");
       }
     } else if (name === "fee") {
-      if (Number(e.target.value) < 0.01) {
-        toastr.warning("Fee must be at least 0.01 constant!");
+      if (Number(e.target.value) < 0) {
+        toastr.warning("Fee must be at least 0 constant!");
       } else {
         if (Number(e.target.value) < state.minFee) {
           toastr.warning("Fee must be greater than min fee!");
