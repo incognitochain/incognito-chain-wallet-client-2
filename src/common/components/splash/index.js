@@ -144,7 +144,7 @@ const SplashScreen = () => {
       <Round />
       <TextContainer>
         <StatusText />
-        <Title>Constant Wallet</Title>
+        <Title>Incognito Wallet</Title>
       </TextContainer>
     </Container>
   );

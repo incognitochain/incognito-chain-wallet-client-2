@@ -13,6 +13,7 @@ import {
 import { OptionMenu } from "@src/common/components/popover-menu/OptionMenu";
 import { hashToIdenticon } from "@src/services/RpcClientService";
 import Dialog from "@src/components/core/Dialog";
+import constants from "../../constants";
 
 const url = `${process.env.CONSTANT_EXPLORER}/tx/`;
 
@@ -37,6 +38,7 @@ export function HistoryItem({ history, onSendConstant }) {
         setIdenticon(res[0]);
       }
     }
+
     getIdenticon();
   }, []);
 
@@ -135,7 +137,7 @@ export function HistoryItem({ history, onSendConstant }) {
             {history.tokenName
               ? formatTokenAmount(history.amount)
               : formatConstantBalance(history.amount)}{" "}
-            {history.tokenName ? history.tokenName : "CONST"}
+            {history.tokenName ? history.tokenName : constants.NATIVE_COIN}
           </Right>
         </Row2>
 

@@ -93,7 +93,7 @@ export const HeaderSelectedAccount = () => {
   return (
     <div className="selectedAccount">
       <span className="selectedAccountName">{account.name}</span>
-      {/*({renderValue(balance)} CONST)*/}
+      {/*({renderValue(balance)} constants.NATIVE_COIN)*/}
     </div>
   );
 };
