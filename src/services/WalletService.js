@@ -51,15 +51,8 @@ export async function loadWallet() {
   return false;
 }
 
-export async function loadAccountCached(wallet) {
-  console.log("Loading account cached................................");
-
-  let password = getPassphrase();
-  await wallet.MasterAccount.loadAccountCached(password);
-
-  for (let i = 0; i < wallet.MasterAccount.child.length; i++) {
-    await wallet.MasterAccount.child[i].loadAccountCached(password);
-  }
+export async function loadAccountsCached(wallet, accName = null) {
+  await wallet.loadAccountsCached(accName);
 }
 
 export async function initWallet() {

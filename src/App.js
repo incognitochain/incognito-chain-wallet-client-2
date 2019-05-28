@@ -57,7 +57,7 @@ const App = ({ history, location }) => {
 
       if (wallet) {
         dispatch({ type: "SET_WALLET", wallet });
-        await walletService.loadAccountCached(wallet);
+        await walletService.loadAccountsCached(wallet);
         listAccounts(wallet);
       } else {
         promptPassword();
