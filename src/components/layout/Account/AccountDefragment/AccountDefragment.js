@@ -26,6 +26,7 @@ import {
   clearAccountBalance
 } from "@src/services/CacheAccountBalanceService";
 import { formatConstantBalance } from "@src/common/utils/format";
+import constants from "../../../../constants";
 
 const styles = theme => ({
   textField: {
@@ -318,7 +319,8 @@ function AccountDefragment({ classes, isOpen }) {
         </div>
         <div className="col-sm">
           <div className="text-right">
-            Balance: {balance ? formatConstantBalance(balance) : 0} CONST
+            Balance: {balance ? formatConstantBalance(balance) : 0}{" "}
+            {constants.NATIVE_COIN}
           </div>
         </div>
       </div>

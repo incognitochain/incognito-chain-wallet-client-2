@@ -2,6 +2,7 @@ import React from "react";
 import { truncLongText, formatDate } from "@src/common/utils/format";
 import { BigDate } from "./styled";
 import CompletedInfo, { STATUS } from "./index";
+import constants from "../../../constants";
 
 const SendCoinInfo = ({
   onClose,
@@ -17,7 +18,10 @@ const SendCoinInfo = ({
     type={txId ? STATUS.SUCCESSED : STATUS.FAILED}
   >
     <span>
-      Amount: <b>{Number(amount) || 0} CONST</b>
+      Amount:{" "}
+      <b>
+        {Number(amount) || 0} {constants.NATIVE_COIN}
+      </b>
     </span>
     <span>To: {truncLongText(toAddress)}</span>
     <span>Tx ID: {truncLongText(txId)}</span>
