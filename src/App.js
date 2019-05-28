@@ -57,6 +57,7 @@ const App = ({ history, location }) => {
 
       if (wallet) {
         dispatch({ type: "SET_WALLET", wallet });
+        await walletService.loadAccountsCached(wallet);
         listAccounts(wallet);
       } else {
         promptPassword();
@@ -90,7 +91,7 @@ const App = ({ history, location }) => {
         accountList = (await wallet.listAccount()).map(account => {
           return {
             default: false,
-            name: account["Account Name"],
+            name: account.AccountName,
             value: -1,
             PaymentAddress: account.PaymentAddress,
             ReadonlyKey: account.ReadonlyKey,

@@ -26,23 +26,33 @@ export async function loadWallet() {
   console.log("Wallet when load wallet:", Wallet);
   console.time("loadWallet");
   const passphrase = getPassphrase();
+
+  console.log(" aaaaaaaa passphrase: ", passphrase);
   let wallet = new Wallet();
   wallet.Storage = localforage;
 
   await wallet.loadWallet(passphrase);
-  console.log("Load Wallet", wallet.MasterAccount.child);
-
-  // update status history
-  updateStatusHistory(wallet);
-
-  wallet.updateSpendingList();
 
   if (wallet.Name) {
     console.timeEnd("loadWallet");
+    wallet.Storage = localforage;
+    // update status history
+    await updateStatusHistory(wallet);
+    wallet.updateSpendingList();
+
+    // console.log("wallet.MasterAccount.child[0].spentCoinCached: ", wallet.MasterAccount.child[0].spentCoinCached);
+    // console.log("wallet.MasterAccount.child[1].spentCoinCached: ", wallet.MasterAccount.child[1].spentCoinCached);
+    // console.log("wallet.MasterAccount.child[2].spentCoinCached: ", wallet.MasterAccount.child[2].spentCoinCached);
+    console.log("HHHHH Wallet after loading: ", wallet);
     return wallet;
   }
   console.timeEnd("loadWallet");
+
   return false;
+}
+
+export async function loadAccountsCached(wallet, accName = null) {
+  await wallet.loadAccountsCached(accName);
 }
 
 export async function initWallet() {
@@ -78,6 +88,7 @@ export function saveWallet(wallet) {
 export async function updateStatusHistory(wallet) {
   console.log("UPDATING HISTORY STATUS....");
   await wallet.updateStatusHistory();
+  console.log("wallet.Storage", wallet.Storage);
   wallet.save(getPassphrase());
 }
 

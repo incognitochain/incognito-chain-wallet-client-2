@@ -1,4 +1,10 @@
-import { Wallet, RpcClient } from "constant-chain-web-js/build/wallet";
+import {
+  Wallet,
+  RpcClient,
+  getEstimateFee,
+  getEstimateFeeForSendingToken,
+  getEstimateFeeToDefragment
+} from "constant-chain-web-js/build/wallet";
 
 function getRpcClient() {
   return Wallet.RpcClient;
@@ -16,7 +22,7 @@ export function listPrivacyTokens() {
   return getRpcClient().listPrivacyCustomTokens();
 }
 
-export async function getEstimateFee(
+export async function getEstimateFeeService(
   from,
   to,
   amount,
@@ -27,15 +33,14 @@ export async function getEstimateFee(
   console.log("Estimating fee ...");
   let fee;
   try {
-    fee = await getRpcClient().getEstimateFee(
+    fee = await getEstimateFee(
       from,
       to,
       amount,
       privateKey,
-      null,
-      null,
       accountWallet,
-      isPrivacy
+      isPrivacy,
+      getRpcClient()
     );
   } catch (e) {
     throw e;
@@ -43,7 +48,7 @@ export async function getEstimateFee(
   return fee;
 }
 
-export async function getEstimateFeeForSendingToken(
+export async function getEstimateFeeForSendingTokenService(
   from,
   to,
   amount,
@@ -60,13 +65,14 @@ export async function getEstimateFeeForSendingToken(
 
   let fee;
   try {
-    fee = await getRpcClient().getEstimateFeeForSendingToken(
+    fee = await getEstimateFeeForSendingToken(
       from,
       to,
       amount,
       tokenObject,
       privateKey,
-      account
+      account,
+      getRpcClient()
     );
   } catch (e) {
     throw e;
@@ -74,7 +80,7 @@ export async function getEstimateFeeForSendingToken(
   return fee;
 }
 
-export async function getEstimateFeeToDefragment(
+export async function getEstimateFeeToDefragmentService(
   from,
   amount,
   privateKey,
@@ -84,12 +90,13 @@ export async function getEstimateFeeToDefragment(
   console.log("Estimating fee ...");
   let fee;
   try {
-    fee = await getRpcClient().getEstimateFeeToDefragment(
+    fee = await getEstimateFeeToDefragment(
       from,
       amount,
       privateKey,
       accountWallet,
-      isPrivacy
+      isPrivacy,
+      getRpcClient()
     );
   } catch (e) {
     throw e;
@@ -115,9 +122,6 @@ export async function getActiveShard() {
     throw e;
   }
 
-  if (resp.err != null) {
-    throw resp.err;
-  }
   return resp.shardNumber;
 }
 
@@ -129,9 +133,6 @@ export async function getMaxShardNumber() {
     throw e;
   }
 
-  if (resp.err != null) {
-    throw resp.err;
-  }
   return resp.shardNumber;
 }
 
@@ -140,13 +141,8 @@ export async function hashToIdenticon(hashStrs) {
   try {
     resp = await getRpcClient().hashToIdenticon(hashStrs);
   } catch (e) {
-    console.log("Error 1: ", e);
     throw e;
   }
 
-  if (resp.err != null) {
-    console.log("Error 2: ", resp.err);
-    throw resp.err;
-  }
   return resp.images;
 }

@@ -57,6 +57,7 @@ export default class Token {
 
       // saving KeyWallet
       await wallet.save(getPassphrase());
+      console.log("HHHHHH Wallet after createSendCustomToken : ", wallet);
     } catch (e) {
       throw e;
     }

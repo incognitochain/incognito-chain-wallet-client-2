@@ -72,8 +72,8 @@ class CreateToken extends React.Component {
         toastr.warning("Amount must be less than ", MaxUint64);
       }
     } else if (name === "fee") {
-      if (Number(e.target.value) < 0.01) {
-        toastr.warning("Fee must be at least 0.01 constant!");
+      if (Number(e.target.value) < 0) {
+        toastr.warning("Fee must be at least 0 constant!");
       } else {
         if (Number(e.target.value) < this.state.minFee) {
           toastr.warning("Fee must be greater than min fee!");
@@ -149,7 +149,7 @@ class CreateToken extends React.Component {
           console.log("Estimate feeeeeeeee");
           this.setState({ isLoadingEstimationFee: true });
           return rpcClientService
-            .getEstimateFeeForSendingToken(
+            .getEstimateFeeForSendingTokenService(
               this.props.account.PaymentAddress,
               toAddress,
               amount,
@@ -313,7 +313,7 @@ class CreateToken extends React.Component {
         );
       }
 
-      console.log("response send privacy custom token: ", response);
+      console.log("response send token: ", response);
 
       if (response.err != null) {
         toastr.error(

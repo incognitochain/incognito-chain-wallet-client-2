@@ -1753,7 +1753,12 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.12.2.tgz#d7f302e74b10e9801d52852137f652d9ee235da8"
   integrity sha512-c82MtnqWB/CqqK7/zit74Ob8H1dBdV7bK+BcErwtXbe0+nUGkgzq5NTDmRW/pAv2lFtmeNmW95b0zK2hxpeklg==
 
-"@types/node@^8.0.24", "@types/node@^8.10.11":
+"@types/node@^10.12.18":
+  version "10.14.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.14.7.tgz#1854f0a9aa8d2cd6818d607b3d091346c6730362"
+  integrity sha512-on4MmIDgHXiuJDELPk1NFaKVUxxCFr37tm8E9yN6rAiF5Pzp/9bBfBHkoexqRiY+hk/Z04EJU9kKEb59YqJ82A==
+
+"@types/node@^8.10.11":
   version "8.10.45"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.45.tgz#4c49ba34106bc7dced77ff6bae8eb6543cde8351"
   integrity sha512-tGVTbA+i3qfXsLbq9rEq/hezaHY55QxQLeXQL2ejNgFAxxrgu8eMmYIOsRcl7hN1uTLVsKOOYacV/rcJM3sfgQ==
@@ -4402,12 +4407,11 @@ console-stream@^0.1.1:
   resolved "https://registry.yarnpkg.com/console-stream/-/console-stream-0.1.1.tgz#a095fe07b20465955f2fafd28b5d72bccd949d44"
   integrity sha1-oJX+B7IEZZVfL6/Si11yvM2UnUQ=
 
-"constant-chain-web-js@git://github.com/constant-money/constant-chain-web-js":
+"constant-chain-web-js@git://github.com/constant-money/constant-chain-web-js.git#20190528_2":
   version "1.0.0"
-  resolved "git://github.com/constant-money/constant-chain-web-js#615cf106506eb328bfe1374d4a8f5f301ededab9"
+  resolved "git://github.com/constant-money/constant-chain-web-js.git#ef41381c70bca06e55175ad0ba234efa0dd73f74"
   dependencies:
     big-integer "^1.6.42"
-    identicon.js "^2.3.3"
     privacy-js-lib "git://github.com/constant-money/privacy-js-lib.git"
 
 constants-browserify@^1.0.0:
@@ -5613,10 +5617,10 @@ ejs@^2.6.1:
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.6.1.tgz#498ec0d495655abc6f23cd61868d926464071aa0"
   integrity sha512-0xy4A/twfrRCnkhfk8ErDi5DqdAsAqeGxht4xkCUrsvhhbQNs7E+4jV0CN7+NKIY0aHE72+XvqtBIXzD31ZbXQ==
 
-electron-dl@^1.12.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/electron-dl/-/electron-dl-1.13.0.tgz#410981363fcee6909860acfd2b376f31ce0faa59"
-  integrity sha512-0sg/g7zOuH5TABWSgsqFB275jbRCkIxYq6Nz1lFqMQP/Z93EF2mOo+RPNL1CyFH0dEZLFOvPgwmSMqiPICVOyQ==
+electron-dl@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/electron-dl/-/electron-dl-1.14.0.tgz#1466f1b945664ca3d784268307c2b935728177bf"
+  integrity sha512-4okyei42a1mLsvLK7hLrIfd20EQzB18nIlLTwBV992aMSmTGLUEFRTmO1MfSslGNrzD8nuPuy1l/VxO8so4lig==
   dependencies:
     ext-name "^5.0.0"
     pupa "^1.0.0"
@@ -5642,12 +5646,12 @@ electron-to-chromium@^1.3.103, electron-to-chromium@^1.3.122, electron-to-chromi
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.122.tgz#b32a0805f48557bd3c3b8104eadc7fa511b14a9a"
   integrity sha512-3RKoIyCN4DhP2dsmleuFvpJAIDOseWH88wFYBzb22CSwoFDSWRc4UAMfrtc9h8nBdJjTNIN3rogChgOy6eFInw==
 
-electron@^3.0.9:
-  version "3.1.8"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-3.1.8.tgz#01b0b147dfcca47967ff07dbf72bf5e96125a2ac"
-  integrity sha512-1MiFoMzxGaR0wDfwFE5Ydnuk6ry/4lKgF0c+NFyEItxM/WyEHNZPNjJAeKJ+M/0sevmZ+6W4syNZnQL5M3GgsQ==
+electron@^5.0.1:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.2.tgz#0f6b38ae7e344b94f433d9171e50568f56962fc7"
+  integrity sha512-bUHKQhyuOen/q8iHTkrnzqB9CAwBDI+vHbeu21kpq2bqAD+t25yfrmUEcYHaPL4fZOAhk6nnRqskF6/Xd+aZxg==
   dependencies:
-    "@types/node" "^8.0.24"
+    "@types/node" "^10.12.18"
     electron-download "^4.1.0"
     extract-zip "^1.0.3"
 
@@ -7710,11 +7714,6 @@ icss-utils@^4.1.0:
   integrity sha512-3DEun4VOeMvSczifM3F2cKQrDQ5Pj6WKhkOq6HD4QTnDUAq8MQRxy5TX6Sy1iY6WPBe4gQ3p5vTECjbIkglkkQ==
   dependencies:
     postcss "^7.0.14"
-
-identicon.js@^2.3.3:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/identicon.js/-/identicon.js-2.3.3.tgz#c505b8d60ecc6ea13bbd991a33964c44c1ad60a1"
-  integrity sha512-/qgOkXKZ7YbeCYbawJ9uQQ3XJ3uBg9VDpvHjabCAPp6aRMhjLaFAxG90+1TxzrhKaj6AYpVGrx6UXQfQA41UEA==
 
 identity-obj-proxy@3.0.0:
   version "3.0.0"
