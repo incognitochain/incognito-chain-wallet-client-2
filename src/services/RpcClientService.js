@@ -54,7 +54,8 @@ export async function getEstimateFeeForSendingTokenService(
   amount,
   tokenObject,
   privateKey,
-  account
+  account,
+  isPrivacyForPrivateToken
 ) {
   console.log("getEstimateFeeForSendingToken");
   console.log("\tfrom:" + from);
@@ -72,7 +73,8 @@ export async function getEstimateFeeForSendingTokenService(
       tokenObject,
       privateKey,
       account,
-      getRpcClient()
+      getRpcClient(),
+      isPrivacyForPrivateToken
     );
   } catch (e) {
     throw e;

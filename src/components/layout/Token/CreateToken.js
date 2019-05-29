@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, Button } from "@material-ui/core";
+import { TextField, Button, Checkbox } from "@material-ui/core";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Token from "../../../services/Token";
 import { fromEvent, combineLatest } from "rxjs";
@@ -23,7 +23,7 @@ import detectBrowser from "@src/services/BrowserDetect";
 import QRScanner from "@src/common/components/qrScanner";
 import { Loading } from "../../../common/components/loading/Loading";
 import Account from "../../../services/Account";
-import { formatTokenAmount, formatDate } from "@src/common/utils/format";
+import { formatTokenAmount } from "@src/common/utils/format";
 
 const MaxUint64 = 18446744073709551615;
 
@@ -40,6 +40,7 @@ class CreateToken extends React.Component {
       fee: "0.5",
       minFee: "",
       balance: -1,
+      isPrivacy: "1",
 
       submitParams: [],
       showCompletedInfo: false,
@@ -53,7 +54,13 @@ class CreateToken extends React.Component {
     if (name === "amount") {
       return this.setState({ [name]: Number.parseInt(e.target.value) });
     }
+
+    if (name === "isPrivacy") {
+      return this.setState({ [name]: e.target.value === "0" ? "1" : "0" });
+    }
+
     this.setState({ [name]: e.target.value });
+    console.log("CreateToken state: ", this.state);
   };
 
   onValidate = name => e => {
@@ -84,6 +91,7 @@ class CreateToken extends React.Component {
 
   toAddressRef = React.createRef();
   amountRef = React.createRef();
+  isPrivacyRef = React.createRef();
 
   componentDidMount() {
     this.autoFocus();
@@ -134,6 +142,7 @@ class CreateToken extends React.Component {
       distinctUntilChanged(),
       startWith(this.state.amount)
     );
+
     const accountWallet = this.props.wallet.getAccountByName(
       this.props.account.name
     );
@@ -148,6 +157,12 @@ class CreateToken extends React.Component {
           }
           console.log("Estimate feeeeeeeee");
           this.setState({ isLoadingEstimationFee: true });
+          let isPrivacy = false;
+
+          if (this.props.type === 0) {
+            isPrivacy = this.state.isPrivacy === "1";
+          }
+          console.log("HHHH isPrivacy when get estimate fee: ", isPrivacy);
           return rpcClientService
             .getEstimateFeeForSendingTokenService(
               this.props.account.PaymentAddress,
@@ -155,7 +170,8 @@ class CreateToken extends React.Component {
               amount,
               this.getRequestTokenObject(),
               this.props.account.PrivateKey,
-              accountWallet
+              accountWallet,
+              isPrivacy
             )
             .catch(e => {
               console.error(e);
@@ -207,6 +223,7 @@ class CreateToken extends React.Component {
       }
     };
   };
+
   handleSubmit = event => {
     event.preventDefault();
     const { privateKey, isCreate, balance } = this.props;
@@ -277,11 +294,12 @@ class CreateToken extends React.Component {
       throw e;
     }
   };
-  createSendPrivacyTokenTransaction = async (params, fee) => {
+  createSendPrivacyTokenTransaction = async (params, fee, isPrivacy) => {
     try {
       let response = await Token.createSendPrivacyCustomTokenTransaction(
         params,
         Number(fee) * 100,
+        isPrivacy,
         this.props.account,
         this.props.wallet
       );
@@ -298,13 +316,15 @@ class CreateToken extends React.Component {
     try {
       // isCreate = true: init token, else: send token
       const { type } = this.props;
-      const { submitParams, fee } = this.state;
+      const { submitParams, fee, isPrivacy } = this.state;
+      const isPrivacyForToken = isPrivacy === "1";
       //  if type = 0: privacy custom token, else: custom token
       let response;
       if (type === 0) {
         response = await this.createSendPrivacyTokenTransaction(
           submitParams[3],
-          fee
+          fee,
+          isPrivacyForToken
         );
       } else {
         response = await this.createSendCustomTokenTransaction(
@@ -381,6 +401,34 @@ class CreateToken extends React.Component {
       </div>
     );
   }
+
+  renderIsPrivacyCheckbox() {
+    const { type } = this.props;
+
+    if (type === 0) {
+      return (
+        <div className="row">
+          <div className="col-sm">
+            <div>
+              <Checkbox
+                label="Is Privacy"
+                id="isPrivacy"
+                name="isPrivacy"
+                checked={this.state.isPrivacy === "1" ? true : false}
+                value={this.state.isPrivacy}
+                onChange={this.onChangeInput("isPrivacy")}
+                color="primary"
+                inputProps={{ ref: this.isPrivacyRef }}
+              />
+              Is Privacy
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  }
   renderForm() {
     return (
       <form onSubmit={this.handleSubmit}>
@@ -396,6 +444,8 @@ class CreateToken extends React.Component {
           variant="outlined"
           value={this.props.account.PaymentAddress}
         />
+
+        {this.renderIsPrivacyCheckbox()}
 
         <ToAddressWrapper>
           <TextField
