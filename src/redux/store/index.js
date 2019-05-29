@@ -1,3 +1,4 @@
-import store from './store';
+import store, { history } from './store';
 
 export default store;
+export { history };
