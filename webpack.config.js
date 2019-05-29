@@ -108,7 +108,7 @@ const clientModule = {
       },
     },
     {
-      test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|raw)$/i,
+      test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|raw|webp)$/i,
       use: [
         {
           loader: 'url-loader',

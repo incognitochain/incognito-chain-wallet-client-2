@@ -51,7 +51,7 @@ const Splash = ({ history, reloadWallet, initWalletAction }) => {
           openSnackbar({ message: 'Your wallet was loaded', type: 'success' });
         }
 
-        history?.push(routeName.Home);
+        history?.replace(routeName.Home);
       } catch (e) {
         openSnackbar({ message: e?.message, type: 'error' });
       }
