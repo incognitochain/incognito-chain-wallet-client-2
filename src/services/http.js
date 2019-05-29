@@ -1,7 +1,7 @@
-import axios from "axios";
-import CONFIG from "@src/constants";
+import axios from 'axios';
+import CONFIG from '@src/constants/config';
 
-const HEADERS = { "Content-Type": "application/json" };
+const HEADERS = {'Content-Type': 'application/json'};
 const TIMEOUT = 1000;
 
 export default axios.create({
@@ -21,3 +21,4 @@ export default axios.create({
     axios#patch(url[, data[, config]])
     axios#getUri([config])
  */
+

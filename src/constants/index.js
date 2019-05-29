@@ -1,4 +1,3 @@
-export default {
-  API_BASE_URL: process.env.API_BASE_URL,
-  NATIVE_COIN: "PRV"
-};
+export { default as CONSTANT_KEYS } from './keys';
+export { default as CONSTANT_CONFIGS } from './config';
+export { default as CONSTANT_COMMONS } from './common';

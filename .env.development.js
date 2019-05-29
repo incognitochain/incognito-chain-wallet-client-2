@@ -1,7 +1,7 @@
 module.exports = {
-  INLINE_RUNTIME_CHUNK: 'false',
-  NODE_PATH: 'src /',
-  CONSTANT_EXPLORER: 'http://test-explorer.incognito.org',
+  API_BASE_URL: '',
+  PASSWORD_SECRET_KEY: 'FJexuTITEw',
   SHARD_ID: null,
-  API_BASE_URL: 'http://local.com'
-}
+  EXPLORER_CONSTANT_CHAIN_URL: 'http://test-explorer.incognito.org',
+  DEFAULT_PASSPHRASE: '0x0x0x'
+};

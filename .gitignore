@@ -8,3 +8,5 @@ build.crx
 build.pem
 dist
 .yarnclean
+.env.development.js
+.env.production.js
