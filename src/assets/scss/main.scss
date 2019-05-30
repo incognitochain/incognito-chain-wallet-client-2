@@ -1,5 +1,11 @@
 @import 'font';
 
-html, body {
+html, body, div#root-app {
   min-width: 400px;
+  height: 100%;
+}
+
+img {
+  height: auto;
+  width: 100%;
 }
