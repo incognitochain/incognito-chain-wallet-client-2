@@ -1,3 +1,7 @@
+import privacyIcon from '@src/assets/image/icon/icons-privacy.webp';
+import btcIcon from '@src/assets/image/icon/icons-btc.webp';
+import ethIcon from '@src/assets/image/icon/icons-eth.webp';
+
 const NAME = {
   pETH: 'pETH',
   pBTC: 'pBTC',
@@ -9,19 +13,22 @@ const DATA = {
     fullName: 'Private ETH',
     typeName: 'Ethereum',
     symbol: 'pETH',
-    icon: null
+    name: 'pETH',
+    icon: ethIcon
   },
   [NAME.pBTC]: {
     fullName: 'Private BTC',
     typeName: 'Bitcoin',
     symbol: 'pBTC',
-    icon: null
+    name: 'pBTC',
+    icon: btcIcon
   },
   [NAME.PRV]: {
     fullName: 'Privacy',
     typeName: 'Incognito',
     symbol: 'PRV',
-    icon: null
+    name: 'PRV',
+    icon: privacyIcon
   }
 };
 
