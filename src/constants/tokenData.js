@@ -2,28 +2,28 @@ import privacyIcon from '@src/assets/image/icon/icons-privacy.webp';
 import btcIcon from '@src/assets/image/icon/icons-btc.webp';
 import ethIcon from '@src/assets/image/icon/icons-eth.webp';
 
-const NAME = {
+const SYMBOL = {
   pETH: 'pETH',
   pBTC: 'pBTC',
   PRV: 'PRV'
 };
 
 const DATA = {
-  [NAME.pETH]: {
+  [SYMBOL.pETH]: {
     fullName: 'Private ETH',
     typeName: 'Ethereum',
     symbol: 'pETH',
     name: 'pETH',
     icon: ethIcon
   },
-  [NAME.pBTC]: {
+  [SYMBOL.pBTC]: {
     fullName: 'Private BTC',
     typeName: 'Bitcoin',
     symbol: 'pBTC',
     name: 'pBTC',
     icon: btcIcon
   },
-  [NAME.PRV]: {
+  [SYMBOL.PRV]: {
     fullName: 'Privacy',
     typeName: 'Incognito',
     symbol: 'PRV',
@@ -33,5 +33,5 @@ const DATA = {
 };
 
 export default {
-  DATA, NAME
+  DATA, SYMBOL
 };
