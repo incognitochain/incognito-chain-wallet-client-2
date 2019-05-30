@@ -4,16 +4,25 @@ import { connect } from 'react-redux';
 import accountService from '@src/services/wallet/Account';
 import { openSnackbar } from '@src/components/core/Snackbar';
 import { setBulkToken, getBalance } from '@src/redux/actions/token';
+import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import Home from './Home';
 
 class HomeContainer extends Component {
   componentDidMount() {
+    const { account } = this.props;
+
     this.getFollowingToken();
+    this.getAccountBalance(account);
   }
 
   getTokenBalance = token => {
     const { getBalance } = this.props;
     getBalance(token);
+  }
+
+  getAccountBalance = account => {
+    const { getAccountBalance } = this.props;
+    getAccountBalance(account);
   }
 
   getFollowingToken = async () => {
@@ -28,9 +37,9 @@ class HomeContainer extends Component {
   }
 
   render() {
-    const { account, tokens } = this.props;
+    const { account, tokens, isGettingBalanceList } = this.props;
     return (
-      <Home account={account} tokens={tokens} />
+      <Home account={account} tokens={tokens} isGettingBalanceList={isGettingBalanceList} />
     );
   }
 }
@@ -38,17 +47,20 @@ class HomeContainer extends Component {
 const mapState = state => ({
   account: state.account.defaultAccount,
   wallet: state.wallet,
-  tokens: state.token.followed || []
+  tokens: state.token.followed || [],
+  isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]
 });
 
-const mapDispatch = { setBulkToken, getBalance };
+const mapDispatch = { setBulkToken, getBalance, getAccountBalance };
 
 HomeContainer.propTypes = {
+  isGettingBalanceList: PropTypes.array,
   tokens: PropTypes.array,
   account: PropTypes.object,
   wallet: PropTypes.object,
   setBulkToken: PropTypes.func.isRequired,
   getBalance: PropTypes.func.isRequired,
+  getAccountBalance: PropTypes.func.isRequired,
 };
 
 export default connect(mapState, mapDispatch)(HomeContainer);

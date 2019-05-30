@@ -2,7 +2,7 @@ class AccountModel {
   static fromJson = (data = {}) => ({
     default: false,
     name: data.AccountName,
-    value: -1,
+    amount: -1,
     paymentAddress: data.PaymentAddress,
     readonlyKey: data.ReadonlyKey,
     privateKey: data.PrivateKey,

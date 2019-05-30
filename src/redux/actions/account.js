@@ -78,7 +78,7 @@ export const getBalance = (account = throw new Error('Account object is required
     const balance = await accountService.getBalance(account, wallet);
     dispatch(setAccount({
       ...account,
-      value: balance
+      amount: balance
     }));
     
     return balance;

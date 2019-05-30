@@ -1,9 +1,11 @@
 import React from 'react';
 import TokenItem from './TokenItem';
 
-const ListToken = ({ tokens }) => {
-  return tokens.map(token => <TokenItem key={token.id} token={token} />);
+const ListToken = ({ tokens, isGettingBalanceList }) => {
+  return tokens.map(token => {
+    const isGettingBalance = isGettingBalanceList.includes(token.symbol);
+    return <TokenItem key={token.id} token={token} isGettingBalance={isGettingBalance} />;
+  });
 };
-
 
 export default ListToken;

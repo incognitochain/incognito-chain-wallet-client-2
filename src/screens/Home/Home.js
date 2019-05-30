@@ -31,12 +31,13 @@ const WhiteText = styled('span')(({ theme: { spacing } }) => ({
   marginBottom: spacing(1),
 }));
 
-const Home = ({ tokens, account }) => {
+const Home = ({ tokens, account, isGettingBalanceList }) => {
+  const isPrvLoadingBalance = isGettingBalanceList.includes(account.name);
   return (
     <Container>
       <ListWrapper>
-        <TokenItem token={{ name: TOKEN_DATA.SYMBOL.PRV, amount: account?.value }} />
-        <ListToken tokens={tokens} />
+        <TokenItem token={{ name: TOKEN_DATA.SYMBOL.PRV, amount: account?.amount }} isGettingBalance={isPrvLoadingBalance} />
+        <ListToken tokens={tokens} isGettingBalanceList={isGettingBalanceList} />
       </ListWrapper>
       <AddTokenWrapper>
         <WhiteText>Don’t see your token?</WhiteText>
@@ -47,6 +48,7 @@ const Home = ({ tokens, account }) => {
 };
 
 Home.propTypes = {
+  isGettingBalanceList: PropTypes.array,
   account: PropTypes.object,
   tokens: PropTypes.array
 };

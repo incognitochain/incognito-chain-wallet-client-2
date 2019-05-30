@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { styled } from '@material-ui/styles';
 import { CircularProgress } from '@material-ui/core';
 import { TOKEN_DATA } from '@src/constants';
@@ -85,10 +84,6 @@ const TokenItem = ({ token, isGettingBalance }) => {
   );
 };
 
-const mapState = (state, props) => ({
-  isGettingBalance: state.token.isGettingBalance?.includes(props?.token?.symbol)
-});
-
 TokenItem.defaultProps = {
   isGettingBalance: false
 };
@@ -98,4 +93,4 @@ TokenItem.propTypes = {
   isGettingBalance: PropTypes.bool
 };
 
-export default connect(mapState)(TokenItem);
+export default TokenItem;
