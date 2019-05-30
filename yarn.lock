@@ -2000,7 +2000,7 @@ console-polyfill@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/console-polyfill/-/console-polyfill-0.1.2.tgz#96cfed51caf78189f699572e6f18271dc37c0e30"
 
-"constant-chain-web-js@file:../constant-chain-web-js":
+constant-chain-web-js@/Users/autonomous/projects/constant-chain-web-js:
   version "1.0.0"
   dependencies:
     big-integer "^1.6.42"
