@@ -35,7 +35,7 @@ const Home = ({ tokens, account }) => {
   return (
     <Container>
       <ListWrapper>
-        <TokenItem token={{ name: TOKEN_DATA.NAME.PRV, amount: account?.value }} />
+        <TokenItem token={{ name: TOKEN_DATA.SYMBOL.PRV, amount: account?.value }} />
         <ListToken tokens={tokens} />
       </ListWrapper>
       <AddTokenWrapper>
