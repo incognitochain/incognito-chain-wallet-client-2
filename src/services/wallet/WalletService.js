@@ -1,6 +1,7 @@
 import { Wallet, RpcClient } from 'constant-chain-web-js/build/wallet';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import localforage from 'localforage';
+import accountModel from '@src/models/account';
 import { getPassphrase } from './PasswordService';
 import Server from './Server';
 import { getMaxShardNumber, getActiveShard } from './RpcClientService';
@@ -101,17 +102,7 @@ export function clearCache(wallet) {
 export async function loadListAccount(wallet) {
   try {
     const listAccountRaw = await wallet.listAccount() || [];
-    const listAccount = listAccountRaw.map(account => ({
-      default: false,
-      name: account['Account Name'],
-      value: -1,
-      PaymentAddress: account.PaymentAddress,
-      ReadonlyKey: account.ReadonlyKey,
-      PrivateKey: account.PrivateKey,
-      PublicKey: account.PublicKey,
-      PublicKeyCheckEncode: account.PublicKeyCheckEncode,
-      PublicKeyBytes: account.PublicKeyBytes
-    })) || [];
+    const listAccount = listAccountRaw.map(accountModel.fromJson) || [];
 
     const defaultAccountName = await accountService.getDefaultAccountName();
     const defaultAccountIndex = listAccount?.findIndex(_acc => _acc.name === defaultAccountName);

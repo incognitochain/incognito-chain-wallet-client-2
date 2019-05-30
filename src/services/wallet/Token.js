@@ -5,6 +5,7 @@ import {
   Wallet
 } from 'constant-chain-web-js/build/wallet';
 import { getPassphrase } from './PasswordService';
+import { listPrivacyTokens } from './RpcClientService';
 
 export default class Token {
   static async createSendCustomToken(submitParam, fee, account, wallet) {
@@ -99,5 +100,21 @@ export default class Token {
     await Wallet.resetProgressTx();
 
     return response;
+  }
+
+  static async getPrivacyTokens() {
+    try {
+      const data = await listPrivacyTokens();
+      
+      if (data?.err) {
+        throw data.err;
+      }
+
+      const tokens = data?.listPrivacyToken || [];
+
+      return tokens;
+    } catch (e) {
+      throw e;
+    }
   }
 }

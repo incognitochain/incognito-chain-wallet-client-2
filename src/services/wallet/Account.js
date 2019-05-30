@@ -1,5 +1,6 @@
 import { KeyWallet, Wallet } from 'constant-chain-web-js/build/wallet';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
+import tokenModel from '@src/models/token';
 import { getPassphrase } from './PasswordService';
 import { getActiveShard } from './RpcClientService';
 import localStorage from './localStore';
@@ -140,5 +141,27 @@ export default class Account {
 
   static saveDefaultAccountToStorage(accountName) {
     return localStorage.save(CONSTANT_KEYS.DEFAULT_ACCOUNT_NAME, accountName);
+  }
+
+  static async getBalance(account, wallet){
+    const indexAccount = wallet.getAccountIndexByName(account.name);
+    return await wallet.MasterAccount.child[
+      indexAccount
+    ].getBalance();
+  }
+
+  static async getFollowingTokens(account, wallet){
+    const indexAccount = wallet.getAccountIndexByName(account.name);
+    return wallet.MasterAccount.child[indexAccount].listFollowingTokens()?.map(tokenModel.fromJson);
+  }
+
+  static async addFollowingTokens(tokens, account, wallet){
+    const indexAccount = wallet.getAccountIndexByName(account.name);
+    await wallet.MasterAccount.child[indexAccount].addFollowingToken(...tokens);
+  }
+
+  static async removeFollowingToken(tokenId, account, wallet){
+    const indexAccount = wallet.getAccountIndexByName(account.name);
+    await wallet.MasterAccount.child[indexAccount].removeFollowingToken(tokenId);
   }
 }
