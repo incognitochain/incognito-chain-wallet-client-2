@@ -1,6 +1,7 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import colors from './color';
 import fonts from './font';
+import decors from './decor';
 
 const defaultFont = fonts.robotoMono;
 
@@ -8,6 +9,7 @@ export default createMuiTheme({
   defaultFont,
   colors,
   fonts,
+  decors,
   palette: {
     type: 'dark',
     background: {
