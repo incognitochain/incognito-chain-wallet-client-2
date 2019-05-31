@@ -13,7 +13,8 @@ const Container = styled('div')(({ theme: { spacing, colors, decors } }) => ({
   marginBottom: spacing(0.5),
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
+  cursor: 'pointer'
 }));
 
 const LoadingIcon = styled(CircularProgress)(({ theme: { colors } }) => ({
@@ -58,13 +59,16 @@ const SubText = styled('span')(({ theme: { colors } }) => ({
 
 const Balance = WhiteText;
 
-const TokenItem = ({ token, isGettingBalance }) => {
+const TokenItem = ({ token, isGettingBalance, onSelect }) => {
   const tokenData = TOKEN_DATA.DATA[token.name];
+  const handleSelectToken = () => {
+    typeof onSelect === 'function' && onSelect(token);
+  };
 
   if (!tokenData) return null;
 
   return (
-    <Container>
+    <Container onClick={handleSelectToken}>
       <Group side='left'>
         <Icon src={tokenData.icon} />
         <Info>
@@ -90,7 +94,8 @@ TokenItem.defaultProps = {
 
 TokenItem.propTypes = {
   token: PropTypes.object,
-  isGettingBalance: PropTypes.bool
+  isGettingBalance: PropTypes.bool,
+  onSelect: PropTypes.func
 };
 
 export default TokenItem;

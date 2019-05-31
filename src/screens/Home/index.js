@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import accountService from '@src/services/wallet/Account';
 import { openSnackbar } from '@src/components/core/Snackbar';
-import { setBulkToken, getBalance } from '@src/redux/actions/token';
+import { setBulkToken, getBalance, setDefaultToken } from '@src/redux/actions/token';
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import Home from './Home';
 
@@ -37,9 +37,9 @@ class HomeContainer extends Component {
   }
 
   render() {
-    const { account, tokens, isGettingBalanceList } = this.props;
+    const { account, tokens, isGettingBalanceList, setDefaultToken } = this.props;
     return (
-      <Home account={account} tokens={tokens} isGettingBalanceList={isGettingBalanceList} />
+      <Home account={account} tokens={tokens} isGettingBalanceList={isGettingBalanceList} onSelectToken={setDefaultToken} />
     );
   }
 }
@@ -51,7 +51,7 @@ const mapState = state => ({
   isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]
 });
 
-const mapDispatch = { setBulkToken, getBalance, getAccountBalance };
+const mapDispatch = { setBulkToken, getBalance, getAccountBalance, setDefaultToken };
 
 HomeContainer.propTypes = {
   isGettingBalanceList: PropTypes.array,
@@ -61,6 +61,7 @@ HomeContainer.propTypes = {
   setBulkToken: PropTypes.func.isRequired,
   getBalance: PropTypes.func.isRequired,
   getAccountBalance: PropTypes.func.isRequired,
+  setDefaultToken: PropTypes.func.isRequired,
 };
 
 export default connect(mapState, mapDispatch)(HomeContainer);
