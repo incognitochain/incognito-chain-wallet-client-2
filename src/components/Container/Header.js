@@ -2,10 +2,11 @@ import React from 'react';
 import { styled } from '@material-ui/styles';
 import menuIcon from '@src/assets/image/icon/icons-menu.webp';
 
-const Container = styled('div')(({ theme: { spacing } }) => ({
+const Container = styled('div')(({ theme: { spacing, decors } }) => ({
   display: 'flex',
   backgroundColor: 'transparent',
-  padding: spacing(1)
+  padding: spacing(1),
+  height: decors.headerHeight
 }));
 
 const MenuIcon = styled('img')({
