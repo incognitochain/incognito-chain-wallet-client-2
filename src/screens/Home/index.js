@@ -5,12 +5,12 @@ import accountService from '@src/services/wallet/Account';
 import { openSnackbar } from '@src/components/core/Snackbar';
 import { setBulkToken, getBalance, setDefaultToken } from '@src/redux/actions/token';
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
+import { openModal } from '@src/redux/actions/modal';
 import Home from './Home';
 
 class HomeContainer extends Component {
   componentDidMount() {
     const { account } = this.props;
-
     this.getFollowingToken();
     this.getAccountBalance(account);
   }
@@ -36,10 +36,27 @@ class HomeContainer extends Component {
     }
   }
 
+  handleSelectToken = (token) => {
+    if (!token) return;
+
+    const { setDefaultToken, openModal } = this.props;
+    setDefaultToken(token);
+    openModal({
+      component: () => `Open ${token.symbol} detail`,
+      title: token.name
+    });
+  }
+
   render() {
-    const { account, tokens, isGettingBalanceList, setDefaultToken } = this.props;
+    const { account, tokens, isGettingBalanceList, openModal } = this.props;
     return (
-      <Home account={account} tokens={tokens} isGettingBalanceList={isGettingBalanceList} onSelectToken={setDefaultToken} />
+      <Home
+        account={account}
+        tokens={tokens}
+        isGettingBalanceList={isGettingBalanceList}
+        onSelectToken={this.handleSelectToken}
+        openModal={openModal}
+      />
     );
   }
 }
@@ -51,7 +68,7 @@ const mapState = state => ({
   isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]
 });
 
-const mapDispatch = { setBulkToken, getBalance, getAccountBalance, setDefaultToken };
+const mapDispatch = { setBulkToken, getBalance, getAccountBalance, setDefaultToken, openModal };
 
 HomeContainer.propTypes = {
   isGettingBalanceList: PropTypes.array,
@@ -62,6 +79,7 @@ HomeContainer.propTypes = {
   getBalance: PropTypes.func.isRequired,
   getAccountBalance: PropTypes.func.isRequired,
   setDefaultToken: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
 };
 
 export default connect(mapState, mapDispatch)(HomeContainer);

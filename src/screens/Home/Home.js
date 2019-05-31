@@ -31,8 +31,15 @@ const WhiteText = styled('span')(({ theme: { spacing } }) => ({
   marginBottom: spacing(1),
 }));
 
-const Home = ({ tokens, account, isGettingBalanceList, onSelectToken }) => {
+const Home = ({ tokens, account, isGettingBalanceList, onSelectToken, openModal }) => {
   const isPrvLoadingBalance = isGettingBalanceList.includes(account.name);
+  const handleAddToken = () => {
+    openModal({
+      component: () => 'Add token',
+      title: 'Add token'
+    });
+  };
+  
   return (
     <Container>
       <ListWrapper>
@@ -45,7 +52,7 @@ const Home = ({ tokens, account, isGettingBalanceList, onSelectToken }) => {
       </ListWrapper>
       <AddTokenWrapper>
         <WhiteText>Don’t see your token?</WhiteText>
-        <Button>{'Add a token >'}</Button>
+        <Button onClick={handleAddToken}>{'Add a token >'}</Button>
       </AddTokenWrapper>
     </Container>
   );
