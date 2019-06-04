@@ -39,7 +39,7 @@ class CreateToken extends React.Component {
       amount: "1",
       fee: "0.5",
       minFee: "",
-      balance: -1,
+      balance: props.balance,
       isPrivacy: "1",
 
       submitParams: [],
