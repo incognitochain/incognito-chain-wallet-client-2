@@ -151,10 +151,10 @@ class CreateToken extends React.Component {
       .pipe(
         filter(([toAddress, amount]) => toAddress && amount),
         switchMap(([toAddress, amount]) => {
-          if (this.props.balance <= 0) {
-            toastr.warning("Balance is zero!");
-            return Promise.resolve(0);
-          }
+          // if (this.props.balance <= 0) {
+          //   toastr.warning("Balance is zero!");
+          //   return Promise.resolve(0);
+          // }
           console.log("Estimate feeeeeeeee");
           this.setState({ isLoadingEstimationFee: true });
           let isPrivacy = false;
@@ -194,7 +194,8 @@ class CreateToken extends React.Component {
   }
 
   validate = ({ toAddress, amount, tokenName, tokenSymbol }) => {
-    const { balance, isCreate } = this.props;
+    const { isCreate } = this.props;
+    const { balance } = this.state;
     if (!isCreate && amount > balance) return false;
     if (isCreate && amount > MaxUint64) return false;
     if (
@@ -226,7 +227,8 @@ class CreateToken extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    const { privateKey, isCreate, balance } = this.props;
+    const { privateKey, isCreate } = this.props;
+    const { balance } = this.state;
     const toAddress = event.target.toAddress.value || "";
     const amount = Number(event.target.amount.value);
     const tokenName = event.target.tokenName.value || "";
