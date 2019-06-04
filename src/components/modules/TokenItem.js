@@ -8,8 +8,9 @@ import { getPassphrase } from "../../services/PasswordService";
 import { useWalletContext } from "../../common/context/WalletContext";
 import { formatTokenAmount } from "@src/common/utils/format";
 import { OptionMenu } from "@src/common/components/popover-menu/OptionMenu";
+import { hashToIdenticon } from "@src/services/RpcClientService";
 
-export function TokenItem({
+export async function TokenItem({
   tab,
   tabName,
   item = {},
@@ -86,7 +87,12 @@ export function TokenItem({
     onClickHistory(item);
   };
 
-  const { Image, ID, Name } = item;
+  const { ID, Name } = item;
+  let { Image } = item;
+  if (!Image || Image === "") {
+    let res = await hashToIdenticon([ID]);
+    Image = res[0];
+  }
   console.log("Image: ", Image);
 
   const items = [
