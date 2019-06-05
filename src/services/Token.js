@@ -2,8 +2,7 @@ import {
   CustomTokenParamTx,
   TxTokenVout,
   KeyWallet,
-  Wallet,
-  PaymentInfo
+  Wallet
 } from "constant-chain-web-js/build/wallet";
 import { getPassphrase } from "./PasswordService";
 
@@ -87,21 +86,14 @@ export default class Token {
     // prepare param for create and send privacy custom token
     // payment info
     // @@ Note: it is use for receivers constant
-    let paymentInfos = new Array(1);
-    for (let i = 0; i < paymentInfos.length; i++) {
-      // paymentInfos[i] = new PaymentInfo(paymentAddress, amount);
-      paymentInfos[i] = {
-        paymentAddressStr: submitParam.TokenReceivers.PaymentAddress,
-        amount: 100
-      };
-
-      // new PaymentInfo(
-      //   KeyWallet.base58CheckDeserialize(
-      //     submitParam.TokenReceivers.PaymentAddress
-      //   ).KeySet.PaymentAddress,
-      //   new bn(submitParam.TokenReceivers.Amount)
-      // );
-    }
+    let paymentInfos = [];
+    // for (let i = 0; i < paymentInfos.length; i++) {
+    //   // paymentInfos[i] = new PaymentInfo(paymentAddress, amount);
+    //   paymentInfos[i] = {
+    //     paymentAddressStr: submitParam.TokenReceivers.PaymentAddress,
+    //     amount: 100
+    //   };
+    // }
     let response;
     try {
       response = await wallet.MasterAccount.child[
