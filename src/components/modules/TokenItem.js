@@ -93,9 +93,12 @@ export function TokenItem({
 
   async function getTokenImage() {
     const { Image } = item;
+
     if (!Image || Image === "") {
       let res = await hashToIdenticon([ID]);
       setImage(res[0]);
+    } else {
+      setImage(Image);
     }
   }
 
