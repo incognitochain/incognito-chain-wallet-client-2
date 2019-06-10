@@ -68,7 +68,8 @@ export default class Token {
 
   static async createSendPrivacyCustomTokenTransaction(
     submitParam,
-    fee,
+    feePRV,
+    feeToken,
     hasPrivacyForToken,
     account,
     wallet
@@ -101,7 +102,8 @@ export default class Token {
       ].createAndSendPrivacyCustomToken(
         paymentInfos,
         submitParam,
-        fee,
+        feePRV,
+        feeToken,
         hasPrivacyForToken
       );
 
