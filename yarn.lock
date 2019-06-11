@@ -4407,9 +4407,9 @@ console-stream@^0.1.1:
   resolved "https://registry.yarnpkg.com/console-stream/-/console-stream-0.1.1.tgz#a095fe07b20465955f2fafd28b5d72bccd949d44"
   integrity sha1-oJX+B7IEZZVfL6/Si11yvM2UnUQ=
 
-"constant-chain-web-js@git://github.com/constant-money/constant-chain-web-js.git#20190610_1":
+"constant-chain-web-js@git://github.com/constant-money/constant-chain-web-js.git#20190611_1":
   version "1.0.0"
-  resolved "git://github.com/constant-money/constant-chain-web-js.git#710a68ef966e66468b747d68f2911a09a3aa7379"
+  resolved "git://github.com/constant-money/constant-chain-web-js.git#f543d93a7488728c67f88378fbf46bc469360a37"
   dependencies:
     big-integer "^1.6.42"
     privacy-js-lib "git://github.com/constant-money/privacy-js-lib.git"
