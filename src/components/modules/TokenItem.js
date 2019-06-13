@@ -8,6 +8,7 @@ import { getPassphrase } from "../../services/PasswordService";
 import { useWalletContext } from "../../common/context/WalletContext";
 import { formatTokenAmount } from "@src/common/utils/format";
 import { OptionMenu } from "@src/common/components/popover-menu/OptionMenu";
+import { hashToIdenticon } from "@src/services/RpcClientService";
 
 export function TokenItem({
   tab,
@@ -19,10 +20,14 @@ export function TokenItem({
 }) {
   const { wallet } = useWalletContext();
   const [balance, setBalance] = React.useState(null);
+  const [image, setImage] = React.useState(null);
   const accountWallet = useAccountWallet();
+
+  const { ID, Name } = item;
 
   React.useEffect(() => {
     loadBalance(item.isInit);
+    getTokenImage();
   }, [item.ID, item.history, accountWallet]);
 
   async function loadBalance(isInit) {
@@ -86,8 +91,16 @@ export function TokenItem({
     onClickHistory(item);
   };
 
-  const { Image, ID, Name } = item;
-  console.log("Image: ", Image);
+  async function getTokenImage() {
+    const { Image } = item;
+
+    if (!Image || Image === "") {
+      let res = await hashToIdenticon([ID]);
+      setImage(res[0]);
+    } else {
+      setImage(Image);
+    }
+  }
 
   const items = [
     { key: 1, onclick: onClickSendMenuItem, text: "Send" },
@@ -97,7 +110,7 @@ export function TokenItem({
 
   return (
     <Wrapper className="wrapperToken">
-      <Avatar alt="avatar" src={Image} />
+      <Avatar alt="avatar" src={image} />
       <Details>
         <CopyableTooltip title={ID}>
           <div className="wrapperTokenDetail">

@@ -68,10 +68,16 @@ export default class Token {
 
   static async createSendPrivacyCustomTokenTransaction(
     submitParam,
-    fee,
+    feePRV,
+    feeToken,
+    hasPrivacyForToken,
     account,
     wallet
   ) {
+    console.log(
+      "hasPrivacyForToken createSendPrivacyCustomTokenTransaction: ",
+      hasPrivacyForToken
+    );
     await Wallet.resetProgressTx();
     console.log("SEND PRIVACY CUSTOM TOKEN!!!!!!!");
 
@@ -83,13 +89,23 @@ export default class Token {
     // @@ Note: it is use for receivers constant
     let paymentInfos = [];
     // for (let i = 0; i < paymentInfos.length; i++) {
-    //   paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
+    //   // paymentInfos[i] = new PaymentInfo(paymentAddress, amount);
+    //   paymentInfos[i] = {
+    //     paymentAddressStr: submitParam.TokenReceivers.PaymentAddress,
+    //     amount: 100
+    //   };
     // }
     let response;
     try {
       response = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendPrivacyCustomToken(paymentInfos, submitParam, fee);
+      ].createAndSendPrivacyCustomToken(
+        paymentInfos,
+        submitParam,
+        feePRV,
+        feeToken,
+        hasPrivacyForToken
+      );
 
       await wallet.save(getPassphrase());
     } catch (e) {

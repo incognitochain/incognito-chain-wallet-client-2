@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, Button } from "@material-ui/core";
+import { TextField, Button, Checkbox } from "@material-ui/core";
 import ConfirmDialog from "../../core/ConfirmDialog";
 import Token from "../../../services/Token";
 import { fromEvent, combineLatest } from "rxjs";
@@ -23,7 +23,7 @@ import detectBrowser from "@src/services/BrowserDetect";
 import QRScanner from "@src/common/components/qrScanner";
 import { Loading } from "../../../common/components/loading/Loading";
 import Account from "../../../services/Account";
-import { formatTokenAmount, formatDate } from "@src/common/utils/format";
+import { formatTokenAmount } from "@src/common/utils/format";
 
 const MaxUint64 = 18446744073709551615;
 
@@ -37,9 +37,11 @@ class CreateToken extends React.Component {
       tokenName: props.tokenName || "",
       tokenSymbol: props.tokenSymbol || "",
       amount: "1",
-      fee: "0.5",
-      minFee: "",
-      balance: -1,
+      feePRV: "0.5",
+      minFeePRV: "",
+      feeToken: "0",
+      balance: props.balance,
+      isPrivacy: "1",
 
       submitParams: [],
       showCompletedInfo: false,
@@ -53,7 +55,13 @@ class CreateToken extends React.Component {
     if (name === "amount") {
       return this.setState({ [name]: Number.parseInt(e.target.value) });
     }
+
+    if (name === "isPrivacy") {
+      return this.setState({ [name]: e.target.value === "0" ? "1" : "0" });
+    }
+
     this.setState({ [name]: e.target.value });
+    console.log("CreateToken state: ", this.state);
   };
 
   onValidate = name => e => {
@@ -84,6 +92,8 @@ class CreateToken extends React.Component {
 
   toAddressRef = React.createRef();
   amountRef = React.createRef();
+  isPrivacyRef = React.createRef();
+  feeTokenRef = React.createRef();
 
   componentDidMount() {
     this.autoFocus();
@@ -134,20 +144,42 @@ class CreateToken extends React.Component {
       distinctUntilChanged(),
       startWith(this.state.amount)
     );
+
+    const feeTokenObservable = fromEvent(
+      this.feeTokenRef.current,
+      "keyup"
+    ).pipe(
+      map(e => Number(e.target.value)),
+      filter(Boolean),
+      debounceTime(750),
+      distinctUntilChanged(),
+      startWith(this.state.feeToken)
+    );
+
     const accountWallet = this.props.wallet.getAccountByName(
       this.props.account.name
     );
 
-    this.subscription = combineLatest(toAddressObservable, amountObservable)
+    this.subscription = combineLatest(
+      toAddressObservable,
+      amountObservable,
+      feeTokenObservable
+    )
       .pipe(
-        filter(([toAddress, amount]) => toAddress && amount),
-        switchMap(([toAddress, amount]) => {
-          if (this.props.balance <= 0) {
-            toastr.warning("Balance is zero!");
-            return Promise.resolve(0);
-          }
+        filter(([toAddress, amount, feeToken]) => toAddress && amount),
+        switchMap(([toAddress, amount, feeToken]) => {
+          // if (this.props.balance <= 0) {
+          //   toastr.warning("Balance is zero!");
+          //   return Promise.resolve(0);
+          // }
           console.log("Estimate feeeeeeeee");
           this.setState({ isLoadingEstimationFee: true });
+          let isPrivacy = false;
+
+          if (this.props.type === 0) {
+            isPrivacy = this.state.isPrivacy === "1";
+          }
+          console.log("HHHH isPrivacy when get estimate fee: ", isPrivacy);
           return rpcClientService
             .getEstimateFeeForSendingTokenService(
               this.props.account.PaymentAddress,
@@ -155,7 +187,9 @@ class CreateToken extends React.Component {
               amount,
               this.getRequestTokenObject(),
               this.props.account.PrivateKey,
-              accountWallet
+              accountWallet,
+              isPrivacy,
+              feeToken
             )
             .catch(e => {
               console.error(e);
@@ -166,8 +200,8 @@ class CreateToken extends React.Component {
       )
       .subscribe(fee => {
         this.setState({
-          fee: Number(fee) / 100,
-          minFee: Number(fee) / 100,
+          feePRV: Number(fee) / 100,
+          minFeePRV: Number(fee) / 100,
           isLoadingEstimationFee: false
         });
       }, console.error);
@@ -178,7 +212,8 @@ class CreateToken extends React.Component {
   }
 
   validate = ({ toAddress, amount, tokenName, tokenSymbol }) => {
-    const { balance, isCreate } = this.props;
+    const { isCreate } = this.props;
+    const { balance } = this.state;
     if (!isCreate && amount > balance) return false;
     if (isCreate && amount > MaxUint64) return false;
     if (
@@ -207,9 +242,11 @@ class CreateToken extends React.Component {
       }
     };
   };
+
   handleSubmit = event => {
     event.preventDefault();
-    const { privateKey, isCreate, balance } = this.props;
+    const { privateKey, isCreate } = this.props;
+    const { balance } = this.state;
     const toAddress = event.target.toAddress.value || "";
     const amount = Number(event.target.amount.value);
     const tokenName = event.target.tokenName.value || "";
@@ -277,11 +314,18 @@ class CreateToken extends React.Component {
       throw e;
     }
   };
-  createSendPrivacyTokenTransaction = async (params, fee) => {
+  createSendPrivacyTokenTransaction = async (
+    params,
+    feePRV,
+    feeToken,
+    isPrivacy
+  ) => {
     try {
       let response = await Token.createSendPrivacyCustomTokenTransaction(
         params,
-        Number(fee) * 100,
+        Number(feePRV) * 100,
+        Number(feeToken),
+        isPrivacy,
         this.props.account,
         this.props.wallet
       );
@@ -298,18 +342,21 @@ class CreateToken extends React.Component {
     try {
       // isCreate = true: init token, else: send token
       const { type } = this.props;
-      const { submitParams, fee } = this.state;
+      const { submitParams, feePRV, feeToken, isPrivacy } = this.state;
+      const isPrivacyForToken = isPrivacy === "1";
       //  if type = 0: privacy custom token, else: custom token
       let response;
       if (type === 0) {
         response = await this.createSendPrivacyTokenTransaction(
           submitParams[3],
-          fee
+          feePRV,
+          feeToken,
+          isPrivacyForToken
         );
       } else {
         response = await this.createSendCustomTokenTransaction(
           submitParams[3],
-          fee
+          feePRV
         );
       }
 
@@ -381,6 +428,39 @@ class CreateToken extends React.Component {
       </div>
     );
   }
+
+  renderIsPrivacyCheckbox() {
+    const { type } = this.props;
+
+    if (type === 0) {
+      return (
+        <div className="row">
+          <div className="col-sm">
+            <div>
+              <Checkbox
+                label="Is Privacy"
+                id="isPrivacy"
+                name="isPrivacy"
+                checked={this.state.isPrivacy === "1" ? true : false}
+                value={this.state.isPrivacy}
+                onChange={this.onChangeInput("isPrivacy")}
+                color="primary"
+                inputProps={{ ref: this.isPrivacyRef }}
+              />
+              Is Privacy
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  }
+
+  renderFeeToken() {
+    if (!this.props.isCreate) {
+    }
+  }
   renderForm() {
     return (
       <form onSubmit={this.handleSubmit}>
@@ -396,6 +476,8 @@ class CreateToken extends React.Component {
           variant="outlined"
           value={this.props.account.PaymentAddress}
         />
+
+        {this.renderIsPrivacyCheckbox()}
 
         <ToAddressWrapper>
           <TextField
@@ -436,14 +518,29 @@ class CreateToken extends React.Component {
 
         <TextField
           required
-          id="fee"
-          name="fee"
-          label={"Min Fee " + this.state.minFee}
+          id="feeToken"
+          name="feeToken"
+          label="Fee Token"
           className="textField"
           margin="normal"
           variant="outlined"
           type="number"
-          value={this.state.fee}
+          value={this.state.feeToken}
+          onChange={this.onChangeInput("feeToken")}
+          onBlur={this.onValidate("feeToken")}
+          inputRef={this.feeTokenRef}
+        />
+
+        <TextField
+          required
+          id="fee"
+          name="fee"
+          label={"Min Fee " + this.state.minFeePRV}
+          className="textField"
+          margin="normal"
+          variant="outlined"
+          type="number"
+          value={this.state.minFeePRV}
           onChange={this.onChangeInput("fee")}
           onBlur={this.onValidate("fee")}
         />
