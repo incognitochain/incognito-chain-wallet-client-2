@@ -104,7 +104,11 @@ export default class Account {
   static async createAccount(accountName, wallet) {
     let activeShardNumber = await getActiveShard();
     let shardID = process.env.SHARD_ID;
-    if (process.env.SHARD_ID) {
+    if (
+      process.env.SHARD_ID &&
+      (parseInt(process.env.SHARD_ID) >= parseInt(activeShardNumber) ||
+        parseInt(process.env.SHARD_ID) < 0)
+    ) {
       shardID = Math.floor(Math.random() * (activeShardNumber - 1));
     }
 
