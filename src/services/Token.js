@@ -3,7 +3,7 @@ import {
   TxTokenVout,
   KeyWallet,
   Wallet
-} from "constant-chain-web-js/build/wallet";
+} from "incognito-chain-web-js/build/wallet";
 import { getPassphrase } from "./PasswordService";
 
 export default class Token {

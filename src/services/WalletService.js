@@ -1,4 +1,4 @@
-import { Wallet, RpcClient } from "constant-chain-web-js/build/wallet";
+import { Wallet, RpcClient } from "incognito-chain-web-js/build/wallet";
 import localforage from "localforage";
 import { getPassphrase } from "./PasswordService";
 import Server from "./Server";

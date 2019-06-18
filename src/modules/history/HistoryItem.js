@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { truncate } from "lodash";
 import { useAccountContext } from "../../common/context/AccountContext";
-import { SuccessTx, ConfirmedTx } from "constant-chain-web-js/build/wallet";
+import { SuccessTx, ConfirmedTx } from "incognito-chain-web-js/build/wallet";
 import Avatar from "@material-ui/core/Avatar";
 import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
 import {

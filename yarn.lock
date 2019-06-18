@@ -4407,13 +4407,6 @@ console-stream@^0.1.1:
   resolved "https://registry.yarnpkg.com/console-stream/-/console-stream-0.1.1.tgz#a095fe07b20465955f2fafd28b5d72bccd949d44"
   integrity sha1-oJX+B7IEZZVfL6/Si11yvM2UnUQ=
 
-"constant-chain-web-js@git://github.com/constant-money/constant-chain-web-js.git#20190611_1":
-  version "1.0.0"
-  resolved "git://github.com/constant-money/constant-chain-web-js.git#f543d93a7488728c67f88378fbf46bc469360a37"
-  dependencies:
-    big-integer "^1.6.42"
-    privacy-js-lib "git://github.com/constant-money/privacy-js-lib.git"
-
 constants-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/constants-browserify/-/constants-browserify-1.0.0.tgz#c20b96d8c617748aaf1c16021760cd27fcb8cb75"
@@ -6031,11 +6024,6 @@ etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
-
-eventemitter3@^2.0.2:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-2.0.3.tgz#b5e1079b59fb5e1ba2771c0a993be060a58c99ba"
-  integrity sha1-teEHm1n7XhuidxwKmTvgYKWMmbo=
 
 eventemitter3@^3.0.0, eventemitter3@^3.1.0:
   version "3.1.0"
@@ -7920,6 +7908,13 @@ in-publish@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/in-publish/-/in-publish-2.0.0.tgz#e20ff5e3a2afc2690320b6dc552682a9c7fadf51"
   integrity sha1-4g/146KvwmkDILbcVSaCqcf631E=
+
+"incognito-chain-web-js@git://github.com/incognitochain/incognito-chain-web-js":
+  version "1.0.0"
+  resolved "git://github.com/incognitochain/incognito-chain-web-js#a692d8b3163dd5884e6a8002b1c6f5704f41d3a3"
+  dependencies:
+    big-integer "^1.6.42"
+    privacy-js-lib "git://github.com/incognitochain/privacy-js-lib.git"
 
 indefinite-observable@^1.0.1:
   version "1.0.2"
@@ -10510,11 +10505,6 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-native-promise-only@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/native-promise-only/-/native-promise-only-0.8.1.tgz#20a318c30cb45f71fe7adfbf7b21c99c1472ef11"
-  integrity sha1-IKMYwwy0X3H+et+/eyHJnBRy7xE=
-
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
@@ -12525,9 +12515,10 @@ pretty-hrtime@^1.0.3:
   resolved "https://registry.yarnpkg.com/pretty-hrtime/-/pretty-hrtime-1.0.3.tgz#b7e3ea42435a4c9b2759d99e0f201eb195802ee1"
   integrity sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=
 
-"privacy-js-lib@git://github.com/constant-money/privacy-js-lib":
+"privacy-js-lib@git://github.com/incognitochain/privacy-js-lib":
   version "1.0.0"
-  resolved "git://github.com/constant-money/privacy-js-lib#2687113e2bf23626a581adf6fa6daaa996167b53"
+  uid "7c98e359a1b2edf77918d40ce200fe420f3195de"
+  resolved "git://github.com/incognitochain/privacy-js-lib#7c98e359a1b2edf77918d40ce200fe420f3195de"
   dependencies:
     axios "^0.18.0"
     bn.js "^4.11.8"
@@ -12539,11 +12530,10 @@ pretty-hrtime@^1.0.3:
     random-bytes "^1.0.0"
     safe-buffer "^5.1.2"
     sha3 "^2.0.1"
-    threads "^0.12.1"
 
-"privacy-js-lib@git://github.com/constant-money/privacy-js-lib.git":
+"privacy-js-lib@git://github.com/incognitochain/privacy-js-lib.git":
   version "1.0.0"
-  resolved "git://github.com/constant-money/privacy-js-lib.git#2687113e2bf23626a581adf6fa6daaa996167b53"
+  resolved "git://github.com/incognitochain/privacy-js-lib.git#7c98e359a1b2edf77918d40ce200fe420f3195de"
   dependencies:
     axios "^0.18.0"
     bn.js "^4.11.8"
@@ -12555,7 +12545,6 @@ pretty-hrtime@^1.0.3:
     random-bytes "^1.0.0"
     safe-buffer "^5.1.2"
     sha3 "^2.0.1"
-    threads "^0.12.1"
 
 private@^0.1.6, private@^0.1.8, private@~0.1.5:
   version "0.1.8"
@@ -15187,14 +15176,6 @@ text-table@0.2.0, text-table@^0.2.0, text-table@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
-
-threads@^0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/threads/-/threads-0.12.1.tgz#fea772e573a0aa5fb05b108e122fdc69d2472b4c"
-  integrity sha512-2USeV2FDNZtVP1xt3TW86solU7W6WYjaTMd+gvAHJat+dEMFh7of2DR9MEFLkhMerxc1t5b1DMJiVx1meRzk0w==
-  dependencies:
-    eventemitter3 "^2.0.2"
-    native-promise-only "^0.8.1"
 
 throat@^4.0.0:
   version "4.1.0"

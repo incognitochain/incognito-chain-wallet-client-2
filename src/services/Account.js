@@ -1,4 +1,4 @@
-import { KeyWallet, Wallet } from "constant-chain-web-js/build/wallet";
+import { KeyWallet, Wallet } from "incognito-chain-web-js/build/wallet";
 import { getPassphrase } from "./PasswordService";
 import { getActiveShard } from "./RpcClientService";
 

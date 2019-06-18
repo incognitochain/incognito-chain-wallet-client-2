@@ -37,9 +37,9 @@ class CreateToken extends React.Component {
       tokenName: props.tokenName || "",
       tokenSymbol: props.tokenSymbol || "",
       amount: "1",
-      feePRV: "0.5",
-      minFeePRV: "",
-      feeToken: "0",
+      feePRV: "1",
+      minFeePRV: "1",
+      feeToken: "1",
       balance: props.balance,
       isPrivacy: "1",
 
@@ -174,12 +174,31 @@ class CreateToken extends React.Component {
           // }
           console.log("Estimate feeeeeeeee");
           this.setState({ isLoadingEstimationFee: true });
-          let isPrivacy = false;
+          let isPrivacyForPrivateToken = false;
 
           if (this.props.type === 0) {
-            isPrivacy = this.state.isPrivacy === "1";
+            isPrivacyForPrivateToken = this.state.isPrivacy === "1";
+
+            // try {
+            //   let feeToken = rpcClientService.getEstimateTokenFeeService(
+            //     this.props.account.PaymentAddress,
+            //     toAddress,
+            //     amount,
+            //     this.getRequestTokenObject(),
+            //     this.props.account.PrivateKey,
+            //     accountWallet,
+            //     isPrivacyForPrivateToken
+            //   );
+            //   this.setState({
+            //     feeToken: Number(feeToken) / 100
+            //   });
+            // } catch(e){
+            //   console.error(e);
+            //   toastr.error("Error on get estimation token fee!");
+            //   return Promise.resolve(0);
+            // }
           }
-          console.log("HHHH isPrivacy when get estimate fee: ", isPrivacy);
+
           return rpcClientService
             .getEstimateFeeForSendingTokenService(
               this.props.account.PaymentAddress,
@@ -188,8 +207,8 @@ class CreateToken extends React.Component {
               this.getRequestTokenObject(),
               this.props.account.PrivateKey,
               accountWallet,
-              isPrivacy,
-              feeToken
+              isPrivacyForPrivateToken,
+              this.state.feeToken
             )
             .catch(e => {
               console.error(e);
@@ -533,16 +552,16 @@ class CreateToken extends React.Component {
 
         <TextField
           required
-          id="fee"
-          name="fee"
+          id="feePRV"
+          name="feePRV"
           label={"Min Fee " + this.state.minFeePRV}
           className="textField"
           margin="normal"
           variant="outlined"
           type="number"
-          value={this.state.minFeePRV}
-          onChange={this.onChangeInput("fee")}
-          onBlur={this.onValidate("fee")}
+          value={this.state.feePRV}
+          onChange={this.onChangeInput("feePRV")}
+          onBlur={this.onValidate("feePRV")}
         />
 
         <Button
