@@ -39,7 +39,7 @@ class CreateToken extends React.Component {
       amount: "1",
       feePRV: "1",
       minFeePRV: "1",
-      feeToken: "1",
+      feeToken: "0",
       balance: props.balance,
       isPrivacy: "1",
 
@@ -57,6 +57,7 @@ class CreateToken extends React.Component {
     }
 
     if (name === "isPrivacy") {
+      console.log("is Privacy", !this.state.isPrivacy);
       return this.setState({ [name]: e.target.value === "0" ? "1" : "0" });
     }
 
@@ -156,6 +157,18 @@ class CreateToken extends React.Component {
       startWith(this.state.feeToken)
     );
 
+    const isPrivacyTokenObservable = fromEvent(
+      this.isPrivacyRef.current,
+      "click"
+    );
+    // ).pipe(
+    //   map(e => Number(e.target.value)),
+    //   filter(Boolean),
+    //   debounceTime(750),
+    //   distinctUntilChanged(),
+    //   startWith(this.state.isPrivacy)
+    // );
+
     const accountWallet = this.props.wallet.getAccountByName(
       this.props.account.name
     );
@@ -163,40 +176,20 @@ class CreateToken extends React.Component {
     this.subscription = combineLatest(
       toAddressObservable,
       amountObservable,
-      feeTokenObservable
+      feeTokenObservable,
+      isPrivacyTokenObservable
     )
       .pipe(
-        filter(([toAddress, amount, feeToken]) => toAddress && amount),
-        switchMap(([toAddress, amount, feeToken]) => {
-          // if (this.props.balance <= 0) {
-          //   toastr.warning("Balance is zero!");
-          //   return Promise.resolve(0);
-          // }
+        filter(
+          ([toAddress, amount, feeToken, isPrivacy]) => toAddress && amount
+        ),
+        switchMap(([toAddress, amount, feeToken, isPrivacy]) => {
           console.log("Estimate feeeeeeeee");
           this.setState({ isLoadingEstimationFee: true });
           let isPrivacyForPrivateToken = false;
 
           if (this.props.type === 0) {
             isPrivacyForPrivateToken = this.state.isPrivacy === "1";
-
-            // try {
-            //   let feeToken = rpcClientService.getEstimateTokenFeeService(
-            //     this.props.account.PaymentAddress,
-            //     toAddress,
-            //     amount,
-            //     this.getRequestTokenObject(),
-            //     this.props.account.PrivateKey,
-            //     accountWallet,
-            //     isPrivacyForPrivateToken
-            //   );
-            //   this.setState({
-            //     feeToken: Number(feeToken) / 100
-            //   });
-            // } catch(e){
-            //   console.error(e);
-            //   toastr.error("Error on get estimation token fee!");
-            //   return Promise.resolve(0);
-            // }
           }
 
           return rpcClientService
@@ -464,7 +457,9 @@ class CreateToken extends React.Component {
                 value={this.state.isPrivacy}
                 onChange={this.onChangeInput("isPrivacy")}
                 color="primary"
-                inputProps={{ ref: this.isPrivacyRef }}
+                // ref={this.isPrivacyRef}
+                inputRef={this.isPrivacyRef}
+                // inputProps={{ ref: this.isPrivacyRef }}
               />
               Is Privacy
             </div>
