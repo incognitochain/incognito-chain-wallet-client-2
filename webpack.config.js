@@ -132,6 +132,7 @@ module.exports = (env, argv) => {
         // relative path is from src
         {from: './public/manifest.json', to: './'}, // <- your path to manifest
         {from: './public/img', to: './img'},
+        {from: './src/assets/privacy.wasm', to: './'},
       ]),
       ...isProduction ? [new CleanWebpackPlugin()] : [],
       ...(isAnalyzer ? [new BundleAnalyzerPlugin()] : []),
@@ -153,7 +154,7 @@ module.exports = (env, argv) => {
           ],
         },
         {
-          test: /\.(png|gif|jpe?g|webp)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          test: /\.(png|gif|jpe?g|webp|wasm)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
           use: [
             'image-webpack-loader',
             {

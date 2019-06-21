@@ -1,4 +1,4 @@
-import { KeyWallet, Wallet } from "constant-chain-web-js/build/wallet";
+import { KeyWallet, Wallet } from "incognito-chain-web-js/build/wallet";
 import { getPassphrase } from "./PasswordService";
 import { getActiveShard } from "./RpcClientService";
 
@@ -104,7 +104,11 @@ export default class Account {
   static async createAccount(accountName, wallet) {
     let activeShardNumber = await getActiveShard();
     let shardID = process.env.SHARD_ID;
-    if (process.env.SHARD_ID) {
+    if (
+      process.env.SHARD_ID &&
+      (parseInt(process.env.SHARD_ID) >= parseInt(activeShardNumber) ||
+        parseInt(process.env.SHARD_ID) < 0)
+    ) {
       shardID = Math.floor(Math.random() * (activeShardNumber - 1));
     }
 

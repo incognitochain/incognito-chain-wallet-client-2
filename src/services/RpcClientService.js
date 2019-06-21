@@ -3,8 +3,9 @@ import {
   RpcClient,
   getEstimateFee,
   getEstimateFeeForSendingToken,
-  getEstimateFeeToDefragment
-} from "constant-chain-web-js/build/wallet";
+  getEstimateFeeToDefragment,
+  getEstimateTokenFee
+} from "incognito-chain-web-js/build/wallet";
 
 function getRpcClient() {
   return Wallet.RpcClient;
@@ -77,6 +78,41 @@ export async function getEstimateFeeForSendingTokenService(
       getRpcClient(),
       isPrivacyForPrivateToken,
       feeToken
+    );
+  } catch (e) {
+    throw e;
+  }
+  return fee;
+}
+
+export async function getEstimateTokenFeeService(
+  from,
+  to,
+  amount,
+  tokenObject,
+  privateKey,
+  account,
+  isPrivacyForPrivateToken
+) {
+  console.log("getEstimateTokenFee");
+  console.log("\tfrom:" + from);
+  console.log("\tto: " + to);
+  console.log("\tamount:" + amount);
+  console.log("\ttokenObject", tokenObject);
+  console.log("\tprivateKey", privateKey);
+  console.log("HHHHHHHH : ", typeof getEstimateTokenFee);
+
+  let fee;
+  try {
+    fee = await getEstimateTokenFee(
+      from,
+      to,
+      amount,
+      tokenObject,
+      privateKey,
+      account,
+      getRpcClient(),
+      isPrivacyForPrivateToken
     );
   } catch (e) {
     throw e;
