@@ -449,9 +449,9 @@ class CreateToken extends React.Component {
   }
 
   renderIsPrivacyCheckbox() {
-    const { type } = this.props;
+    const { type, isCreate } = this.props;
 
-    if (type === 0) {
+    if (type === 0 && !isCreate) {
       return (
         <div className="row">
           <div className="col-sm">
