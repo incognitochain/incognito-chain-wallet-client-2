@@ -132,8 +132,7 @@ module.exports = (env, argv) => {
         // relative path is from src
         {from: './public/manifest.json', to: './'}, // <- your path to manifest
         {from: './public/img', to: './img'},
-        {from: './src/assets/privacy1.wasm', to: './'},
-        {from: './src/assets/main.wasm', to: './'},
+        {from: './src/assets/privacy.wasm', to: './'},
       ]),
       ...isProduction ? [new CleanWebpackPlugin()] : [],
       ...(isAnalyzer ? [new BundleAnalyzerPlugin()] : []),
