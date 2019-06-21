@@ -3319,7 +3319,7 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-base64-js@^1.0.2:
+base64-js@^1.0.2, base64-js@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.3.0.tgz#cab1e6118f051095e58b5281aea8c1cd22bfc0e3"
   integrity sha512-ccav/yGvoa80BQDljCxsmmQ3Xvx60/UpBIij5QN21W3wBi/hhIC9OoO+KLpu9IJTS9j4DRVJ3aDDF9cMSoa2lw==
@@ -7909,12 +7909,12 @@ in-publish@^2.0.0:
   resolved "https://registry.yarnpkg.com/in-publish/-/in-publish-2.0.0.tgz#e20ff5e3a2afc2690320b6dc552682a9c7fadf51"
   integrity sha1-4g/146KvwmkDILbcVSaCqcf631E=
 
-"incognito-chain-web-js@git://github.com/incognitochain/incognito-chain-web-js":
+"incognito-chain-web-js@git://github.com/incognitochain/incognito-chain-web-js#20190621_1":
   version "1.0.0"
-  resolved "git://github.com/incognitochain/incognito-chain-web-js#a692d8b3163dd5884e6a8002b1c6f5704f41d3a3"
+  resolved "git://github.com/incognitochain/incognito-chain-web-js#13f6810069e22dbc93057803dd7d9da99d3a81db"
   dependencies:
     big-integer "^1.6.42"
-    privacy-js-lib "git://github.com/incognitochain/privacy-js-lib.git"
+    privacy-js-lib "git://github.com/incognitochain/privacy-js-lib#20190621_1"
 
 indefinite-observable@^1.0.1:
   version "1.0.2"
@@ -8580,7 +8580,7 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-isomorphic-fetch@^2.1.1:
+isomorphic-fetch@^2.1.1, isomorphic-fetch@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
   integrity sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=
@@ -12515,31 +12515,17 @@ pretty-hrtime@^1.0.3:
   resolved "https://registry.yarnpkg.com/pretty-hrtime/-/pretty-hrtime-1.0.3.tgz#b7e3ea42435a4c9b2759d99e0f201eb195802ee1"
   integrity sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=
 
-"privacy-js-lib@git://github.com/incognitochain/privacy-js-lib":
+"privacy-js-lib@git://github.com/incognitochain/privacy-js-lib#20190621_1":
   version "1.0.0"
-  uid "7c98e359a1b2edf77918d40ce200fe420f3195de"
-  resolved "git://github.com/incognitochain/privacy-js-lib#7c98e359a1b2edf77918d40ce200fe420f3195de"
+  resolved "git://github.com/incognitochain/privacy-js-lib#db570fb647bafaf9b05fb418eea4442b22fc666f"
   dependencies:
     axios "^0.18.0"
+    base64-js "^1.3.0"
     bn.js "^4.11.8"
     circular-json "^0.5.9"
     crypto-js "^3.1.9-1"
     elliptic "^6.4.1"
-    keccak "^2.0.0"
-    pbkdf2 "^3.0.17"
-    random-bytes "^1.0.0"
-    safe-buffer "^5.1.2"
-    sha3 "^2.0.1"
-
-"privacy-js-lib@git://github.com/incognitochain/privacy-js-lib.git":
-  version "1.0.0"
-  resolved "git://github.com/incognitochain/privacy-js-lib.git#7c98e359a1b2edf77918d40ce200fe420f3195de"
-  dependencies:
-    axios "^0.18.0"
-    bn.js "^4.11.8"
-    circular-json "^0.5.9"
-    crypto-js "^3.1.9-1"
-    elliptic "^6.4.1"
+    isomorphic-fetch "^2.2.1"
     keccak "^2.0.0"
     pbkdf2 "^3.0.17"
     random-bytes "^1.0.0"
