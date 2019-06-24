@@ -57,7 +57,7 @@ class CreateToken extends React.Component {
     }
 
     if (name === "isPrivacy") {
-      console.log("is Privacy", !this.state.isPrivacy);
+      console.log(" e.target.value", e.target.value);
       return this.setState({ [name]: e.target.value === "0" ? "1" : "0" });
     }
 
@@ -157,39 +157,49 @@ class CreateToken extends React.Component {
       startWith(this.state.feeToken)
     );
 
-    const isPrivacyTokenObservable = fromEvent(
-      this.isPrivacyRef.current,
-      "click"
-    );
-    // ).pipe(
-    //   map(e => Number(e.target.value)),
-    //   filter(Boolean),
-    //   debounceTime(750),
-    //   distinctUntilChanged(),
-    //   startWith(this.state.isPrivacy)
-    // );
-
     const accountWallet = this.props.wallet.getAccountByName(
       this.props.account.name
     );
 
-    this.subscription = combineLatest(
-      toAddressObservable,
-      amountObservable,
-      feeTokenObservable,
-      isPrivacyTokenObservable
-    )
+    let isPrivacyTokenObservable = null;
+
+    if (this.props.type === 0 && !this.props.isCreate) {
+      isPrivacyTokenObservable = fromEvent(
+        this.isPrivacyRef.current,
+        "click"
+      ).pipe(
+        map(e => e.target.value),
+        filter(Boolean),
+        debounceTime(750),
+        distinctUntilChanged(),
+        startWith(this.state.isPrivacy)
+      );
+
+      this.subscription = combineLatest(
+        toAddressObservable,
+        amountObservable,
+        feeTokenObservable,
+        isPrivacyTokenObservable
+      );
+    } else {
+      this.subscription = combineLatest(
+        toAddressObservable,
+        amountObservable,
+        feeTokenObservable
+      );
+    }
+
+    this.subscription
       .pipe(
-        filter(
-          ([toAddress, amount, feeToken, isPrivacy]) => toAddress && amount
-        ),
-        switchMap(([toAddress, amount, feeToken, isPrivacy]) => {
+        filter(([toAddress, amount, feeToken]) => toAddress && amount),
+        switchMap(([toAddress, amount, feeToken]) => {
           console.log("Estimate feeeeeeeee");
           this.setState({ isLoadingEstimationFee: true });
           let isPrivacyForPrivateToken = false;
 
           if (this.props.type === 0) {
             isPrivacyForPrivateToken = this.state.isPrivacy === "1";
+            console.log("isPrivacyForPrivateToken: ", isPrivacyForPrivateToken);
           }
 
           return rpcClientService
@@ -457,9 +467,7 @@ class CreateToken extends React.Component {
                 value={this.state.isPrivacy}
                 onChange={this.onChangeInput("isPrivacy")}
                 color="primary"
-                // ref={this.isPrivacyRef}
                 inputRef={this.isPrivacyRef}
-                // inputProps={{ ref: this.isPrivacyRef }}
               />
               Is Privacy
             </div>
@@ -471,10 +479,6 @@ class CreateToken extends React.Component {
     return null;
   }
 
-  renderFeeToken() {
-    if (!this.props.isCreate) {
-    }
-  }
   renderForm() {
     return (
       <form onSubmit={this.handleSubmit}>
