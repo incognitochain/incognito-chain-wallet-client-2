@@ -7909,12 +7909,12 @@ in-publish@^2.0.0:
   resolved "https://registry.yarnpkg.com/in-publish/-/in-publish-2.0.0.tgz#e20ff5e3a2afc2690320b6dc552682a9c7fadf51"
   integrity sha1-4g/146KvwmkDILbcVSaCqcf631E=
 
-"incognito-chain-web-js@git://github.com/incognitochain/incognito-chain-web-js#20190621_2":
+"incognito-chain-web-js@git://github.com/incognitochain/incognito-chain-web-js#20190625_1":
   version "1.0.0"
-  resolved "git://github.com/incognitochain/incognito-chain-web-js#1eace732808e4018173fea4155887e050fb698f8"
+  resolved "git://github.com/incognitochain/incognito-chain-web-js#a4f63d8124b6f8f75471186a0a924ba443ee0cff"
   dependencies:
     big-integer "^1.6.42"
-    privacy-js-lib "git://github.com/incognitochain/privacy-js-lib#20190621_3"
+    privacy-js-lib "git://github.com/incognitochain/privacy-js-lib#20190625_1"
 
 indefinite-observable@^1.0.1:
   version "1.0.2"
@@ -12515,9 +12515,9 @@ pretty-hrtime@^1.0.3:
   resolved "https://registry.yarnpkg.com/pretty-hrtime/-/pretty-hrtime-1.0.3.tgz#b7e3ea42435a4c9b2759d99e0f201eb195802ee1"
   integrity sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=
 
-"privacy-js-lib@git://github.com/incognitochain/privacy-js-lib#20190621_3":
+"privacy-js-lib@git://github.com/incognitochain/privacy-js-lib#20190625_1":
   version "1.0.0"
-  resolved "git://github.com/incognitochain/privacy-js-lib#a5f58325297ba591c38ab1e379dc706bbfcea8b5"
+  resolved "git://github.com/incognitochain/privacy-js-lib#43adedafa5cd415716167418f1a58e3f627c9ce2"
   dependencies:
     axios "^0.18.0"
     base64-js "^1.3.0"
