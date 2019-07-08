@@ -4,7 +4,8 @@ import {
   getEstimateFee,
   getEstimateFeeForSendingToken,
   getEstimateFeeToDefragment,
-  getEstimateTokenFee
+  getEstimateTokenFee,
+  getMaxWithdrawAmount
 } from "incognito-chain-web-js/build/wallet";
 
 function getRpcClient() {
@@ -85,6 +86,16 @@ export async function getEstimateFeeForSendingTokenService(
   return fee;
 }
 
+/**
+ *
+ * @param {string} from
+ * @param {string} to
+ * @param {number} amount     // default = 0 for transfer
+ * @param {{Privacy: boolean, TokenID: string, TokenName: string, TokenSymbol: string, TokenTxType: number, TokenAmount: number, TokenReceivers: {PaymentAddress: string, Amount: number}}} tokenObject
+ * @param {string} privateKey
+ * @param {AccountWallet} account
+ * @param {bool} isPrivacyForPrivateToken   // default true
+ */
 export async function getEstimateTokenFeeService(
   from,
   to,
@@ -185,4 +196,38 @@ export async function hashToIdenticon(hashStrs) {
   }
 
   return resp.images;
+}
+
+/**
+ *
+ * @param {string} from
+ * @param {string} to
+ * @param {{Privacy: boolean, TokenID: string, TokenName: string, TokenSymbol: string, TokenTxType: number, TokenAmount: number, TokenReceivers: {PaymentAddress: string, Amount: number}}} tokenObject
+ * @param {string} privateKeyStr
+ * @param {AccountWallet} account
+ * @param {bool} isPrivacyForPrivateToken   // default true
+ */
+export async function getMaxWithdrawAmountService(
+  from,
+  to,
+  tokenObject,
+  privateKey,
+  account,
+  isPrivacyForPrivateToken
+) {
+  let amountMax;
+  try {
+    amountMax = await getMaxWithdrawAmount(
+      from,
+      to,
+      tokenObject,
+      privateKey,
+      account,
+      getRpcClient(),
+      isPrivacyForPrivateToken
+    );
+  } catch (e) {
+    throw e;
+  }
+  return amountMax;
 }
