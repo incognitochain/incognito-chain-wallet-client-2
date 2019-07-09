@@ -221,6 +221,7 @@ class CreateToken extends React.Component {
         })
       )
       .subscribe(fee => {
+        console.log("Fee AAAAA: ", fee);
         this.setState({
           feePRV: Number(fee) / 100,
           minFeePRV: Number(fee) / 100,

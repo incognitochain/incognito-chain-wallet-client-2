@@ -206,6 +206,7 @@ export async function hashToIdenticon(hashStrs) {
  * @param {string} privateKeyStr
  * @param {AccountWallet} account
  * @param {bool} isPrivacyForPrivateToken   // default true
+ * @param {{maxWithdrawAmount: number, feeCreateTx : number, feeForBurn: number}} response
  */
 export async function getMaxWithdrawAmountService(
   from,
@@ -215,9 +216,9 @@ export async function getMaxWithdrawAmountService(
   account,
   isPrivacyForPrivateToken
 ) {
-  let amountMax;
+  let response;
   try {
-    amountMax = await getMaxWithdrawAmount(
+    response = await getMaxWithdrawAmount(
       from,
       to,
       tokenObject,
@@ -229,5 +230,5 @@ export async function getMaxWithdrawAmountService(
   } catch (e) {
     throw e;
   }
-  return amountMax;
+  return response;
 }
