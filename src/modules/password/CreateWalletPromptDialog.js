@@ -9,11 +9,10 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 export function CreateWalletPromptDialog({ isOpen, onClose, onCreate }) {
   return (
     <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>Create Wallet</DialogTitle>
+      <DialogTitle>New Wallet</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Your password does not match with any wallet. Do you want to create a
-          new wallet?
+          It looks like you’re a new user. Let’s create a new wallet for you.
         </DialogContentText>
       </DialogContent>
       <DialogActions>

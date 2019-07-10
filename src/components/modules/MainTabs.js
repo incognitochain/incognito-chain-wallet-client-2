@@ -96,7 +96,7 @@ class MainTabs extends React.Component {
         >
           <StyledTab classes={classesTab} label="TOKENS" />
           <StyledTab classes={classesTab} label="HISTORY" />
-          <StyledTab classes={classesTab} label="ACCOUNT DETAIL" />
+          <StyledTab classes={classesTab} label="ACCOUNT DETAILS" />
         </Tabs>
         {renderIf(value === mapTabNameToIndex["tokens"])(
           this.renderTokenTabs()

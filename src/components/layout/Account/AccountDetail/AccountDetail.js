@@ -251,7 +251,7 @@ class AccountDetail extends React.Component {
     const { modalAccountStaking } = this.state;
     return (
       <Dialog
-        title="Staking"
+        title="Stake"
         onRef={modal => (this.modalAccountStakingRef = modal)}
         className={{ margin: 0 }}
       >
@@ -264,7 +264,7 @@ class AccountDetail extends React.Component {
     const { modalAccountDefragment } = this.state;
     return (
       <Dialog
-        title="Defragment"
+        title="Defrag"
         onRef={modal => (this.modalAccountDefragmentRef = modal)}
         className={{ margin: 0 }}
       >
@@ -364,7 +364,12 @@ class AccountDetail extends React.Component {
           </CopyToClipboard>
         </CopyToClipboardWrapper>
         <Balance>{this.renderBalance(balance)}</Balance>
-
+        <FaucetLink>
+          Get free Privacy (PRV) from
+          <a href="https://test-faucet.incognito.org/" target="blank">
+            Incognito Faucet
+          </a>
+        </FaucetLink>
         <div className="row" style={{ flexWrap: "nowrap" }}>
           <div className="col-sm">
             <SendButton
@@ -382,7 +387,7 @@ class AccountDetail extends React.Component {
               variant="contained"
               onClick={() => this.openAccountStaking(account)}
             >
-              Staking
+              Stake
             </SendButton>
           </div>
 
@@ -392,7 +397,7 @@ class AccountDetail extends React.Component {
               variant="contained"
               onClick={() => this.openAccountDefragment(account)}
             >
-              Defragment
+              Defrag
             </SendButton>
           </div>
         </div>
@@ -534,4 +539,14 @@ const IconPasteWrapper = styled.div`
   justify-content: center;
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
+`;
+
+const FaucetLink = styled.div`
+  padding-bottom: 20px;
+  color: white;
+  > a {
+    color: inherit;
+    text-decoration: underline;
+    margin-left: 5px;
+  }
 `;

@@ -291,7 +291,7 @@ class Header extends React.Component {
             <ListItemIcon>
               <IconExitToApp />
             </ListItemIcon>
-            <ListItemText primary="View on Constant Explorer" />
+            <ListItemText primary="View on Incognito Explorer" />
           </ListItem>
         </List>
         <Divider />

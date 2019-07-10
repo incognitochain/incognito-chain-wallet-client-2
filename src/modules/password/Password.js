@@ -138,10 +138,13 @@ export function Password({ history }) {
           </Logo>
         </Grid>
         <Grid item xs={12}>
-          <Title>Welcome Back!</Title>
+          <Title>Welcome to Incognito.</Title>
         </Grid>
         <Grid item xs={12}>
-          <SubTitle>The decentralized web awaits</SubTitle>
+          <SubTitle>
+            Please create a password to get started. Already created one? Enter
+            your password.
+          </SubTitle>
         </Grid>
         <Grid item xs={12} style={{ textAlign: "center" }}>
           <Form onSubmit={onSubmit} noValidate>
@@ -182,7 +185,7 @@ export function Password({ history }) {
                       color="primary"
                       type="submit"
                     >
-                      LOG IN
+                      Continue
                     </Button>
                   )}
                 </ButtonWrapper>
