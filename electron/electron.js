@@ -76,7 +76,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     fullscreen: false,
     icon: path.join(__dirname, 'icons/64x64.png'),
-    title: 'Constant desktop wallet',
+    title: 'Incognito desktop wallet',
     webPreferences: {
       nodeIntegration: true
     }
@@ -147,7 +147,7 @@ app.on('window-all-closed', function () {
 });
 
 app.commandLine.appendSwitch('disable-pinch');
-app.setName('Constant desktop wallet');
+app.setName('Incognito desktop wallet');
 app.dock.setIcon(path.resolve(__dirname, '../icons/512x512.png'));
 app.on('ready', createWindow);
 app.on('activate', function () {

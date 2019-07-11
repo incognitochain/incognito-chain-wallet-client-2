@@ -120,7 +120,7 @@ export function FollowTokenDialog({
           <TextField
             required
             type="search"
-            label="Search Token by Name"
+            label="Search tokens by name"
             margin="normal"
             variant="outlined"
             value={state.searchKey}

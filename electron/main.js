@@ -8,7 +8,7 @@ openWalletWindowButton.addEventListener('click', (event) => {
   walletWindow = new BrowserWindow({
     fullscreen: false,
     icon: path.join(__dirname, 'icons/64x64.png'),
-    title: 'Constant desktop wallet',
+    title: 'Incognito desktop wallet',
     modal: true,
     show: false,
     webPreferences: {

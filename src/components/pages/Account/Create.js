@@ -120,7 +120,7 @@ class CreateAccount extends React.Component {
     if (result && result.key) {
       cacheAccountListService.clearListAccount();
       this.props.app.listAccounts(this.props.wallet);
-      this.onFinish({ message: "Account is created!" });
+      this.onFinish({ message: "Account created" });
     } else {
       this.showError("Create error!");
     }
@@ -145,13 +145,8 @@ class CreateAccount extends React.Component {
       <div className="" style={{ textAlign: "center" }}>
         {showAlert}
         <h1 className="mb-2" style={{ marginTop: "15px" }}>
-          Create new account
+          Create a new account
         </h1>
-        <div style={{ marginBottom: "0.4rem" }}>
-          <span className="badge badge-pill badge-light">
-            * This is some tips that user need to know
-          </span>
-        </div>
 
         <TextField
           required

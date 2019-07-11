@@ -138,7 +138,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
     ) {
       dispatch({ type: "LOAD_ESTIMATION_FEE" });
       if (balance <= 0) {
-        toastr.warning("Balance is zero!");
+        toastr.warning("Get some PRV from the faucet to get started.");
       }
       rpcClientService
         .getEstimateFeeService(
@@ -171,12 +171,12 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
     } = state;
 
     if (!toAddress) {
-      toastr.warning("To address is required!");
+      toastr.warning("Please enter a receiving address.");
       return;
     }
 
     if (!amount) {
-      toastr.warning("Amount is required!");
+      toastr.warning("Enter an amount");
       return;
     }
 
@@ -186,12 +186,14 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
     }
 
     if (Number(amount) < 0.01) {
-      toastr.warning("Amount must be at least 0.01 constant!");
+      toastr.warning("Amount must be at least 0.01 PRV!");
       return;
     }
 
     if (Number(amount) > Number(balance)) {
-      toastr.warning("Insufficient this account balance!");
+      toastr.warning(
+        "Please make sure you have sufficient funds to make this transfer."
+      );
       return;
     }
 
@@ -201,7 +203,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
     }
 
     if (Number(fee) < 0) {
-      toastr.warning("Fee must be at least 0 constant!");
+      toastr.warning("Fee must be at least 0 PRV!");
       return;
     } else {
       if (Number(fee) < minFee) {
@@ -267,11 +269,11 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
       }
     } else if (name === "amount") {
       if (Number(e.target.value) < 0.01) {
-        toastr.warning("Amount must be at least 0.01 constant!");
+        toastr.warning("Amount must be at least 0.01 PRV!");
       }
     } else if (name === "fee") {
       if (Number(e.target.value) < 0) {
-        toastr.warning("Fee must be at least 0 constant!");
+        toastr.warning("Fee must be at least 0 PRV!");
       } else {
         if (Number(e.target.value) < state.minFee) {
           toastr.warning("Fee must be greater than min fee!");
@@ -322,7 +324,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
         <div className="col-sm">
           <div>
             <Checkbox
-              label="Is Privacy"
+              label="Send privately"
               id="isPrivacy"
               checked={state.isPrivacy === "1" ? true : false}
               value={state.isPrivacy}
@@ -330,7 +332,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
               color="primary"
               inputProps={{ ref: isPrivacyRef }}
             />
-            Is Privacy
+            Send privately
           </div>
         </div>
         <div className="col-sm">
@@ -397,9 +399,6 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
       >
         Send
       </Button>
-      <div className="badge badge-pill badge-light mt-3">
-        * Only send CONSTANT to a CONSTANT address.
-      </div>
       {state.isLoadingEstimationFee ? (
         <div className="badge badge-pill badge-light mt-3">
           * Loading estimation <b>MIN FEE</b>...
@@ -412,7 +411,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
         onOK={() => sendCoin()}
         className={{ margin: 0 }}
       >
-        <div>Are you sure to transfer out {state.amount} CONSTANT?</div>
+        <div>Are you sure to transfer out {state.amount} PRV?</div>
       </ConfirmDialog>
 
       {state.isLoading && <Loading fullscreen />}

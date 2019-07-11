@@ -82,7 +82,7 @@ class CreateToken extends React.Component {
       }
     } else if (name === "fee") {
       if (Number(e.target.value) < 0) {
-        toastr.warning("Fee must be at least 0 constant!");
+        toastr.warning("Fee must be at least 0 PRV!");
       } else {
         if (Number(e.target.value) < this.state.minFee) {
           toastr.warning("Fee must be greater than min fee!");
@@ -461,7 +461,7 @@ class CreateToken extends React.Component {
           <div className="col-sm">
             <div>
               <Checkbox
-                label="Is Privacy"
+                label="Send privately"
                 id="isPrivacy"
                 name="isPrivacy"
                 checked={this.state.isPrivacy === "1" ? true : false}
@@ -470,7 +470,7 @@ class CreateToken extends React.Component {
                 color="primary"
                 inputRef={this.isPrivacyRef}
               />
-              Is Privacy
+              Send privately
             </div>
           </div>
         </div>

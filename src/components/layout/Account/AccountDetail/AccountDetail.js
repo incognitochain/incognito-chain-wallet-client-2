@@ -229,7 +229,7 @@ class AccountDetail extends React.Component {
         onOK={() => this.removeAccount()}
         className={{ margin: 0 }}
       >
-        <div>Are you sure to delete?</div>
+        <div>Once deleted, it's gone. Are you sure?</div>
       </ConfirmDialog>
     );
   }
@@ -365,7 +365,7 @@ class AccountDetail extends React.Component {
         </CopyToClipboardWrapper>
         <Balance>{this.renderBalance(balance)}</Balance>
         <FaucetLink>
-          Get free Privacy (PRV) from
+          Get free Privacy (PRV) from the
           <a href="https://test-faucet.incognito.org/" target="blank">
             Incognito Faucet
           </a>

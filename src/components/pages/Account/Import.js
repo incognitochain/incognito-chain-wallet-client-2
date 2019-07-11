@@ -120,7 +120,7 @@ class ImportAccount extends React.Component {
       this.props.app.listAccounts(this.props.wallet);
       this.onFinish({ message: "Account is imported!" });
     } else {
-      this.showError("Import error!");
+      this.showError("Please check all details are correct and try again.");
     }
   };
 
@@ -159,8 +159,8 @@ class ImportAccount extends React.Component {
               marginLeft: "5px"
             }}
           >
-            * Imported accounts will not be associated with your originally
-            created Constant account seedphrase.
+            Imported accounts will not be associated with the original
+            seedphrase.
           </span>
         </div>
 

@@ -10,7 +10,7 @@ import { Wrapper, Title, Content } from "./styled";
 
 const SocialShare = ({ url, quote }) => (
   <Wrapper>
-    <Title>Share to social</Title>
+    <Title>Invite your friends to explore Incognito.</Title>
     <Content>
       <FacebookShareButton url={url} quote={quote}>
         <FacebookIcon />

@@ -58,7 +58,7 @@ export function History({ onSendConstant }) {
             );
           })
         ) : (
-          <NoData>No data to display</NoData>
+          <NoData>Nothing here yet. Time to make history.</NoData>
         )}
       </Container>
     </Wrapper>

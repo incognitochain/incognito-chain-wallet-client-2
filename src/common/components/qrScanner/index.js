@@ -63,9 +63,7 @@ class QRScanner extends Component {
 
   handleError = error => {
     this.setState({
-      error: `${
-        error?.message
-      }. We can not use camera for scanning, please use "Chose QR Image" instead.`
+      error: "Your camera said no. Please upload the QR code image instead."
     });
   };
 
@@ -101,7 +99,7 @@ class QRScanner extends Component {
     return (
       <Wrapper className={className}>
         <Trigger onClick={this.onTrigger}>Scan QR</Trigger>
-        <Dialog title="Scan QR" onRef={modal => (this.dialog = modal)}>
+        <Dialog title="Scan QR code" onRef={modal => (this.dialog = modal)}>
           <QrWrapper hide={legacyMode}>
             <QrReader
               ref={this.qr}
@@ -114,7 +112,7 @@ class QRScanner extends Component {
           </QrWrapper>
           <Button onClick={this.toggleMode}>
             <SwitchIcon />
-            {legacyMode ? "Switch to Scan QR" : "Switch to Choose QR Image"}
+            {legacyMode ? "Scan QR image" : "Upload QR image"}
           </Button>
           {legacyMode && (
             <ChooseNewImage onClick={this.chooseImage}>

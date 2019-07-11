@@ -25,7 +25,7 @@ class PrivacyKeys extends React.Component {
           disableTypography
           primary={
             <span className="btn text-danger cursor-pointer pl-0">
-              Remove account
+              Delete my account
             </span>
           }
           onClick={this.handleOnRemoveAccount}

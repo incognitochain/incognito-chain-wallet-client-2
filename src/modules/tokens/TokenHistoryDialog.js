@@ -71,7 +71,9 @@ export function TokenHistoryDialog({ tokenId, tabName, isOpen, onClose }) {
               return <HistoryItem history={item} />;
             })
           ) : (
-            <NoData>No data to display</NoData>
+            <NoData>
+              Nothing here yet. Time to make history.No data to display
+            </NoData>
           )}
         </Scrollable>
       </Wrapper>

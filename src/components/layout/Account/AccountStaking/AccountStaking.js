@@ -147,7 +147,9 @@ function AccountStaking({
         }),
         switchMap(([stakingType]) => {
           if (balance <= 0) {
-            toastr.warning("Balance is zero!");
+            toastr.warning(
+              "Get some PRV from the faucet to get started.alance is zero!"
+            );
             return Promise.resolve(0);
           }
           dispatch({ type: "LOAD_ESTIMATION_FEE" });
@@ -206,7 +208,7 @@ function AccountStaking({
     }
 
     if (!toAddress) {
-      toastr.warning("To address is required!");
+      toastr.warning("Please enter a receiving address.");
       return;
     }
 
@@ -216,7 +218,7 @@ function AccountStaking({
     }
 
     if (!amount) {
-      toastr.warning("Amount is required!");
+      toastr.warning("Enter an amount");
       return;
     }
 
@@ -226,7 +228,7 @@ function AccountStaking({
     }
 
     if (Number(amount) < 0.01) {
-      toastr.warning("Amount must be at least 0.01 constant!");
+      toastr.warning("Amount must be at least 0.01 PRV!");
       return;
     }
 
@@ -236,7 +238,7 @@ function AccountStaking({
     }
 
     if (Number(fee) < 0) {
-      toastr.warning("Fee must be at least 0 constant!");
+      toastr.warning("Fee must be at least 0 PRV!");
       return;
     } else {
       if (Number(fee) < minFee) {
@@ -245,7 +247,9 @@ function AccountStaking({
     }
 
     if (Number(amount) >= Number(balance)) {
-      toastr.warning("Insufficient this account balance!");
+      toastr.warning(
+        "Please make sure you have sufficient funds to make this transfer."
+      );
       return;
     }
 
@@ -318,11 +322,11 @@ function AccountStaking({
       }
     } else if (name === "amount") {
       if (Number(e.target.value) < 0.01) {
-        toastr.warning("Amount must be at least 0.01 constant!");
+        toastr.warning("Amount must be at least 0.01 PRV!");
       }
     } else if (name === "fee") {
       if (Number(e.target.value) < 0) {
-        toastr.warning("Fee must be at least 0 constant!");
+        toastr.warning("Fee must be at least 0 PRV!");
       } else {
         if (Number(e.target.value) < state.minFee) {
           toastr.warning("Fee must be greater than min fee!");
@@ -358,8 +362,7 @@ function AccountStaking({
               }}
               value={state.stakingType}
             >
-              <MenuItem value="0">Shard Type</MenuItem>
-              <MenuItem value="1">Beacon Type</MenuItem>
+              <MenuItem value="0">Shard Validator</MenuItem>
             </Select>
           </div>
         </div>
@@ -420,11 +423,8 @@ function AccountStaking({
         fullWidth
         onClick={() => confirmStaking()}
       >
-        Staking
+        Stake
       </Button>
-      <div className="badge badge-pill badge-light mt-3">
-        * Only send CONSTANT to a CONSTANT address.
-      </div>
       {state.isLoadingEstimationFee ? (
         <div className="badge badge-pill badge-light mt-3">
           * Loading estimation <b>MIN FEE</b>...
@@ -437,7 +437,7 @@ function AccountStaking({
         onOK={() => staking()}
         className={{ margin: 0 }}
       >
-        <div>Are you sure to stake {state.amount} CONSTANT?</div>
+        <div>Are you sure to stake {state.amount} PRV?</div>
       </ConfirmDialog>
 
       {state.isLoading && <Loading fullscreen />}

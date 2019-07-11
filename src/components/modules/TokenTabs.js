@@ -143,7 +143,7 @@ class TokenTabs extends React.Component {
             className="newTokenButton"
             onClick={this.handleCreateToken}
           >
-            Init New Token
+            Create a new token
           </Button>
 
           <Button
@@ -153,7 +153,7 @@ class TokenTabs extends React.Component {
             onClick={this.handleAddFollowingToken}
             style={{ lineHeight: "15px" }}
           >
-            Add Tokens To Follow
+            Add a token
           </Button>
         </ButtonWrapper>
 
