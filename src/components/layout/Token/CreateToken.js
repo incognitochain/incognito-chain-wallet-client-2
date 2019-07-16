@@ -496,7 +496,7 @@ class CreateToken extends React.Component {
           value={this.props.account.PaymentAddress}
         />
 
-        {this.renderIsPrivacyCheckbox()}
+        {/* {this.renderIsPrivacyCheckbox()} */}
 
         <ToAddressWrapper>
           <TextField

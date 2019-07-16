@@ -100,7 +100,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
       minFee: "0.00",
       showAlert: "",
       isAlert: false,
-      isPrivacy: "0"
+      isPrivacy: "1"
     })
   );
 
@@ -321,7 +321,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
       />
 
       <div className="row">
-        <div className="col-sm">
+        {/* <div className="col-sm">
           <div>
             <Checkbox
               label="Send privately"
@@ -334,7 +334,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
             />
             Send privately
           </div>
-        </div>
+        </div> */}
         <div className="col-sm">
           <div className="text-right">
             Balance: {balance ? formatConstantBalance(balance) : 0}{" "}
