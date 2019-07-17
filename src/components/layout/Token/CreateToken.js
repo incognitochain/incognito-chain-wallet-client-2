@@ -93,7 +93,7 @@ class CreateToken extends React.Component {
 
   toAddressRef = React.createRef();
   amountRef = React.createRef();
-  isPrivacyRef = React.createRef();
+  // isPrivacyRef = React.createRef();
   feeTokenRef = React.createRef();
 
   componentDidMount() {
@@ -163,31 +163,36 @@ class CreateToken extends React.Component {
 
     let isPrivacyTokenObservable = null;
 
-    if (this.props.type === 0 && !this.props.isCreate) {
-      isPrivacyTokenObservable = fromEvent(
-        this.isPrivacyRef.current,
-        "click"
-      ).pipe(
-        map(e => e.target.value),
-        filter(Boolean),
-        debounceTime(750),
-        distinctUntilChanged(),
-        startWith(this.state.isPrivacy)
-      );
+    this.subscription = combineLatest(
+      toAddressObservable,
+      amountObservable,
+      feeTokenObservable
+    );
+    // if (this.props.type === 0 && !this.props.isCreate) {
+    //   isPrivacyTokenObservable = fromEvent(
+    //     this.isPrivacyRef.current,
+    //     "click"
+    //   ).pipe(
+    //     map(e => e.target.value),
+    //     filter(Boolean),
+    //     debounceTime(750),
+    //     distinctUntilChanged(),
+    //     startWith(this.state.isPrivacy)
+    //   );
 
-      this.subscription = combineLatest(
-        toAddressObservable,
-        amountObservable,
-        feeTokenObservable,
-        isPrivacyTokenObservable
-      );
-    } else {
-      this.subscription = combineLatest(
-        toAddressObservable,
-        amountObservable,
-        feeTokenObservable
-      );
-    }
+    //   this.subscription = combineLatest(
+    //     toAddressObservable,
+    //     amountObservable,
+    //     feeTokenObservable,
+    //     isPrivacyTokenObservable
+    //   );
+    // } else {
+    //   this.subscription = combineLatest(
+    //     toAddressObservable,
+    //     amountObservable,
+    //     feeTokenObservable
+    //   );
+    // }
 
     this.subscription
       .pipe(
