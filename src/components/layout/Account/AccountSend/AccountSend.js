@@ -71,7 +71,6 @@ const refs = { modalConfirmationRef: null }; //TODO - remove this
 function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
-  const isPrivacyRef = React.useRef();
 
   const { wallet } = useWalletContext();
   const account = useAccountContext();
@@ -147,7 +146,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
           Number(state.amount) * 100,
           account.PrivateKey,
           accountWallet,
-          Number(isPrivacyRef.current.value)
+          Number(state.isPrivacy)
         )
         .then(fee => {
           dispatch({ type: "LOAD_ESTIMATION_FEE_SUCCESS", fee });
