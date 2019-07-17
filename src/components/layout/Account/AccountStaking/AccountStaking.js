@@ -26,6 +26,7 @@ import {
   clearAccountBalance
 } from "@src/services/CacheAccountBalanceService";
 import { formatConstantBalance } from "@src/common/utils/format";
+import { convertConstantBalance } from "@src/common/utils/convert";
 import constants from "../../../../constants";
 
 const BurnAddress =
@@ -121,7 +122,7 @@ function AccountStaking({
     account => ({
       paymentAddress: account.PaymentAddress,
       toAddress: BurnAddress,
-      amount: formatConstantBalance(amountStakingShard),
+      amount: convertConstantBalance(amountStakingShard),
       fee: "",
       minFee: "",
       showAlert: "",
@@ -306,8 +307,8 @@ function AccountStaking({
     if (name === "stakingType") {
       const amountVal =
         e.target.value == "0"
-          ? formatConstantBalance(amountStakingShard)
-          : formatConstantBalance(amountStakingBeacon);
+          ? convertConstantBalance(amountStakingShard)
+          : convertConstantBalance(amountStakingBeacon);
       dispatch({ type: "CHANGE_INPUT", name: "amount", value: amountVal });
     }
     dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
