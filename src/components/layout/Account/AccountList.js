@@ -20,7 +20,7 @@ import { connectWalletContext } from "@src/common/context/WalletContext";
 import { connectAccountContext } from "@src/common/context/AccountContext";
 import styled from "styled-components";
 import cls from "classnames";
-import { formatConstantBalance } from "@src/common/utils/format";
+import { formatPRVAmount } from "@src/common/utils/format";
 
 const styles = theme => ({
   root: {
@@ -128,7 +128,7 @@ class AccountList extends React.Component {
                     {a.value === -1 || isNaN(a.value) ? (
                       <CircularProgress size={20} />
                     ) : (
-                      formatConstantBalance(a.value)
+                      formatPRVAmount(a.value)
                     )}
                   </Balance>
                 </div>

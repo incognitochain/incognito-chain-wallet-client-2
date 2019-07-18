@@ -25,8 +25,9 @@ import {
   saveAccountBalance,
   clearAccountBalance
 } from "@src/services/CacheAccountBalanceService";
-import { formatConstantBalance } from "@src/common/utils/format";
+import { formatPRVAmount } from "@src/common/utils/format";
 import constants from "../../../../constants";
+import { NanoUnit, PrivacyUnit } from "@src/common/utils/constants";
 
 const styles = theme => ({
   textField: {
@@ -54,8 +55,8 @@ function reducer(state, action) {
       return {
         ...state,
         isLoadingEstimationFee: false,
-        fee: action.fee / 100,
-        minFee: action.fee / 100
+        fee: action.fee / PrivacyUnit,
+        minFee: action.fee / PrivacyUnit
       };
     case "SHOW_LOADING":
       return { ...state, isLoading: action.isShow };
@@ -149,7 +150,7 @@ function AccountDefragment({ classes, isOpen }) {
           return rpcClientService
             .getEstimateFeeToDefragmentService(
               account.PaymentAddress,
-              Number(amountInputRef.current.value) * 100,
+              Number(amountInputRef.current.value) * PrivacyUnit,
               account.PrivateKey,
               accountWallet,
               Number(isPrivacyRef.current.value)
@@ -193,8 +194,8 @@ function AccountDefragment({ classes, isOpen }) {
       return;
     }
 
-    if (Number(amount) < 0.01) {
-      toastr.warning("Amount must be at least 0.01 PRV!");
+    if (Number(amount) < Number(NanoUnit)) {
+      toastr.warning("Amount must be at least 0.000000001 PRV!");
       return;
     }
 
@@ -236,8 +237,8 @@ function AccountDefragment({ classes, isOpen }) {
 
     try {
       var result = await Account.defragment(
-        Number(amount) * 100,
-        Number(fee) * 100,
+        Number(amount) * PrivacyUnit,
+        Number(fee) * PrivacyUnit,
         Number(isPrivacy),
         account,
         wallet
@@ -275,8 +276,8 @@ function AccountDefragment({ classes, isOpen }) {
         toastr.warning("Receiver's address is invalid!");
       }
     } else if (name === "amount") {
-      if (Number(e.target.value) < 0.01) {
-        toastr.warning("Amount must be at least 0.01 PRV!");
+      if (Number(e.target.value) < Number(NanoUnit)) {
+        toastr.warning("Amount must be at least 0.000000001 PRV!");
       }
     } else if (name === "fee") {
       if (Number(e.target.value) < 0) {
@@ -321,7 +322,7 @@ function AccountDefragment({ classes, isOpen }) {
         </div>
         <div className="col-sm">
           <div className="text-right">
-            Balance: {balance ? formatConstantBalance(balance) : 0}{" "}
+            Balance: {balance ? formatPRVAmount(balance) : 0}{" "}
             {constants.NATIVE_COIN}
           </div>
         </div>

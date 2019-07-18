@@ -206,6 +206,38 @@ class CreateToken extends React.Component {
             isPrivacyForPrivateToken = this.state.isPrivacy === "1";
             console.log("isPrivacyForPrivateToken: ", isPrivacyForPrivateToken);
           }
+          // test: get token fee
+          // return rpcClientService
+          //   .getEstimateTokenFeeService(
+          //     this.props.account.PaymentAddress,
+          //     toAddress,
+          //     amount,
+          //     this.getRequestTokenObject(),
+          //     this.props.account.PrivateKey,
+          //     accountWallet,
+          //     isPrivacyForPrivateToken
+          //   )
+          //   .catch(e => {
+          //     console.error(e);
+          //     toastr.error("Error on get estimation fee!");
+          //     return Promise.resolve(0);
+          //   });
+
+          // test: get max withdraw token
+          // return rpcClientService
+          // .getMaxWithdrawAmountService(
+          //   this.props.account.PaymentAddress,
+          //   toAddress,
+          //   this.getRequestTokenObject(),
+          //   this.props.account.PrivateKey,
+          //   accountWallet,
+          //   isPrivacyForPrivateToken
+          // )
+          // .catch(e => {
+          //   console.error(e);
+          //   toastr.error("Error on get estimation fee!");
+          //   return Promise.resolve(0);
+          // });
 
           return rpcClientService
             .getEstimateFeeForSendingTokenService(

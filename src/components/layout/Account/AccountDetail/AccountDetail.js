@@ -29,7 +29,7 @@ import * as cacheAccountListService from "@src/services/CacheListAccountService"
 import * as cacheAccountBalanceService from "@src/services/CacheAccountBalanceService";
 import * as rpcClientService from "@src/services/RpcClientService";
 import { fadeIn } from "@src/common/animations";
-import { formatConstantBalance } from "@src/common/utils/format";
+import { formatPRVAmount } from "@src/common/utils/format";
 import constants from "../../../../constants";
 
 const styles = theme => ({
@@ -411,7 +411,7 @@ class AccountDetail extends React.Component {
     }
     return (
       <>
-        {typeof balance === "number" ? formatConstantBalance(balance) : 0}{" "}
+        {typeof balance === "number" ? formatPRVAmount(balance) : 0}{" "}
         <span className="constant">{constants.NATIVE_COIN}</span>
       </>
     );

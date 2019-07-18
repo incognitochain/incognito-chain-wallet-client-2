@@ -2,11 +2,16 @@ import React from "react";
 import styled from "styled-components";
 import { truncate } from "lodash";
 import { useAccountContext } from "../../common/context/AccountContext";
-import { SuccessTx, ConfirmedTx } from "incognito-chain-web-js/build/wallet";
+import { useWalletContext } from "../../common/context/WalletContext";
+import {
+  SuccessTx,
+  ConfirmedTx,
+  toMiliConstant
+} from "incognito-chain-web-js/build/wallet";
 import Avatar from "@material-ui/core/Avatar";
 import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
 import {
-  formatConstantBalance,
+  formatPRVAmount,
   formatDate,
   formatTokenAmount
 } from "@src/common/utils/format";
@@ -14,6 +19,9 @@ import { OptionMenu } from "@src/common/components/popover-menu/OptionMenu";
 import { hashToIdenticon } from "@src/services/RpcClientService";
 import Dialog from "@src/components/core/Dialog";
 import constants from "../../constants";
+
+import Account from "@src/services/Account";
+import toastr from "toastr";
 
 const url = `${process.env.CONSTANT_EXPLORER}/tx/`;
 
@@ -30,6 +38,7 @@ export function HistoryItem({ history, onSendConstant }) {
   const [dialog, setDialog] = React.useState(null);
 
   let account = useAccountContext();
+  let { wallet } = useWalletContext();
 
   React.useEffect(() => {
     async function getIdenticon() {
@@ -46,7 +55,7 @@ export function HistoryItem({ history, onSendConstant }) {
     setDialogContent(
       <SendCoinCompletedInfo
         onClose={() => null}
-        amount={formatConstantBalance(history?.amount)}
+        amount={formatPRVAmount(history?.amount)}
         toAddress={receiverAddress}
         txId={history?.txID}
         createdAt={history?.time}
@@ -64,14 +73,47 @@ export function HistoryItem({ history, onSendConstant }) {
     }
     let props = {
       toAddress: history.receivers[0],
-      amount: formatConstantBalance(history.amount),
+      amount: formatPRVAmount(history.amount),
       isPrivacy: Number(history.isPrivacy).toString()
     };
     onSendConstant(account, props);
   }
 
-  const items = [
-    { key: 1, onclick: () => onClickResendMenuItem(history), text: "Resend" }
+  async function onClickCancelMenuItem(history) {
+    if (!history) {
+      return;
+    }
+    console.log("Account: ", account);
+    console.log("wallet: ", wallet);
+
+    let response;
+    try {
+      response = await Account.cancelTx(
+        history.txID,
+        toMiliConstant(history.fee) * 2,
+        toMiliConstant(history.feePToken) * 2,
+        account,
+        wallet
+      );
+    } catch (e) {
+      console.log("Cancel transaction error: ", e);
+      toastr.error("Cancel transaction failed. Please try again!");
+    }
+
+    if (response && response.txId != null) {
+      toastr.info("Cancel transaction success.");
+    } else {
+      toastr.error("Cancel transaction failed. Please try again!");
+    }
+  }
+
+  const itemsForPRV = [
+    { key: 1, onclick: () => onClickResendMenuItem(history), text: "Resend" },
+    { key: 2, onclick: () => onClickCancelMenuItem(history), text: "Cancel" }
+  ];
+
+  const itemsForToken = [
+    { key: 1, onclick: () => onClickCancelMenuItem(history), text: "Cancel" }
   ];
 
   let createdTime = "";
@@ -115,7 +157,9 @@ export function HistoryItem({ history, onSendConstant }) {
 
             <Time>{createdTime}</Time>
           </div>
-          {!history.tokenName ? <OptionMenu items={items} /> : null}
+          <OptionMenu
+            items={history.tokenName === "" ? itemsForPRV : itemsForToken}
+          />
         </Row1>
 
         <Row2>
@@ -134,10 +178,12 @@ export function HistoryItem({ history, onSendConstant }) {
           </Left>
           <Right>
             {history.isIn ? "+" : "-"}{" "}
-            {history.tokenName
+            {history.tokenName !== ""
               ? formatTokenAmount(history.amount)
-              : formatConstantBalance(history.amount)}{" "}
-            {history.tokenName ? history.tokenName : constants.NATIVE_COIN}
+              : formatPRVAmount(history.amount)}{" "}
+            {history.tokenName !== ""
+              ? history.tokenName
+              : constants.NATIVE_COIN}
           </Right>
         </Row2>
 
