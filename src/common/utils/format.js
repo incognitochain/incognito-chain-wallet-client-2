@@ -1,11 +1,12 @@
 import moment from "moment";
-import { convertConstantBalance } from "./convert";
+import { toPRV } from "incognito-chain-web-js/build/wallet";
 
 export const truncLongText = (text = "") =>
   `${text.substr(0, 10)}...${text.substr(-10)}`;
 
-export const formatConstantBalance = balance =>
-  convertConstantBalance(balance).toLocaleString(navigator.language, {
+// formatPRVAmount formats amount for PRV when display for user (in privacy unit)
+export const formatPRVAmount = amount =>
+  toPRV(amount).toLocaleString(navigator.language, {
     minimumFractionDigits: 9
   });
 

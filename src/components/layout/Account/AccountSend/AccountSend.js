@@ -19,8 +19,9 @@ import {
 import QRScanner from "@src/common/components/qrScanner";
 import detectBrowser from "@src/services/BrowserDetect";
 import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
-import { formatConstantBalance } from "@src/common/utils/format";
+import { formatPRVAmount } from "@src/common/utils/format";
 import constants from "../../../../constants";
+import { NanoUnit, PrivacyUnit } from "@src/common/utils/constants";
 
 const styles = theme => ({
   textField: {
@@ -56,8 +57,8 @@ function reducer(state, action) {
       return {
         ...state,
         isLoadingEstimationFee: false,
-        fee: action.fee / 100,
-        minFee: action.fee / 100
+        fee: action.fee / PrivacyUnit,
+        minFee: action.fee / PrivacyUnit
       };
     case "SHOW_LOADING":
       return { ...state, isLoading: action.isShow };
@@ -134,7 +135,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
   React.useEffect(() => {
     if (
       Account.checkPaymentAddress(state.toAddress) &&
-      Number(state.amount) >= 0.01
+      Number(state.amount) >= Number(NanoUnit)
     ) {
       dispatch({ type: "LOAD_ESTIMATION_FEE" });
       if (balance <= 0) {
@@ -144,7 +145,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
         .getEstimateFeeService(
           account.PaymentAddress,
           state.toAddress,
-          Number(state.amount) * 100,
+          Number(state.amount) * PrivacyUnit,
           account.PrivateKey,
           accountWallet,
           Number(state.isPrivacy)
@@ -186,8 +187,8 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
       return;
     }
 
-    if (Number(amount) < 0.01) {
-      toastr.warning("Amount must be at least 0.01 PRV!");
+    if (Number(amount) < Number(NanoUnit)) {
+      toastr.warning("Amount must be at least 0.000000001 PRV!");
       return;
     }
 
@@ -231,8 +232,10 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
 
     try {
       var result = await Account.sendConstant(
-        [{ paymentAddressStr: toAddress, amount: Number(amount) * 100 }],
-        Number(fee) * 100,
+        [
+          { paymentAddressStr: toAddress, amount: Number(amount) * PrivacyUnit }
+        ],
+        Number(fee) * PrivacyUnit,
         Number(isPrivacy),
         account,
         wallet,
@@ -270,8 +273,8 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
         toastr.warning("Receiver's address is invalid!");
       }
     } else if (name === "amount") {
-      if (Number(e.target.value) < 0.01) {
-        toastr.warning("Amount must be at least 0.01 PRV!");
+      if (Number(e.target.value) < Number(NanoUnit)) {
+        toastr.warning("Amount must be at least 0.000000001 PRV!");
       }
     } else if (name === "fee") {
       if (Number(e.target.value) < 0) {
@@ -339,7 +342,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
         </div> */}
         <div className="col-sm">
           <div className="text-right">
-            Balance: {balance ? formatConstantBalance(balance) : 0}{" "}
+            Balance: {balance ? formatPRVAmount(balance) : 0}{" "}
             {constants.NATIVE_COIN}
           </div>
         </div>

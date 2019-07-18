@@ -1,3 +1,4 @@
-const NANOUNIT = 1e9;
+const PrivacyUnit = 1e9;
+const NanoUnit = 1e-9;
 
-export { NANOUNIT };
+export { NanoUnit, PrivacyUnit };

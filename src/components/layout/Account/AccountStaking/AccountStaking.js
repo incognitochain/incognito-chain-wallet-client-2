@@ -25,9 +25,10 @@ import {
   saveAccountBalance,
   clearAccountBalance
 } from "@src/services/CacheAccountBalanceService";
-import { formatConstantBalance } from "@src/common/utils/format";
-import { convertConstantBalance } from "@src/common/utils/convert";
+import { formatPRVAmount } from "@src/common/utils/format";
+import { toPRV } from "incognito-chain-web-js/build/wallet";
 import constants from "../../../../constants";
+import { NanoUnit, PrivacyUnit } from "@src/common/utils/constants";
 
 const BurnAddress =
   "1NHp2EKw7ALdXUzBfoRJvKrBBM9nkejyDcHVPvUjDcWRyG22dHHyiBKQGL1c";
@@ -61,8 +62,8 @@ function reducer(state, action) {
       return {
         ...state,
         isLoadingEstimationFee: false,
-        fee: action.fee / 100,
-        minFee: action.fee / 100
+        fee: action.fee / PrivacyUnit,
+        minFee: action.fee / PrivacyUnit
       };
     case "SHOW_LOADING":
       return { ...state, isLoading: action.isShow };
@@ -122,7 +123,7 @@ function AccountStaking({
     account => ({
       paymentAddress: account.PaymentAddress,
       toAddress: BurnAddress,
-      amount: convertConstantBalance(amountStakingShard),
+      amount: toPRV(amountStakingShard),
       fee: "",
       minFee: "",
       showAlert: "",
@@ -159,7 +160,7 @@ function AccountStaking({
             .getEstimateFeeService(
               account.PaymentAddress,
               state.toAddress,
-              Number(amountInputRef.current.value) * 100,
+              Number(amountInputRef.current.value) * PrivacyUnit,
               account.PrivateKey,
               accountWallet,
               false
@@ -228,8 +229,8 @@ function AccountStaking({
       return;
     }
 
-    if (Number(amount) < 0.01) {
-      toastr.warning("Amount must be at least 0.01 PRV!");
+    if (Number(amount) < Number(NanoUnit)) {
+      toastr.warning("Amount must be at least 0.000000001 PRV!");
       return;
     }
 
@@ -255,8 +256,8 @@ function AccountStaking({
     }
 
     if (
-      (stakingType == "0" && amount != amountStakingShard / 100) ||
-      (stakingType == "1" && amount != amountStakingBeacon / 100)
+      (stakingType == "0" && amount != amountStakingShard / PrivacyUnit) ||
+      (stakingType == "1" && amount != amountStakingBeacon / PrivacyUnit)
     ) {
       toastr.warning("Amount is invalid!");
       return;
@@ -280,7 +281,7 @@ function AccountStaking({
     try {
       var result = await Account.staking(
         { type: Number(stakingType), burningAddress: BurnAddress },
-        Number(fee) * 100,
+        Number(fee) * PrivacyUnit,
         account,
         wallet
       );
@@ -310,8 +311,8 @@ function AccountStaking({
     if (name === "stakingType") {
       const amountVal =
         e.target.value == "0"
-          ? convertConstantBalance(amountStakingShard)
-          : convertConstantBalance(amountStakingBeacon);
+          ? toPRV(amountStakingShard)
+          : toPRV(amountStakingBeacon);
       dispatch({ type: "CHANGE_INPUT", name: "amount", value: amountVal });
     }
     dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
@@ -325,8 +326,8 @@ function AccountStaking({
         toastr.warning("Receiver's address is invalid!");
       }
     } else if (name === "amount") {
-      if (Number(e.target.value) < 0.01) {
-        toastr.warning("Amount must be at least 0.01 PRV!");
+      if (Number(e.target.value) < Number(NanoUnit)) {
+        toastr.warning("Amount must be at least 0.000000001 PRV!");
       }
     } else if (name === "fee") {
       if (Number(e.target.value) < 0) {
@@ -373,7 +374,7 @@ function AccountStaking({
         {console.log("state.stakingType: ", state.stakingType)}
         <div className="col-sm">
           <div className="text-right">
-            Balance: {balance ? formatConstantBalance(balance) : 0}{" "}
+            Balance: {balance ? formatPRVAmount(balance) : 0}{" "}
             {constants.NATIVE_COIN}
           </div>
         </div>

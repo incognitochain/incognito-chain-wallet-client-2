@@ -11,7 +11,7 @@ import {
 import Avatar from "@material-ui/core/Avatar";
 import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
 import {
-  formatConstantBalance,
+  formatPRVAmount,
   formatDate,
   formatTokenAmount
 } from "@src/common/utils/format";
@@ -55,7 +55,7 @@ export function HistoryItem({ history, onSendConstant }) {
     setDialogContent(
       <SendCoinCompletedInfo
         onClose={() => null}
-        amount={formatConstantBalance(history?.amount)}
+        amount={formatPRVAmount(history?.amount)}
         toAddress={receiverAddress}
         txId={history?.txID}
         createdAt={history?.time}
@@ -73,7 +73,7 @@ export function HistoryItem({ history, onSendConstant }) {
     }
     let props = {
       toAddress: history.receivers[0],
-      amount: formatConstantBalance(history.amount),
+      amount: formatPRVAmount(history.amount),
       isPrivacy: Number(history.isPrivacy).toString()
     };
     onSendConstant(account, props);
@@ -180,7 +180,7 @@ export function HistoryItem({ history, onSendConstant }) {
             {history.isIn ? "+" : "-"}{" "}
             {history.tokenName !== ""
               ? formatTokenAmount(history.amount)
-              : formatConstantBalance(history.amount)}{" "}
+              : formatPRVAmount(history.amount)}{" "}
             {history.tokenName !== ""
               ? history.tokenName
               : constants.NATIVE_COIN}
