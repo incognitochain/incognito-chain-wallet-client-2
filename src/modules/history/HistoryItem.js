@@ -6,7 +6,7 @@ import { useWalletContext } from "../../common/context/WalletContext";
 import {
   SuccessTx,
   ConfirmedTx,
-  toMiliConstant
+  toNanoPRV
 } from "incognito-chain-web-js/build/wallet";
 import Avatar from "@material-ui/core/Avatar";
 import SendCoinCompletedInfo from "@src/common/components/completedInfo/sendCoin";
@@ -90,8 +90,8 @@ export function HistoryItem({ history, onSendConstant }) {
     try {
       response = await Account.cancelTx(
         history.txID,
-        toMiliConstant(history.fee) * 2,
-        toMiliConstant(history.feePToken) * 2,
+        toNanoPRV(history.fee) * 2,
+        toNanoPRV(history.feePToken) * 2,
         account,
         wallet
       );
