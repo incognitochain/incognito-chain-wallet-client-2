@@ -260,8 +260,8 @@ class CreateToken extends React.Component {
       .subscribe(fee => {
         console.log("Fee AAAAA: ", fee);
         this.setState({
-          feePRV: Number(fee) / 100,
-          minFeePRV: Number(fee) / 100,
+          feePRV: Number(fee) / 1e9,
+          minFeePRV: Number(fee) / 1e9,
           isLoadingEstimationFee: false
         });
       }, console.error);
@@ -383,7 +383,7 @@ class CreateToken extends React.Component {
     try {
       let response = await Token.createSendPrivacyCustomTokenTransaction(
         params,
-        Number(feePRV) * 100,
+        Number(feePRV) * 1e9,
         Number(feeToken),
         isPrivacy,
         this.props.account,
