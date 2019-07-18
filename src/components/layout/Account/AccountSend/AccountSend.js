@@ -99,7 +99,8 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
       minFee: "0.00",
       showAlert: "",
       isAlert: false,
-      isPrivacy: "1"
+      isPrivacy: "1",
+      info: ""
     })
   );
 
@@ -166,7 +167,8 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
       fee,
       minFee,
       EstimateTxSizeInKb,
-      GOVFeePerKbTx
+      GOVFeePerKbTx,
+      info
     } = state;
 
     if (!toAddress) {
@@ -223,7 +225,7 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
     dispatch({ type: "SHOW_LOADING", isShow: true });
 
     // isPrivacy in state is string
-    let { toAddress, amount, fee, isPrivacy } = state;
+    let { toAddress, amount, fee, isPrivacy, info } = state;
 
     console.log("isPrivacy when create tx: ", isPrivacy);
 
@@ -233,7 +235,8 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
         Number(fee) * 100,
         Number(isPrivacy),
         account,
-        wallet
+        wallet,
+        info
       );
       if (result.txId) {
         clearAccountBalance(account.name);
@@ -386,6 +389,18 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
         value={state.fee}
         onChange={onChangeInput("fee")}
         onBlur={e => onValidator("fee")(e)}
+      />
+
+      <TextField
+        id="info"
+        label="Info"
+        className={classes.textField}
+        margin="normal"
+        variant="outlined"
+        value={state.info}
+        delayTimeout={1000}
+        onChange={e => onChangeInput("info")(e)}
+        onBlur={e => onValidator("info")(e)}
       />
 
       <Button

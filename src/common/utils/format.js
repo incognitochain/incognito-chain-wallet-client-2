@@ -6,16 +6,11 @@ export const truncLongText = (text = "") =>
 
 export const formatConstantBalance = balance =>
   convertConstantBalance(balance).toLocaleString(navigator.language, {
-    minimumFractionDigits: 2
+    minimumFractionDigits: 9
   });
 
 export const formatTokenAmount = amount =>
   Number.parseInt(amount).toLocaleString();
-
-export const formatAmount = amount =>
-  Number.parseInt(amount).toLocaleString(navigator.language, {
-    minimumFractionDigits: 2
-  });
 
 export const formatDate = (date, formatPartern) =>
   moment(date).format(formatPartern || "DD/MM/YYYY - HH:mm:ss");

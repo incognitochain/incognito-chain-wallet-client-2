@@ -296,8 +296,11 @@ function AccountStaking({
         );
       }
     } catch (e) {
-      console.log("Create tx err: ", e.toString());
-      toastr.error("Staking failed. Please try again! Err:" + e.toString());
+      let msg = e.StackTrace.toString();
+      console.log("Create tx err: ", msg.substring(0, 100));
+      toastr.error(
+        "Staking failed. Please try again! Err:" + msg.substring(0, 100) + "..."
+      );
     }
 
     dispatch({ type: "SHOW_LOADING", isShow: false });
