@@ -7,7 +7,7 @@ export const truncLongText = (text = "") =>
 // formatPRVAmount formats amount for PRV when display for user (in privacy unit)
 export const formatPRVAmount = amount =>
   toPRV(amount).toLocaleString(navigator.language, {
-    minimumFractionDigits: 9
+    minimumFractionDigits: 4
   });
 
 export const formatTokenAmount = amount =>
