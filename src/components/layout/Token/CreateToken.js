@@ -24,6 +24,7 @@ import QRScanner from "@src/common/components/qrScanner";
 import { Loading } from "../../../common/components/loading/Loading";
 import Account from "../../../services/Account";
 import { formatTokenAmount } from "@src/common/utils/format";
+import { PrivacyUnit } from "@src/common/utils/constants";
 
 const MaxUint64 = 18446744073709551615;
 
@@ -260,8 +261,8 @@ class CreateToken extends React.Component {
       .subscribe(fee => {
         console.log("Fee AAAAA: ", fee);
         this.setState({
-          feePRV: Number(fee) / 1e9,
-          minFeePRV: Number(fee) / 1e9,
+          feePRV: Number(fee) / PrivacyUnit,
+          minFeePRV: Number(fee) / PrivacyUnit,
           isLoadingEstimationFee: false
         });
       }, console.error);
@@ -383,7 +384,7 @@ class CreateToken extends React.Component {
     try {
       let response = await Token.createSendPrivacyCustomTokenTransaction(
         params,
-        Number(feePRV) * 1e9,
+        Number(feePRV) * PrivacyUnit,
         Number(feeToken),
         isPrivacy,
         this.props.account,
