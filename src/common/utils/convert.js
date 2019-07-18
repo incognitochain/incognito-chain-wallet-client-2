@@ -1,1 +1,3 @@
-export const convertConstantBalance = balance => Number(balance) / 100;
+import { NANOUNIT } from "./constants";
+
+export const convertConstantBalance = balance => Number(balance) / NANOUNIT;
