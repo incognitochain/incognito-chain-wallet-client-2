@@ -135,4 +135,27 @@ export default class Account {
       return true;
     }
   }
+
+  static async cancelTx(txID, newFee, newFeePToken, account, wallet) {
+    // let accountWallet = wallet.getAccountByName(account.name);
+    console.log("Account: ", account);
+    console.log("wallet: ", wallet);
+
+    let indexAccount = wallet.getAccountIndexByName(account.name);
+    let result;
+    try {
+      result = await wallet.MasterAccount.child[indexAccount].cancelTx(
+        txID,
+        newFee,
+        newFeePToken
+      );
+
+      // save wallet
+      wallet.save(getPassphrase());
+    } catch (e) {
+      throw e;
+    }
+
+    return result;
+  }
 }
