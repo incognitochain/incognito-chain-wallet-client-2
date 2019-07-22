@@ -251,8 +251,13 @@ function AccountSend({ classes, isOpen, closeModal, defaultPaymentInfo }) {
         );
       }
     } catch (e) {
-      console.log("Create tx err: ", e);
-      toastr.error("Create and send failed. Please try again! Err:" + e);
+      let msg = e.StackTrace.toString();
+      console.log("Create tx err: ", msg.substring(0, 100));
+      toastr.error(
+        "Create and send failed. Please try again! Err:" +
+          msg.substring(0, 100) +
+          "..."
+      );
     }
 
     dispatch({ type: "SHOW_LOADING", isShow: false });
