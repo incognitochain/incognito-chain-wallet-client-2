@@ -91,7 +91,7 @@ export function HistoryItem({ history, onSendConstant }) {
       response = await Account.cancelTx(
         history.txID,
         toNanoPRV(history.fee) * 2,
-        toNanoPRV(history.feePToken) * 2,
+        history.feePToken * 2,
         account,
         wallet
       );
