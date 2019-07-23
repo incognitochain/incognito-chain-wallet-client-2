@@ -26,12 +26,9 @@ import {
   clearAccountBalance
 } from "@src/services/CacheAccountBalanceService";
 import { formatPRVAmount } from "@src/common/utils/format";
-import { toPRV } from "incognito-chain-web-js/build/wallet";
+import { toPRV, BurnAddress } from "incognito-chain-web-js/build/wallet";
 import constants from "../../../../constants";
 import { NanoUnit, PrivacyUnit } from "@src/common/utils/constants";
-
-const BurnAddress =
-  "1NHp2EKw7ALdXUzBfoRJvKrBBM9nkejyDcHVPvUjDcWRyG22dHHyiBKQGL1c";
 
 const styles = theme => ({
   textField: {
@@ -280,7 +277,7 @@ function AccountStaking({
 
     try {
       var result = await Account.staking(
-        { type: Number(stakingType), burningAddress: BurnAddress },
+        { type: Number(stakingType) },
         Number(fee) * PrivacyUnit,
         account,
         wallet
