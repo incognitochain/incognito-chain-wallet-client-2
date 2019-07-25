@@ -158,4 +158,43 @@ export default class Account {
 
     return result;
   }
+
+  /**
+   *
+   * @param {string} tokenID
+   * @param {object} account
+   * @param {object} wallet
+   */
+  static async getRewardAmount(tokenID, account, wallet) {
+    let indexAccount = wallet.getAccountIndexByName(account.name);
+    let result;
+    try {
+      result = await wallet.MasterAccount.child[indexAccount].getRewardAmount(
+        tokenID
+      );
+    } catch (e) {
+      throw e;
+    }
+
+    return result;
+  }
+  /**
+   *
+   * @param {string} tokenID
+   * @param {object} account
+   * @param {object} wallet
+   */
+  static async createAndSendWithdrawRewardTx(tokenID, account, wallet) {
+    let indexAccount = wallet.getAccountIndexByName(account.name);
+    let result;
+    try {
+      result = await wallet.MasterAccount.child[
+        indexAccount
+      ].createAndSendWithdrawRewardTx(tokenID);
+    } catch (e) {
+      throw e;
+    }
+
+    return result;
+  }
 }
