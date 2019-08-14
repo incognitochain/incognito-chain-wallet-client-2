@@ -57,7 +57,14 @@ export default class Account {
     return result;
   }
 
-  static async staking(param, fee, account, wallet) {
+  static async staking(
+    param,
+    fee,
+    candidatePaymentAddress,
+    isRewardFunder,
+    account,
+    wallet
+  ) {
     // param: payment address string, amount in Number (miliconstant)
     await Wallet.resetProgressTx();
     let indexAccount = wallet.getAccountIndexByName(account.name);
@@ -66,7 +73,12 @@ export default class Account {
     try {
       result = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendStakingTx(param, fee);
+      ].createAndSendStakingTx(
+        param,
+        fee,
+        candidatePaymentAddress,
+        isRewardFunder
+      );
 
       // save wallet
       wallet.save(getPassphrase());

@@ -2,7 +2,13 @@ import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import ConfirmDialog from "@src/components/core/ConfirmDialog";
 import Account from "@src/services/Account";
-import { Button, TextField, Select, MenuItem } from "@material-ui/core";
+import {
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  Checkbox
+} from "@material-ui/core";
 import { useAccountContext } from "@src/common/context/AccountContext";
 import toastr from "toastr";
 import { useWalletContext } from "@src/common/context/WalletContext";
@@ -29,6 +35,9 @@ import { formatPRVAmount } from "@src/common/utils/format";
 import { toPRV, BurnAddress } from "incognito-chain-web-js/build/wallet";
 import constants from "../../../../constants";
 import { NanoUnit, PrivacyUnit } from "@src/common/utils/constants";
+
+import QRScanner from "@src/common/components/qrScanner";
+import detectBrowser from "@src/services/BrowserDetect";
 
 const styles = theme => ({
   textField: {
@@ -81,6 +90,7 @@ function AccountStaking({
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
   let stakingTypeRef = React.useRef();
+  const isRewardFunderRef = React.useRef();
 
   const { wallet } = useWalletContext();
   const account = useAccountContext();
@@ -126,7 +136,9 @@ function AccountStaking({
       showAlert: "",
       isAlert: false,
       isPrivacy: "0",
-      stakingType: "0" // default is shard
+      stakingType: "0", // default is shard
+      isRewardFunder: "1",
+      candidatePaymentAddress: account.PaymentAddress
     })
   );
 
@@ -273,12 +285,14 @@ function AccountStaking({
     dispatch({ type: "SHOW_LOADING", isShow: true });
 
     // isPrivacy in state is string
-    let { fee, stakingType } = state;
+    let { fee, stakingType, candidatePaymentAddress, isRewardFunder } = state;
 
     try {
       var result = await Account.staking(
         { type: Number(stakingType) },
         Number(fee) * PrivacyUnit,
+        candidatePaymentAddress,
+        isRewardFunder === "1" ? true : false,
         account,
         wallet
       );
@@ -311,7 +325,16 @@ function AccountStaking({
           ? toPRV(amountStakingShard)
           : toPRV(amountStakingBeacon);
       dispatch({ type: "CHANGE_INPUT", name: "amount", value: amountVal });
+      return;
     }
+
+    if (name === "isRewardFunder") {
+      const value = e.target.value === "1" ? "0" : "1";
+
+      dispatch({ type: "CHANGE_INPUT", name: "isRewardFunder", value: value });
+      return;
+    }
+
     dispatch({ type: "CHANGE_INPUT", name, value: e.target.value });
   };
 
@@ -416,6 +439,36 @@ function AccountStaking({
         onChange={onChangeInput("fee")}
         onBlur={e => onValidator("fee")(e)}
       />
+
+      <TextField
+        required
+        id="candidatePaymentAddress"
+        label="Candidate payment address"
+        className={classes.textField}
+        margin="normal"
+        variant="outlined"
+        value={state.candidatePaymentAddress}
+        onChange={e => {
+          onChangeInput("candidatePaymentAddress")(e);
+        }}
+        onBlur={e => onValidator("candidatePaymentAddress")(e)}
+        inputProps={{ ref: toInputRef }}
+      />
+
+      <div className="col-sm">
+        <div>
+          <Checkbox
+            label="Funder will receive reward?"
+            id="isRewardFunder"
+            checked={state.isRewardFunder === "1"}
+            value={state.isRewardFunder}
+            onChange={onChangeInput("isRewardFunder")}
+            color="primary"
+            inputProps={{ ref: isRewardFunderRef }}
+          />
+          Funder will receive reward?
+        </div>
+      </div>
 
       <Button
         variant="contained"
