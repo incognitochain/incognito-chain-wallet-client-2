@@ -5,23 +5,28 @@ import { useAccountContext } from "../../common/context/AccountContext";
 import toastr from "toastr";
 import styled from "styled-components";
 import { ReactComponent as CopyPasteSVG } from "@assets/images/copy-paste.svg";
+import { getShardIDFromLastByte } from "incognito-chain-web-js/build/wallet";
 
 export function PrivacyKeyDialog({ isOpen, onClose }) {
   console.log("useAccountContext()", useAccountContext());
   const {
     PrivateKey,
-    ReadonlyKey,
-    PublicKey,
+    // ReadonlyKey,
+    // PublicKey,
     PublicKeyCheckEncode,
     PublicKeyBytes
   } = useAccountContext();
+
+  const shardID = getShardIDFromLastByte(
+    PublicKeyBytes[PublicKeyBytes.length - 1]
+  );
   const copyToClipBoard = () => {
     toastr.success("Copied!");
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Account Detail">
       <Wrapper>
-        <CopyToClipboard text={ReadonlyKey} onCopy={copyToClipBoard}>
+        {/* <CopyToClipboard text={ReadonlyKey} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
             <div className="titleKeys">
               <div className="keyNameReadonly">READONLY KEY</div>
@@ -33,7 +38,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
               {ReadonlyKey.substring(0, 20) + "..." + ReadonlyKey.substring(90)}
             </div>
           </div>
-        </CopyToClipboard>
+        </CopyToClipboard> */}
 
         <CopyToClipboard text={PrivateKey} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
@@ -49,7 +54,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
           </div>
         </CopyToClipboard>
 
-        <CopyToClipboard text={PublicKey} onCopy={copyToClipBoard}>
+        {/* <CopyToClipboard text={PublicKey} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
             <div className="titleKeys">
               <div className="keyNamePublic">PUBLIC KEY IN HEX</div>
@@ -63,7 +68,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
                 : ""}
             </div>
           </div>
-        </CopyToClipboard>
+        </CopyToClipboard> */}
 
         <CopyToClipboard text={PublicKeyCheckEncode} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
@@ -79,32 +84,21 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
               {PublicKeyCheckEncode
                 ? PublicKeyCheckEncode.substring(0, 20) +
                   "..." +
-                  PublicKeyCheckEncode.substring(90)
+                  PublicKeyCheckEncode.substring(30)
                 : ""}
             </div>
           </div>
         </CopyToClipboard>
 
-        <CopyToClipboard text={PublicKeyBytes} onCopy={copyToClipBoard}>
+        <CopyToClipboard text={shardID} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
             <div className="titleKeys">
-              <div className="keyNamePublicBytes">PUBLIC KEY BYTES</div>
+              <div className="keyNamePublicBytes">SHARD ID</div>
               <span className="clickCopy">
                 <CopyPasteSVG />
               </span>
             </div>
-            <div className="keyDes">
-              {PublicKeyBytes
-                ? "[ " +
-                  PublicKeyBytes.substring(0, 20) +
-                  "..." +
-                  PublicKeyBytes.substring(
-                    PublicKeyBytes.length - 20,
-                    PublicKeyBytes.length
-                  ) +
-                  "]"
-                : ""}
-            </div>
+            <div className="keyDes">{shardID}</div>
           </div>
         </CopyToClipboard>
       </Wrapper>
