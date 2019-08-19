@@ -18,7 +18,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
   } = useAccountContext();
 
   let pkBytes = PublicKeyBytes.split(",");
-  const shardID = getShardIDFromLastByte(pkBytes[pkBytes.length - 1]) + 1;
+  const shardID = getShardIDFromLastByte(pkBytes[pkBytes.length - 1]);
   const copyToClipBoard = () => {
     toastr.success("Copied!");
   };
