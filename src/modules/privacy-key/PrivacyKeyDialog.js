@@ -11,7 +11,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
   console.log("useAccountContext()", useAccountContext());
   const {
     PrivateKey,
-    // ReadonlyKey,
+    ReadonlyKey,
     // PublicKey,
     PublicKeyCheckEncode,
     PublicKeyBytes
@@ -25,7 +25,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Account Detail">
       <Wrapper>
-        {/* <CopyToClipboard text={ReadonlyKey} onCopy={copyToClipBoard}>
+        <CopyToClipboard text={ReadonlyKey} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
             <div className="titleKeys">
               <div className="keyNameReadonly">READONLY KEY</div>
@@ -37,7 +37,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
               {ReadonlyKey.substring(0, 20) + "..." + ReadonlyKey.substring(90)}
             </div>
           </div>
-        </CopyToClipboard> */}
+        </CopyToClipboard>
 
         <CopyToClipboard text={PrivateKey} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
