@@ -5,12 +5,16 @@ import { useAccountContext } from "../../common/context/AccountContext";
 import toastr from "toastr";
 import styled from "styled-components";
 import { ReactComponent as CopyPasteSVG } from "@assets/images/copy-paste.svg";
-import { getShardIDFromLastByte } from "incognito-chain-web-js/build/wallet";
+import {
+  getShardIDFromLastByte,
+  has
+} from "incognito-chain-web-js/build/wallet";
 
 export function PrivacyKeyDialog({ isOpen, onClose }) {
   console.log("useAccountContext()", useAccountContext());
   const {
     PrivateKey,
+    BlockProducerKey,
     ReadonlyKey,
     // PublicKey,
     PublicKeyCheckEncode,
@@ -25,20 +29,6 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Account Detail">
       <Wrapper>
-        <CopyToClipboard text={ReadonlyKey} onCopy={copyToClipBoard}>
-          <div className="wrapperKeys">
-            <div className="titleKeys">
-              <div className="keyNameReadonly">READONLY KEY</div>
-              <span className="clickCopy">
-                <CopyPasteSVG />
-              </span>
-            </div>
-            <div className="keyDes">
-              {ReadonlyKey.substring(0, 20) + "..." + ReadonlyKey.substring(90)}
-            </div>
-          </div>
-        </CopyToClipboard>
-
         <CopyToClipboard text={PrivateKey} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
             <div className="titleKeys">
@@ -49,6 +39,38 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
             </div>
             <div className="keyDes">
               {PrivateKey.substring(0, 20) + "..." + PrivateKey.substring(90)}
+            </div>
+          </div>
+        </CopyToClipboard>
+
+        <CopyToClipboard text={BlockProducerKey} onCopy={copyToClipBoard}>
+          <div className="wrapperKeys">
+            <div className="titleKeys">
+              <div className="keyNamePrivacy">BLOCK PRODUCER KEY</div>
+              <span className="clickCopy">
+                <CopyPasteSVG />
+              </span>
+            </div>
+            <div className="keyDes">
+              {BlockProducerKey
+                ? BlockProducerKey.substring(0, 20) +
+                  "..." +
+                  BlockProducerKey.substring(90)
+                : ""}
+            </div>
+          </div>
+        </CopyToClipboard>
+
+        <CopyToClipboard text={ReadonlyKey} onCopy={copyToClipBoard}>
+          <div className="wrapperKeys">
+            <div className="titleKeys">
+              <div className="keyNameReadonly">READONLY KEY</div>
+              <span className="clickCopy">
+                <CopyPasteSVG />
+              </span>
+            </div>
+            <div className="keyDes">
+              {ReadonlyKey.substring(0, 20) + "..." + ReadonlyKey.substring(90)}
             </div>
           </div>
         </CopyToClipboard>

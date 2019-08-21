@@ -5,6 +5,7 @@ export const AccountContext = React.createContext({
   PrivateKey: "",
   PublicKey: "",
   PublicKeyCheckEncode: "",
+  BlockProducerKey: "",
   PublicKeyBytes: "",
   ReadonlyKey: "",
   name: ""

@@ -89,6 +89,7 @@ const App = ({ history, location }) => {
       accountList = [];
       try {
         accountList = (await wallet.listAccount()).map(account => {
+          debugger;
           return {
             default: false,
             name: account.AccountName,
@@ -98,6 +99,7 @@ const App = ({ history, location }) => {
             PrivateKey: account.PrivateKey,
             PublicKey: account.PublicKey,
             PublicKeyCheckEncode: account.PublicKeyCheckEncode,
+            BlockProducerKey: account.BlockProducerKey,
             PublicKeyBytes: account.PublicKeyBytes
           };
         });
