@@ -62,6 +62,7 @@ export default class Account {
     fee,
     candidatePaymentAddress,
     isRewardFunder,
+    candidateHashPrivateKey,
     account,
     wallet
   ) {
@@ -77,7 +78,8 @@ export default class Account {
         param,
         fee,
         candidatePaymentAddress,
-        isRewardFunder
+        isRewardFunder,
+        candidateHashPrivateKey
       );
 
       // save wallet

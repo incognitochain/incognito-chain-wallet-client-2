@@ -139,6 +139,7 @@ function AccountStaking({
       stakingType: "0", // default is shard
       isRewardFunder: "1",
       candidatePaymentAddress: account.PaymentAddress
+      // candidateHashPrivateKey: account.
     })
   );
 
@@ -285,7 +286,13 @@ function AccountStaking({
     dispatch({ type: "SHOW_LOADING", isShow: true });
 
     // isPrivacy in state is string
-    let { fee, stakingType, candidatePaymentAddress, isRewardFunder } = state;
+    let {
+      fee,
+      stakingType,
+      candidatePaymentAddress,
+      isRewardFunder,
+      candidateHashPrivateKey
+    } = state;
 
     try {
       var result = await Account.staking(
@@ -293,6 +300,7 @@ function AccountStaking({
         Number(fee) * PrivacyUnit,
         candidatePaymentAddress,
         isRewardFunder === "1" ? true : false,
+        candidateHashPrivateKey,
         account,
         wallet
       );
@@ -452,6 +460,21 @@ function AccountStaking({
           onChangeInput("candidatePaymentAddress")(e);
         }}
         onBlur={e => onValidator("candidatePaymentAddress")(e)}
+        inputProps={{ ref: toInputRef }}
+      />
+
+      <TextField
+        required
+        id="candidateHashPrivateKey"
+        label="Candidate hash of private key"
+        className={classes.textField}
+        margin="normal"
+        variant="outlined"
+        value={state.candidateHashPrivateKey}
+        onChange={e => {
+          onChangeInput("candidateHashPrivateKey")(e);
+        }}
+        onBlur={e => onValidator("candidateHashPrivateKey")(e)}
         inputProps={{ ref: toInputRef }}
       />
 
