@@ -46,7 +46,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
         <CopyToClipboard text={BlockProducerKey} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
             <div className="titleKeys">
-              <div className="keyNamePrivacy">BLOCK PRODUCER KEY</div>
+              <div className="keyNamePrivacy">MINING KEY SEED</div>
               <span className="clickCopy">
                 <CopyPasteSVG />
               </span>

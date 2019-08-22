@@ -139,7 +139,6 @@ function AccountStaking({
       stakingType: "0", // default is shard
       isRewardFunder: "1",
       candidatePaymentAddress: account.PaymentAddress
-      // candidateHashPrivateKey: account.
     })
   );
 
@@ -291,7 +290,7 @@ function AccountStaking({
       stakingType,
       candidatePaymentAddress,
       isRewardFunder,
-      candidateHashPrivateKey
+      candidateMiningKeySeed
     } = state;
 
     try {
@@ -300,7 +299,7 @@ function AccountStaking({
         Number(fee) * PrivacyUnit,
         candidatePaymentAddress,
         isRewardFunder === "1" ? true : false,
-        candidateHashPrivateKey,
+        candidateMiningKeySeed,
         account,
         wallet
       );
@@ -465,16 +464,16 @@ function AccountStaking({
 
       <TextField
         required
-        id="candidateHashPrivateKey"
-        label="Candidate hash of private key"
+        id="candidateMiningKeySeed"
+        label="Candidate mining key seed"
         className={classes.textField}
         margin="normal"
         variant="outlined"
-        value={state.candidateHashPrivateKey}
+        value={state.candidateMiningKeySeed}
         onChange={e => {
-          onChangeInput("candidateHashPrivateKey")(e);
+          onChangeInput("candidateMiningKeySeed")(e);
         }}
-        onBlur={e => onValidator("candidateHashPrivateKey")(e)}
+        onBlur={e => onValidator("candidateMiningKeySeed")(e)}
         inputProps={{ ref: toInputRef }}
       />
 
