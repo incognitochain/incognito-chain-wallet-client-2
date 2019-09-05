@@ -289,8 +289,8 @@ function AccountStaking({
       fee,
       stakingType,
       candidatePaymentAddress,
-      isRewardFunder,
-      candidateMiningKeySeed
+      isRewardFunder
+      // candidateMiningKeySeed
     } = state;
 
     try {
@@ -299,7 +299,7 @@ function AccountStaking({
         Number(fee) * PrivacyUnit,
         candidatePaymentAddress,
         isRewardFunder === "1" ? true : false,
-        candidateMiningKeySeed,
+        // candidateMiningKeySeed,
         account,
         wallet
       );
@@ -462,7 +462,7 @@ function AccountStaking({
         inputProps={{ ref: toInputRef }}
       />
 
-      <TextField
+      {/* <TextField
         required
         id="candidateMiningKeySeed"
         label="Candidate mining key seed"
@@ -475,7 +475,7 @@ function AccountStaking({
         }}
         onBlur={e => onValidator("candidateMiningKeySeed")(e)}
         inputProps={{ ref: toInputRef }}
-      />
+      /> */}
 
       <div className="col-sm">
         <div>

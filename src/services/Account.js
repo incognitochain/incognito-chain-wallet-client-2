@@ -62,7 +62,7 @@ export default class Account {
     fee,
     candidatePaymentAddress,
     isRewardFunder,
-    candidateHashPrivateKey,
+    // candidateHashPrivateKey,
     account,
     wallet
   ) {
@@ -78,8 +78,8 @@ export default class Account {
         param,
         fee,
         candidatePaymentAddress,
-        isRewardFunder,
-        candidateHashPrivateKey
+        isRewardFunder
+        // candidateHashPrivateKey
       );
 
       // save wallet
@@ -175,15 +175,17 @@ export default class Account {
 
   /**
    *
+   * @param {bool} isGetAll
    * @param {string} tokenID
    * @param {object} account
    * @param {object} wallet
    */
-  static async getRewardAmount(tokenID, account, wallet) {
+  static async getRewardAmount(isGetAll, tokenID, account, wallet) {
     let indexAccount = wallet.getAccountIndexByName(account.name);
     let result;
     try {
       result = await wallet.MasterAccount.child[indexAccount].getRewardAmount(
+        isGetAll,
         tokenID
       );
     } catch (e) {
@@ -218,5 +220,20 @@ export default class Account {
    */
   static toSerializedAccountObj(accountWallet) {
     return accountWallet.toSerializedAccountObj();
+  }
+
+  /**
+   *
+   * @param {object} accountWallet
+   */
+  static async isStaked(accountWallet) {
+    let isStaked;
+    try {
+      isStaked = await accountWallet.isStaked();
+    } catch (e) {
+      throw e;
+    }
+
+    return isStaked;
   }
 }
