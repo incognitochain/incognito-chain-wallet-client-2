@@ -90,7 +90,7 @@ function AccountStaking({
   const amountInputRef = React.useRef();
   const toInputRef = React.useRef();
   let stakingTypeRef = React.useRef();
-  const isRewardFunderRef = React.useRef();
+  const autoReStakingRef = React.useRef();
 
   const { wallet } = useWalletContext();
   const account = useAccountContext();
@@ -137,8 +137,10 @@ function AccountStaking({
       isAlert: false,
       isPrivacy: "0",
       stakingType: "0", // default is shard
-      isRewardFunder: "1",
-      candidatePaymentAddress: account.PaymentAddress
+      autoReStakingRef: "1",
+      candidatePaymentAddress: account.PaymentAddress,
+      candidateMiningSeedKey: account.BlockProducerKey,
+      rewardReceiverPaymentAddress: account.PaymentAddress
     })
   );
 
@@ -289,17 +291,20 @@ function AccountStaking({
       fee,
       stakingType,
       candidatePaymentAddress,
-      isRewardFunder
-      // candidateMiningKeySeed
+      candidateMiningSeedKey,
+      rewardReceiverPaymentAddress,
+      autoReStaking
     } = state;
+    debugger;
 
     try {
       var result = await Account.staking(
         { type: Number(stakingType) },
         Number(fee) * PrivacyUnit,
         candidatePaymentAddress,
-        isRewardFunder === "1" ? true : false,
-        // candidateMiningKeySeed,
+        candidateMiningSeedKey,
+        rewardReceiverPaymentAddress,
+        autoReStaking === "1" ? true : false,
         account,
         wallet
       );
@@ -315,11 +320,9 @@ function AccountStaking({
         );
       }
     } catch (e) {
-      let msg = e.StackTrace.toString();
-      console.log("Create tx err: ", msg.substring(0, 100));
-      toastr.error(
-        "Staking failed. Please try again! Err:" + msg.substring(0, 100) + "..."
-      );
+      // let msg = e.toString();
+      console.log("Create tx err: ", e);
+      toastr.error("Staking failed. Please try again!");
     }
 
     dispatch({ type: "SHOW_LOADING", isShow: false });
@@ -335,10 +338,10 @@ function AccountStaking({
       return;
     }
 
-    if (name === "isRewardFunder") {
+    if (name === "autoReStaking") {
       const value = e.target.value === "1" ? "0" : "1";
 
-      dispatch({ type: "CHANGE_INPUT", name: "isRewardFunder", value: value });
+      dispatch({ type: "CHANGE_INPUT", name: "autoReStaking", value: value });
       return;
     }
 
@@ -462,33 +465,48 @@ function AccountStaking({
         inputProps={{ ref: toInputRef }}
       />
 
-      {/* <TextField
+      <TextField
         required
-        id="candidateMiningKeySeed"
+        id="candidateMiningSeedKey"
         label="Candidate mining key seed"
         className={classes.textField}
         margin="normal"
         variant="outlined"
-        value={state.candidateMiningKeySeed}
+        value={state.candidateMiningSeedKey}
         onChange={e => {
-          onChangeInput("candidateMiningKeySeed")(e);
+          onChangeInput("candidateMiningSeedKey")(e);
         }}
-        onBlur={e => onValidator("candidateMiningKeySeed")(e)}
+        onBlur={e => onValidator("candidateMiningSeedKey")(e)}
         inputProps={{ ref: toInputRef }}
-      /> */}
+      />
+
+      <TextField
+        required
+        id="rewardReceiverPaymentAddress"
+        label="Reward receiver payment address"
+        className={classes.textField}
+        margin="normal"
+        variant="outlined"
+        value={state.rewardReceiverPaymentAddress}
+        onChange={e => {
+          onChangeInput("rewardReceiverPaymentAddress")(e);
+        }}
+        onBlur={e => onValidator("rewardReceiverPaymentAddress")(e)}
+        inputProps={{ ref: toInputRef }}
+      />
 
       <div className="col-sm">
         <div>
           <Checkbox
-            label="Funder will receive reward?"
-            id="isRewardFunder"
-            checked={state.isRewardFunder === "1"}
-            value={state.isRewardFunder}
-            onChange={onChangeInput("isRewardFunder")}
+            label="Auto re-staking?"
+            id="autoReStaking"
+            checked={state.autoReStaking === "1"}
+            value={state.autoReStaking}
+            onChange={onChangeInput("autoReStaking")}
             color="primary"
-            inputProps={{ ref: isRewardFunderRef }}
+            inputProps={{ ref: autoReStakingRef }}
           />
-          Funder will receive reward?
+          Auto re-staking
         </div>
       </div>
 

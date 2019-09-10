@@ -61,12 +61,13 @@ export default class Account {
     param,
     fee,
     candidatePaymentAddress,
-    isRewardFunder,
-    // candidateHashPrivateKey,
+    candidateMiningSeedKey,
+    rewardReceiverPaymentAddress,
+    autoReStaking,
     account,
     wallet
   ) {
-    // param: payment address string, amount in Number (miliconstant)
+    // param: type: 0: shard, 1: beacon
     await Wallet.resetProgressTx();
     let indexAccount = wallet.getAccountIndexByName(account.name);
     // create and send constant
@@ -78,8 +79,9 @@ export default class Account {
         param,
         fee,
         candidatePaymentAddress,
-        isRewardFunder
-        // candidateHashPrivateKey
+        candidateMiningSeedKey,
+        rewardReceiverPaymentAddress,
+        autoReStaking
       );
 
       // save wallet

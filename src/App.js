@@ -84,6 +84,7 @@ const App = ({ history, location }) => {
   async function listAccounts(wallet) {
     console.time("listAccounts");
     let accountList = cacheAccountListService.getAccountList();
+    console.log("List account HHHH: ", accountList);
     console.log("accountList", accountList);
     if (!accountList || accountList.length == 0) {
       accountList = [];
@@ -99,9 +100,11 @@ const App = ({ history, location }) => {
             PublicKey: account.PublicKey,
             PublicKeyCheckEncode: account.PublicKeyCheckEncode,
             BlockProducerKey: account.BlockProducerKey,
-            PublicKeyBytes: account.PublicKeyBytes
+            PublicKeyBytes: account.PublicKeyBytes,
+            BLSPublicKey: account.BLSPublicKey
           };
         });
+        console.log("accountList 2 HHHH: ", accountList);
       } catch (e) {
         console.error(e);
         alert("Error on get listAccount()!");
