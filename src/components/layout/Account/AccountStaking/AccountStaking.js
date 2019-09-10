@@ -295,7 +295,6 @@ function AccountStaking({
       rewardReceiverPaymentAddress,
       autoReStaking
     } = state;
-    debugger;
 
     try {
       var result = await Account.staking(
