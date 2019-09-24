@@ -14,7 +14,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
   console.log("useAccountContext()", useAccountContext());
   const {
     PrivateKey,
-    BlockProducerKey,
+    ValidatorKey,
     ReadonlyKey,
     // PublicKey,
     PublicKeyCheckEncode,
@@ -43,7 +43,7 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
           </div>
         </CopyToClipboard>
 
-        <CopyToClipboard text={BlockProducerKey} onCopy={copyToClipBoard}>
+        <CopyToClipboard text={ValidatorKey} onCopy={copyToClipBoard}>
           <div className="wrapperKeys">
             <div className="titleKeys">
               <div className="keyNamePrivacy">MINING KEY SEED</div>
@@ -52,10 +52,10 @@ export function PrivacyKeyDialog({ isOpen, onClose }) {
               </span>
             </div>
             <div className="keyDes">
-              {BlockProducerKey
-                ? BlockProducerKey.substring(0, 20) +
+              {ValidatorKey
+                ? ValidatorKey.substring(0, 20) +
                   "..." +
-                  BlockProducerKey.substring(90)
+                  ValidatorKey.substring(90)
                 : ""}
             </div>
           </div>
