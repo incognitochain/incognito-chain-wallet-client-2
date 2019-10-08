@@ -139,7 +139,7 @@ function AccountStaking({
       stakingType: "0", // default is shard
       autoReStakingRef: "1",
       candidatePaymentAddress: account.PaymentAddress,
-      candidateMiningSeedKey: account.BlockProducerKey,
+      candidateMiningSeedKey: account.ValidatorKey,
       rewardReceiverPaymentAddress: account.PaymentAddress
     })
   );

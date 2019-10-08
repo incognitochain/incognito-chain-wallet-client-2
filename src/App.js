@@ -99,7 +99,7 @@ const App = ({ history, location }) => {
             PrivateKey: account.PrivateKey,
             PublicKey: account.PublicKey,
             PublicKeyCheckEncode: account.PublicKeyCheckEncode,
-            BlockProducerKey: account.BlockProducerKey,
+            ValidatorKey: account.ValidatorKey,
             PublicKeyBytes: account.PublicKeyBytes,
             BLSPublicKey: account.BLSPublicKey
           };
