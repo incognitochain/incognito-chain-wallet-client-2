@@ -34,3 +34,13 @@ continue with command line
 ##### `npm run electron-only`
 or you can run with only one command line
 ##### `npm run electron-dev`
+
+#### Simple Step for QC to run the wallet:
+```
+sudo apt install npm
+sudo npm install
+sudo npm install -g yarn
+sudo yarn
+sudo yarn start:dev
+```
+
